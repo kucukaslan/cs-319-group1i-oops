@@ -1,4 +1,4 @@
-# Pandemy Manager for University
+# Pandemic Manager for University
 ## Description
 
 The project aims to provide a website for University members to manage pandemic precautions. The project will help managing HES codes and the vaccine status of university members. 
