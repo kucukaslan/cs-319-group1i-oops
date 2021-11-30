@@ -1,0 +1,63 @@
+:root {
+    --label-font: bold 18px Garamond;
+    --body-font: 16px "Times New Roman";
+    --small-padding: 8px;
+    --default-padding: 12px;
+    --default-margin: 12px;
+
+}
+
+.navbar{
+    background-color: cornsilk;
+    margin: var(--default-margin);
+    padding: var(--default-padding);
+    color: black;
+    font: 18px sans-serif;
+}
+.navbar-text{
+    margin: var(--default-margin);
+    padding: var(--default-padding);
+    border-color: black;
+}
+
+#logout{
+    alignment: right;
+    color: red;
+}
+
+a:link { 			color: black; 		}
+a:visited{ 			color: black; 		}
+a:hover{ 			color: hotpink; 		}
+
+body{ font: var(--body-font);
+background-color: antiquewhite; }
+
+label{ font:  var(--label-font);}
+
+.centerwrapper {
+    text-align: center;
+}
+.centerdiv {
+    display: inline-block; 
+    padding: var(--default-padding);
+}
+.form-group {
+    margin: var(--default-margin);
+}
+tr {
+    padding: var(--small-padding);
+}
+td{
+    text-align: left;
+    width: max-content;
+    padding-left: var(--default-padding);
+    padding-right: var(--default-padding);
+}
+.button_submit{
+    background-color: green;
+    color : white;
+    font: 14px "Times New Roman";
+    padding: var(--small-padding);
+    padding-left: var(--default-padding);
+    padding-right: var(--default-padding);
+}
