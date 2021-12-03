@@ -1,30 +1,14 @@
 :root {
-    --label-font: bold 18px Garamond;
-    --body-font: 16px "Times New Roman";
-    --small-padding: 8px;
-    --default-padding: 12px;
-    --default-margin: 12px;
+    --label-font: bold 20pt Garamond;
+    --body-font: 16pt "Times New Roman";
+    --small-padding: 8pt;
+    --default-padding: 12pt;
+    --default-margin: 12pt;
+
 
 }
 
-.navbar{
-    background-color: cornsilk;
-    margin: var(--default-margin);
-    padding: var(--default-padding);
-    color: black;
-    font: 18px sans-serif;
-}
-.navbar-text{
-    margin: var(--default-margin);
-    padding: var(--default-padding);
-    border-color: black;
-}
-
-#logout{
-    alignment: right;
-    color: red;
-}
-
+/* Html Tags*/
 a:link { 			color: black; 		}
 a:visited{ 			color: black; 		}
 a:hover{ 			color: hotpink; 		}
@@ -33,16 +17,8 @@ body{ font: var(--body-font);
 background-color: antiquewhite; }
 
 label{ font:  var(--label-font);}
-.centerwrapper {
-    text-align: center;
-}
-.centerdiv {
-    display: inline-block;
-    padding: var(--default-padding);
-}
-.form-group {
-    margin: var(--default-margin);
-}
+
+
 tr {
     padding: var(--small-padding);
 }
@@ -52,11 +28,51 @@ td{
     padding-left: var(--default-padding);
     padding-right: var(--default-padding);
 }
+
+
+/* Classes */
+
+
+.navbar{
+    background-color: cornsilk;
+    margin: var(--default-margin);
+    padding: var(--default-padding);
+    color: black;
+    font: var(--label-font) sans-serif;
+}
+.navbar-text{
+    margin: var(--default-margin);
+    padding: var(--default-padding);
+    border-color: black;
+}
+
+.centerwrapper {
+    text-align: center;
+}
+
+.centerdiv {
+    display: inline-block;
+    padding: var(--default-padding);
+}
+.form-group {
+    font: var(--body-font) "Times New Roman";
+    margin: var(--default-margin);
+    padding: var(--default-padding);
+}
+
 .button_submit{
-    background-color: green;
+    background-color: rgb(71, 255, 71);
     color : white;
-    font: 14px "Times New Roman";
+    font: var(--body-font) "Times New Roman";
     padding: var(--small-padding);
     padding-left: var(--default-padding);
     padding-right: var(--default-padding);
+}
+
+
+/*  ID */
+
+#logout{
+    text-align: right;
+    color: red;
 }

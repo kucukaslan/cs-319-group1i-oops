@@ -8,20 +8,15 @@ $username ="";
 $password ="";
 if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from the form
-    $username = $_POST['username'];
+    $userid = $_POST['userid'];
     $password =$_POST['password'];
-
-    //set parameters
-    $entered_username = $username;
-    $entered_password = $password;
-
 
 
     // var_dump($std);
     // echo '<br>';
 
     try {
-        $std = new Student($conn, $entered_username, $entered_password);
+        $std = new Student($conn, $userid, $password);
         // session_start();
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
@@ -63,13 +58,13 @@ if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                 <div class="form-group">
-                    <label for="username">ID</label> <br>
-                    <input type="text" name="username" class="form-control" id="username" required='true'>
+                    <label for="userid">ID</label> <br>
+                    <input type="text" name="userid" class="form-input" id="userid" required='true'>
 
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label><br>
-                    <input type="password" name="password" class="form-control" id="password" required='true'>
+                    <input type="password" name="password" class="form-input" id="password" required='true'>
 
                 </div>
                 <div class="form-group">
