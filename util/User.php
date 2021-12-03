@@ -15,6 +15,9 @@ class User
     protected $lastname;
     protected $email;
 
+    /**
+     * @throws Exception
+     */
     public function __construct($db, $id, $password)
     {
         $this->conn = $db;

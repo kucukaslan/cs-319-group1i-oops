@@ -34,11 +34,8 @@ background-color: antiquewhite; }
 
 label{ font:  var(--label-font);}
 
-.centerwrapper {
-    text-align: center;
-}
 .centerdiv {
-    display: inline-block; 
+    display: inline-block;
     padding: var(--default-padding);
 }
 .form-group {

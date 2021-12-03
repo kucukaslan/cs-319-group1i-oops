@@ -1,39 +1,39 @@
 <?php
- 
-    include("../config.php");
-    include("../util/Student.php");
 
-    session_start();
-    $username ="";
-    $password ="";
-    if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        // username and password sent from the form
-        $username = $_POST['username'];
-        $password =$_POST['password'];
+include("../config.php");
+include("../util/Student.php");
 
-        //set parameters
-        $entered_username = $username;
-        $entered_password = $password;
+session_start();
+$username ="";
+$password ="";
+if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    // username and password sent from the form
+    $username = $_POST['username'];
+    $password =$_POST['password'];
+
+    //set parameters
+    $entered_username = $username;
+    $entered_password = $password;
 
 
-        
-        // var_dump($std);
-        // echo '<br>';
 
-        try {
-            $std = new Student($conn, $entered_username, $entered_password);
-               // session_start();
-                $_SESSION['firstname'] = $std->getFirstName();
-                $_SESSION['lastname'] = $std->getLastName();
-                $_SESSION['id'] = $std->getId();
-                $_SESSION['email'] = $std->getEmail();
-                header("location: .."); //redirect to main page
-      
-        }
-        catch (Exception $e) {
-            echo "<script type='text/javascript'>alert('".$e->getMessage()."');</script>";
-        }
+    // var_dump($std);
+    // echo '<br>';
+
+    try {
+        $std = new Student($conn, $entered_username, $entered_password);
+        // session_start();
+        $_SESSION['firstname'] = $std->getFirstName();
+        $_SESSION['lastname'] = $std->getLastName();
+        $_SESSION['id'] = $std->getId();
+        $_SESSION['email'] = $std->getEmail();
+        header("location: .."); //redirect to main page
+
     }
+    catch (Exception $e) {
+        echo "<script type='text/javascript'>alert('".$e->getMessage()."');</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +63,7 @@
 
 
                 <div class="form-group">
-                    <label for="username">E-mail</label> <br>
+                    <label for="username">ID</label> <br>
                     <input type="text" name="username" class="form-control" id="username" required='true'>
 
                 </div>

@@ -13,3 +13,4 @@ try {
     // we might want to redirect to a proper error page from here
     exit(); // stop the script
 }
+
