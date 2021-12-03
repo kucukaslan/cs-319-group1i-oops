@@ -30,6 +30,7 @@
     // Why do we try to connect database before user is logged in? (talking specifically for this page)
     include("config.php");
     session_start();
+    $conn = getDatabaseConnection();
 
     if( !isset($_SESSION['id']) || !isset($conn) ){ 
         header("location: ./login");

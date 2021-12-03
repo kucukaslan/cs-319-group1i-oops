@@ -15,6 +15,7 @@
     <?php
     include "../config.php";
     session_start();
+    $conn = getDatabaseConnection();
 
     if(! isset($_SESSION['id'] )) {
         echo"<div class='centerwrapper'> <div class = 'centerdiv'>"

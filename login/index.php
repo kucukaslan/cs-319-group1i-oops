@@ -4,8 +4,8 @@ include("../config.php");
 include("../util/Student.php");
 
 session_start();
-$username ="";
-$password ="";
+$conn = getDatabaseConnection();
+
 if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from the form
     $userid = $_POST['userid'];
