@@ -10,11 +10,11 @@
 
 </head>
 <body>
-<div class=\"container\">
+<div class="container">
 
     <?php
     include "../config.php";
-    session_start();
+    startDefaultSessionWith();
     $conn = getDatabaseConnection();
 
     if(! isset($_SESSION['id'] )) {
