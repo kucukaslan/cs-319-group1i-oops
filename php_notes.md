@@ -6,7 +6,7 @@ Every variable starts with the `$` sign:
 e.g. `$var`, `$lol`
 
 ## String
-There are two(in fact 4) types of of String declaration, which behaves differently:  
+There are two(in fact 4) types of String declaration, which behaves differently:  
 >single quoted 'example'\
 >double quoted "example"
 

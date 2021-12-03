@@ -15,6 +15,9 @@ class User
     protected $lastname;
     protected $email;
 
+    /**
+     * @throws Exception
+     */
     public function __construct($db, $id, $password)
     {
         $this->conn = $db;
@@ -86,7 +89,7 @@ class User
     {
         $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE s_id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':password_hash', password_hash($newPassword, PASSWORD_DEFAULT));
+        $stmt->bindParam(':password_hash', password_hash($newPassword, PASSWORD_ARGON2I));
     }
 
     public function getTableName(): string {
