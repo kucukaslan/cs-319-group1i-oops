@@ -43,7 +43,7 @@
 
     ?>
     </p>
-    <div class="centerdiv">
+    <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
             <h2>Some Titles/Tables in the Main Menu</h2>
