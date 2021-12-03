@@ -33,7 +33,9 @@ body{ font: var(--body-font);
 background-color: antiquewhite; }
 
 label{ font:  var(--label-font);}
-
+.centerwrapper {
+    text-align: center;
+}
 .centerdiv {
     display: inline-block;
     padding: var(--default-padding);

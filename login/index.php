@@ -57,7 +57,7 @@ if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="centerdiv">
             <br><br>
             <h2>Login For Thy Health</h2>
-            <p>Please enter your E-mail and password to login.</p>
+            <p>Please enter your ID and password to login.</p>
 
             <form id="loginForm" action="" method="post">
 
