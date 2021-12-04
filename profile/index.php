@@ -13,10 +13,10 @@
 <div class="container">
 
     <?php
-    require_once '../vendor/autoload.php';
+    include_once("../config.php");
 
+    require_once rootDirectory().'/vendor/autoload.php';
 
-    include "../config.php";
     startDefaultSessionWith();
     $conn = getDatabaseConnection();
 
