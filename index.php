@@ -44,13 +44,18 @@
             ));
             echo $welcome->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
-            echo $welcome->render('text', ['text' => [
-                    ['elem' => 'Welcome to the', 'i' => true],
-                    ['elem' => 'smallest', 'i' => true, 'b' => true],
-                    ['elem' => ' ... University Contact Tracing Service, ', 'i' => true],
-                    ['elem' => 'ever', 'i' => true, 'b' => true]]
+            echo $welcome->render('text', [
+                    'html' => ['ay', 'ya'], 'u' => true,
+                    'text' => ['html' => ['sasa'], 'i' => true, 'text' => false]
                 ]
+
             );
+            /*
+                                 ['text' => 'Welcome to the', 'i' => true],
+                    ['text' => 'smallest', 'i' => true, 'b' => true],
+                    ['text' => ' ... University Contact Tracing Service, ', 'i' => true],
+                    ['text' => 'ever', 'i' => true, 'b' => true],
+             * */
         }
 
         ?>
