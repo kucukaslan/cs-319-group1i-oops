@@ -13,10 +13,10 @@
 <div class=\"container\">
 
     <?php
-    require_once 'vendor/autoload.php';
+    require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 
-    include "config.php";
+    include(dirname(__FILE__) . "/config.php");
     session_start();
     $conn = getDatabaseConnection();
 
@@ -28,10 +28,10 @@
                     </div> </form>";
         echo "</div> </div>";
     } else {
-        $m = new Mustache_Engine(array(
+        $navbar = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
         ));
-        echo $m->render('navbar', ['links' => [
+        echo $navbar->render('navbar', ['links' => [
                 ['href' => '.', 'title' => 'Main Menu'],
                 ['href' => './Events', 'title' => 'Events'],
                 ['href' => './CloseContact', 'title' => 'Close Contact'],

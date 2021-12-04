@@ -20,24 +20,24 @@
     <p id='info'>
         <?php
         // Why do we try to connect database before user is logged in? (talking specifically for this page)
-        include("config.php");
+        include(dirname(__FILE__) . "/config.php");
         session_start();
         $conn = getDatabaseConnection();
 
         if (!isset($_SESSION['id']) || !isset($conn)) {
-            header("location: ./login");
+            header("location: ./Login");
         } else {
             $id = $_SESSION['id'];
-            require_once './vendor/autoload.php';
+            require_once(dirname(__FILE__) . '/vendor/autoload.php');
             $navbar = new Mustache_Engine(array(
                 'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
             ));
             echo $navbar->render('navbar', ['links' => [
-                    ['href' => './', 'title' => 'Main Menu'],
-                    ['href' => './events', 'title' => 'Events'],
-                    ['href' => './closecontact', 'title' => 'Close Contact'],
-                    ['href' => './profile', 'title' => 'Profile'],
-                    ['href' => './Logout.php', 'title' => 'Logout', 'id' => 'logout']]]
+                    ['href' => '.', 'title' => 'Main Menu'],
+                    ['href' => './Events', 'title' => 'Events'],
+                    ['href' => './CloseContact', 'title' => 'Close Contact'],
+                    ['href' => './Profile', 'title' => 'Profile'],
+                    ['href' => './Logout', 'title' => 'Logout', 'id' => 'logout']]]
             );
             $welcome = new Mustache_Engine(array(
                 'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
@@ -64,7 +64,7 @@
         </div>
     </div>
 
-    <form method='post' action="./profile">
+    <form method='post' action="./Profile">
         <div class="form-group">
             <input type="submit" class="button button_submit" value="Go to Profile Page">
         </div>

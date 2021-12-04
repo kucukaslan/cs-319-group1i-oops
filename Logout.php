@@ -8,4 +8,4 @@ $_SESSION = array();
 // Destroy the session.
 session_destroy();
 
-header('location: ./login');
+header('location: ./Login');
