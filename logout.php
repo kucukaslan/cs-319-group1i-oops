@@ -1,6 +1,6 @@
 <?php
-
-session_start();
+include_once("config.php");
+startDefaultSessionWith();
 
 // Clear all the session variables
 $_SESSION = array();

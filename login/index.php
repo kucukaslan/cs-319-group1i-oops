@@ -10,7 +10,8 @@ echo $m->render('login', array('title' => 'Login', 'id' => 'University ID', 'pas
 include("../config.php");
 include("../util/Student.php");
 
-session_start();
+startDefaultSessionWith();
+//echo time() ." - ". $_SESSION['__PREV_ACTIVITY'];
 $conn = getDatabaseConnection();
 
 if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {

@@ -1,3 +1,8 @@
+<?php
+    // Why do we try to connect database before user is logged in? (talking specifically for this page)
+    include("config.php");
+    startDefaultSessionWith();
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,10 +23,9 @@
 -->
 <div class="container">
     <p id='info'>
+
         <?php
-        // Why do we try to connect database before user is logged in? (talking specifically for this page)
-        include("config.php");
-        session_start();
+      
         $conn = getDatabaseConnection();
 
         if (!isset($_SESSION['id']) || !isset($conn)) {

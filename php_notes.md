@@ -1,5 +1,10 @@
-# PHP Notes
+# Notes on the PHP 
 This file will contain some features and methods of the php that is good to know.
+
+## Project Specific
+### Sessions
+* Use the ``startDefaultSessionWith()`` method defined in config.php to start a session.
+* Use the `getDatabaseConnection()` method defined in config.php to establish a Database connexion (it initializes a PDO object).
 
 ## Variables
 Every variable starts with the `$` sign:  
