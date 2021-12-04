@@ -44,10 +44,12 @@
             ));
             echo $welcome->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
-            echo $welcome->render('text', [
-                    'html' => ['ay', 'ya'], 'u' => true,
-                    'text' => ['html' => ['sasa'], 'i' => true, 'text' => false]
-                ]
+            echo $welcome->render('markup', [
+                    'i' => true,
+                    'top' => 'Welcome to the',
+                    'markup' => ['top' => 'smallest', 'bm' => false, 'b' => true, 'markup' => false, 'bot' => false
+                    ], 'bot' => ' ... University Contact Tracing Service, ',
+                    'bm' => ['top' => 'dwdw', 'bm' => false]]
 
             );
             /*
