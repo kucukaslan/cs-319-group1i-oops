@@ -37,7 +37,7 @@
                     ['href' => './events', 'title' => 'Events'],
                     ['href' => './closecontact', 'title' => 'Close Contact'],
                     ['href' => './profile', 'title' => 'Profile'],
-                    ['href' => './logout.php', 'title' => 'Logout', 'id' => 'logout']]]
+                    ['href' => './Logout.php', 'title' => 'Logout', 'id' => 'logout']]]
             );
             $welcome = new Mustache_Engine(array(
                 'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile Page of <?php echo $_SESSION['cname'] ?></title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <meta name="author" content="Muhammed Can Küçükaslan">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +13,10 @@
 <div class=\"container\">
 
     <?php
-    require_once '../vendor/autoload.php';
+    require_once 'vendor/autoload.php';
 
 
-    include "../config.php";
+    include "config.php";
     session_start();
     $conn = getDatabaseConnection();
 
@@ -29,14 +29,14 @@
         echo "</div> </div>";
     } else {
         $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
         ));
         echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
+                ['href' => '.', 'title' => 'Main Menu'],
+                ['href' => './Events', 'title' => 'Events'],
+                ['href' => './CloseContact', 'title' => 'Close Contact'],
+                ['href' => './Profile', 'title' => 'Profile'],
+                ['href' => './Logout', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
         echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";

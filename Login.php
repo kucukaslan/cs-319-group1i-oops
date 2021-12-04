@@ -1,14 +1,14 @@
 <?php
-require_once '../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 $m = new Mustache_Engine(array(
-    'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+    'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
 ));
 echo $m->render('login', array('title' => 'Login', 'id' => 'University ID', 'pass' => 'Password'));
 
 
-include("../config.php");
-include("../util/Student.php");
+include("config.php");
+include("util/Student.php");
 
 session_start();
 $conn = getDatabaseConnection();
