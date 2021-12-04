@@ -1,16 +1,17 @@
 <?php
+require_once '../vendor/autoload.php';
+
+$m = new Mustache_Engine(array(
+    'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+));
+echo $m->render('login', array('title' => 'Login', 'id' => 'University ID', 'pass' => 'Password'));
+
 
 include("../config.php");
 include("../util/Student.php");
 
 session_start();
 $conn = getDatabaseConnection();
-
-
-$m = new Mustache_Engine(array(
-    'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
-));
-echo $m->render('login', array('planet' => 'world'));
 
 if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from the form
@@ -35,49 +36,3 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>
-
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <nav class="navbar">
-        <h4 class="navbar-text">ForThyHealth</h4>
-    </nav>
-
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Login For Thy Health</h2>
-            <p>Please enter your ID and password to login.</p>
-
-            <form id="loginForm" action="" method="post">
-
-
-                <div class="form-group">
-                    <label for="userid">ID</label> <br>
-                    <input type="text" name="userid" class="form-input" id="userid" required='true'>
-
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label><br>
-                    <input type="password" name="password" class="form-input" id="password" required='true'>
-
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="button button_submit" value="Login">
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-</body>
-</html>
