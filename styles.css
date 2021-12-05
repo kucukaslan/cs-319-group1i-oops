@@ -4,6 +4,7 @@
     --small-padding: 8pt;
     --default-padding: 12pt;
     --default-margin: 12pt;
+    --very-large-padding: 36pt;
 
 
 }
@@ -13,8 +14,13 @@ a:link { 			color: black; 		}
 a:visited{ 			color: black; 		}
 a:hover{ 			color: hotpink; 		}
 
-body{ font: var(--body-font);
-background-color: antiquewhite; }
+body{ 
+    font: var(--body-font);
+    background-color: antiquewhite;
+
+    padding-left:  var(--very-large-padding);
+    padding-right: var(--very-large-padding);
+ }
 
 label{ font:  var(--label-font);}
 

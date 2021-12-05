@@ -1,5 +1,5 @@
 <?php 
-    include_once("../config.php");
+    include_once("../../config.php");
     startDefaultSessionWith();
     ?>
 
@@ -7,9 +7,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Close Contacts</title>
+    <title>Event Details</title>
 
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -34,15 +34,16 @@
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
         echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
+                ['href' => '../../', 'title' => 'Main Menu'],
+                ['href' => '../../events', 'title' => 'Events'],
+                ['href' => '../../closecontact', 'title' => 'Close Contact'],
+                ['href' => '../../profile', 'title' => 'Profile'],
+                ['href' => '../../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
         echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
         echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+        echo "<br> You are seeing the details of the contacts you have made with other students ".( (array_key_exists('eventid',$_GET)) ? "for the event " . $_GET['eventid']  :  "");
 
     }
 
@@ -50,19 +51,15 @@
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
-            <h2>Close Contact Page</h2>
+            <h2>Event Details Page</h2>
             <br>
-            <form action="see"><div class="form-group">
-                    <input type="submit" class="button button_submit" value="See Event Details">
-                    <input type="hidden" name="eventid" id="eventid" value="CS101ab12as">
+            <form method='get' action="../"><div class="form-group">
+                    <input type="submit" class="button button_submit" value="Return to Close Contact Page">
                 </div>
             </form>
         </div>
     </div>
-
-
 </div>
-
 
 </body>
 </html>

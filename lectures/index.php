@@ -43,9 +43,7 @@
                 ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-
+        
     }
 
     ?>
@@ -53,7 +51,16 @@
         <div class="centerdiv">
             <br><br>
             <h2>Lectures Page</h2>
+            <?php
+            echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
+            echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+            ?>
             <br>
+            <form action="manage"><div class="form-group">
+                    <input type="submit" class="button button_submit" value="See Course Details">
+                    <input type="hidden" name="courseid" id="courseid" value="CS101">
+                </div>
+            </form>
         </div>
     </div>
 

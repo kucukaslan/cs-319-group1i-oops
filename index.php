@@ -22,9 +22,7 @@
 </header>
 -->
 <div class="container">
-    <p id='info'>
-
-        <?php
+    <?php
       
         $conn = getDatabaseConnection();
 
@@ -65,7 +63,6 @@
         }
 
         ?>
-    </p>
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
