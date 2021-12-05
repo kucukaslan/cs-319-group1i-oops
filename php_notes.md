@@ -2,9 +2,23 @@
 This file will contain some features and methods of the php that is good to know.
 
 ## Project Specific
-### Sessions
+#### Configuration
+* Every file should begin with a PHP snippet that `include`s the [config.php](config.php) file and calls startDefaultSessionWith()
+e.g.
+```
+<?php 
+    include_once("../config.php");
+    startDefaultSessionWith();
+    ?>
+```
+#### Sessions
 * Use the ``startDefaultSessionWith()`` method defined in config.php to start a session.
 * Use the `getDatabaseConnection()` method defined in config.php to establish a Database connexion (it initializes a PDO object).
+
+#### Path
+* `rootDirectory()` method does return the absolute path pf the project root, so that one can refer to other files using it.
+However one should be very careful not to use it when writing URLs in which case the user would see the absolute path in the server.
+
 
 ## Variables
 Every variable starts with the `$` sign:  
