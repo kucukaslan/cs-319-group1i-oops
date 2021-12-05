@@ -1,22 +1,21 @@
 <?php 
     include_once("../config.php");
     startDefaultSessionWith();
-?>    
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile Page <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Administration System</title>
 
-    <meta name="author" content="Muhammed Can Küçükaslan">
+    <link rel="stylesheet" href="../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <body>
 <div class="container">
-
-<?php
+    <?php
     require_once rootDirectory().'/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
@@ -35,6 +34,9 @@
         ));
         echo $m->render('navbar', ['links' => [
                 ['href' => '../', 'title' => 'Main Menu'],
+                ['href' => '../administration', 'title' => 'Administration','id'=> 'selected'],
+                ['href' => '../lectures', 'title' => 'Lectures'],
+                //['href' => '../reservations', 'title' => 'Reservations'],
                 ['href' => '../events', 'title' => 'Events'],
                 ['href' => '../closecontact', 'title' => 'Close Contact'],
                 ['href' => '../profile', 'title' => 'Profile'],
@@ -50,13 +52,14 @@
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
-            <h2>User Profile Page</h2>
+            <h2>Administration Page</h2>
             <br>
         </div>
     </div>
 
 
 </div>
+
 
 </body>
 </html>

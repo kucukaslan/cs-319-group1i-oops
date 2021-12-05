@@ -76,3 +76,7 @@ td{
     text-align: right;
     color: red;
 }
+
+#selected{
+    background-color:aquamarine
+}

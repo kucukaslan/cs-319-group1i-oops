@@ -1,22 +1,22 @@
 <?php 
     include_once("../config.php");
     startDefaultSessionWith();
-?>    
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile Page <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Close Contacts</title>
 
-    <meta name="author" content="Muhammed Can Küçükaslan">
+    <link rel="stylesheet" href="../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <body>
 <div class="container">
 
-<?php
+    <?php
     require_once rootDirectory().'/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
@@ -31,7 +31,7 @@
         exit();
     } else {
         $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
         echo $m->render('navbar', ['links' => [
                 ['href' => '../', 'title' => 'Main Menu'],
@@ -50,13 +50,14 @@
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
-            <h2>User Profile Page</h2>
+            <h2>Close Contact Page</h2>
             <br>
         </div>
     </div>
 
 
 </div>
+
 
 </body>
 </html>

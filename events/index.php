@@ -1,22 +1,22 @@
 <?php 
     include_once("../config.php");
     startDefaultSessionWith();
-?>    
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile Page <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Events <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
 
-    <meta name="author" content="Muhammed Can Küçükaslan">
+    <link rel="stylesheet" href="../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <body>
 <div class="container">
 
-<?php
+    <?php
     require_once rootDirectory().'/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
@@ -50,13 +50,14 @@
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
-            <h2>User Profile Page</h2>
+            <h2>Events Page</h2>
             <br>
         </div>
     </div>
 
 
 </div>
+
 
 </body>
 </html>
