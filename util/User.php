@@ -52,7 +52,7 @@ class User
     public function verifyPassword() : bool
     {
         // verify password from database 
-        $query = "SELECT * FROM ".$this->getTableName()." WHERE s_id = :id "; // . $this->id;
+        $query = "SELECT * FROM ".$this->getTableName()." WHERE id = :id "; // . $this->id;
         $stmt = $this->conn->prepare($query);
         // var_dump($query);
         // echo '<br>';
