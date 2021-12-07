@@ -22,9 +22,7 @@
 </header>
 -->
 <div class="container">
-    <p id='info'>
-
-        <?php
+    <?php
       
         $conn = getDatabaseConnection();
 
@@ -34,7 +32,7 @@
             $id = $_SESSION['id'];
             require_once './vendor/autoload.php';
             $navbar = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
+                'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
             ));
             echo $navbar->render('navbar', ['links' => [
                     ['href' => './', 'title' => 'Main Menu'],
@@ -44,7 +42,7 @@
                     ['href' => './logout.php', 'title' => 'Logout', 'id' => 'logout']]]
             );
             $welcome = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
+                'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory(). '/templates'),
             ));
             echo $welcome->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
@@ -65,21 +63,14 @@
         }
 
         ?>
-    </p>
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
             <h2>Some Titles/Tables in the Main Menu</h2>
-
+            
             <br>
         </div>
     </div>
-
-    <form method='post' action="./profile">
-        <div class="form-group">
-            <input type="submit" class="button button_submit" value="Go to Profile Page">
-        </div>
-    </form>
 </div>
 </body>
 </html>

@@ -1,21 +1,18 @@
 <?php
-require_once '../vendor/autoload.php';
+include_once("../config.php");
+include_once(rootDirectory()."/util/Student.php");
+require_once rootDirectory().'/vendor/autoload.php';
 
 $m = new Mustache_Engine(array(
     'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
 ));
 echo $m->render('login', array('title' => 'Login', 'id' => 'University ID', 'pass' => 'Password'));
 
-
-include("../config.php");
-include("../util/Student.php");
-
 startDefaultSessionWith();
-//echo time() ." - ". $_SESSION['__PREV_ACTIVITY'];
 $conn = getDatabaseConnection();
 
 if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
-    // username and password sent from the form
+    // userid and password sent from the form
     $userid = $_POST['userid'];
     $password = $_POST['password'];
 

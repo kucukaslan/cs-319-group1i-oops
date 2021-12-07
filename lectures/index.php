@@ -1,22 +1,21 @@
 <?php 
     include_once("../config.php");
     startDefaultSessionWith();
-?>    
+    ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile Page <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Lectures <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
 
-    <meta name="author" content="Muhammed Can Küçükaslan">
+    <link rel="stylesheet" href="../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <body>
 <div class="container">
-
-<?php
+    <?php
     require_once rootDirectory().'/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
@@ -35,28 +34,39 @@
         ));
         echo $m->render('navbar', ['links' => [
                 ['href' => '../', 'title' => 'Main Menu'],
+                ['href' => '../administration', 'title' => 'Administration'],
+                ['href' => '../lectures', 'title' => 'Lectures'],
+                ['href' => '../reservations', 'title' => 'Reservations'],
                 ['href' => '../events', 'title' => 'Events'],
                 ['href' => '../closecontact', 'title' => 'Close Contact'],
                 ['href' => '../profile', 'title' => 'Profile'],
                 ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-
+        
     }
 
     ?>
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
-            <h2>User Profile Page</h2>
+            <h2>Lectures Page</h2>
+            <?php
+            echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
+            echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+            ?>
             <br>
+            <form action="manage"><div class="form-group">
+                    <input type="submit" class="button button_submit" value="See Course Details">
+                    <input type="hidden" name="courseid" id="courseid" value="CS101">
+                </div>
+            </form>
         </div>
     </div>
 
 
 </div>
+
 
 </body>
 </html>
