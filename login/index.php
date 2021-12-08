@@ -22,7 +22,6 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         $std = new Student($conn, $userid, $password);
-        // session_start();
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
         $_SESSION['id'] = $std->getId();

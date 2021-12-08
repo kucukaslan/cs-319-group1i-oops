@@ -6,14 +6,14 @@ class User
     const TABLE_NAME = "user";
 
     // database connection and table name
-    private $conn;
-    protected $password;
+    private PDO $conn;
+    protected string $password;
 
     // object properties
-    protected $id;
-    protected $firstname;
-    protected $lastname;
-    protected $email;
+    protected int $id;
+    protected string $firstname;
+    protected string $lastname;
+    protected string $email;
 
     /**
      * @throws Exception
@@ -31,19 +31,19 @@ class User
 
     }
 
-    public function getFirstName()
+    public function getFirstName(): string
     {
         return $this->firstname;
     }
-    public function getLastName()
+    public function getLastName(): string
     {
         return $this->lastname;
     }
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -77,7 +77,7 @@ class User
 
     public function updateToDatabase()
     {
-        $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE s_id = :id";
+        $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->firstname);
         $stmt->bindParam(':lastname', $this->lastname);
@@ -85,11 +85,38 @@ class User
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
     }
+
+    public function addHESCode(string $HESCode) : bool {
+        try {
+            $query = "UPDATE " . $this->getTableName() . " SET hescode = :hescode WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':hescode', $HESCode);
+            $stmt->bindParam(':id', $this->id);
+            $stmt->execute();
+            return true;
+        }
+        catch (PDOException $e) {
+            return false;
+        }
+    }
+    public function deleteHESCode() : bool {
+        try {
+            $query = "UPDATE " . $this->getTableName() . " SET hescode = NULL WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $this->id);
+            $stmt->execute();
+            return true;
+        }
+        catch (PDOException $e) {
+            return false;
+        }
+    }
     public function setPassword(string $newPassword)
     {
-        $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE s_id = :id";
+        $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':password_hash', password_hash($newPassword, PASSWORD_ARGON2I));
+        $hash = password_hash($newPassword, PASSWORD_ARGON2I);
+        $stmt->bindParam(':password_hash', $hash);
     }
 
     public function getTableName(): string {
