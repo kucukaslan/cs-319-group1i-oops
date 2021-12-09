@@ -34,7 +34,8 @@
             $id = $_SESSION['id'];
             require_once './vendor/autoload.php';
             $engine = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
+                    'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory(). '/templates'),
+
             ));
             echo $engine->render('navbar', ['links' => [
                     ['href' => './', 'title' => 'Main Menu'],
@@ -43,26 +44,12 @@
                     ['href' => './profile', 'title' => 'Profile'],
                     ['href' => './logout.php', 'title' => 'Logout', 'id' => 'logout']]]
             );
-            /*$welcome = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
-            ));
-            echo $welcome->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
+
+            echo $engine->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
-            echo $welcome->render('markup', [
-                    'i' => true,
-                    'top' => 'Welcome to the',
-                    'markup' => ['top' => 'smallest', 'bm' => false, 'b' => true, 'markup' => false, 'bot' => false
-                    ], 'bot' => ' ... University Contact Tracing Service, ',
-                    'bm' => ['top' => 'dwdw', 'bm' => false]]
-
-            );*/
-
-            $engine = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
-            ));
 
             // render and print profile component
-            echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => 23232, "allowance"=>"Allowed"]);
+            echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => $id, "allowance"=>"Allowed"]);
 
             // vaccine component
             echo $engine->render("vax", ['vaccine' => [
@@ -70,16 +57,31 @@
                     ['vaccineDate' => 'yarin', 'vaccineType' => 'TURKOVAC']]]
             );
 
+            $pastTest = ["date" => "1.2.4.5", "result" => "negative"];
+            $upcomingTest = ["date" => "2023"];
 
-            /*
-                                 ['text' => 'Welcome to the', 'i' => true],
-                    ['text' => 'smallest', 'i' => true, 'b' => true],
-                    ['text' => ' ... University Contact Tracing Service, ', 'i' => true],
-                    ['text' => 'ever', 'i' => true, 'b' => true],
-             * */
+            // upcoming test are loaded first so that they appear on the top of the table.
+            echo $engine->render("PCRtest", ["upcomingTest" => [
+                $upcomingTest, $upcomingTest
+            ], "pastTest" => [
+                $pastTest, $pastTest
+            ]]);
+
+            echo $engine->render("diagnosis", ["diagnosis" =>[
+                    ["date" => "date 1"],
+                    ["date" =>"date 2"]]]);
         }
 
+
         ?>
+
+      <!-- delete account button !-->
+    <form method='post' action="./delete">
+        <div class="form-group">
+            <input type="submit" href="/delete" class="button button_delete" value="!!! DELETE ACCOUNT !!!">
+        </div>
+    </form>
+
 <!--    </p>
     <div class="centerwrapper">
         <div class="centerdiv">

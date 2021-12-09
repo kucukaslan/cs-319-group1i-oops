@@ -75,7 +75,16 @@ td{
     padding-right: var(--default-padding);
 }
 
-.profile {
+.button_delete {
+    background-color: red;
+    color : black;
+    font: var(--body-font) "Times New Roman";
+    padding: var(--small-padding);
+    padding-left: var(--default-padding);
+    padding-right: var(--default-padding);
+}
+
+.component {
     /* Add shadows to create the "card" effect */
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
@@ -83,12 +92,15 @@ td{
 .profile_text {
     font: var(--body-font) "Times New Roman";
 }
-.vax {
-    /* Add shadows to create the "card" effect */
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
+
+/* tables will have scrolls */
+.table {
+    overflow:scroll;
+    height: 150px;
+    width: 100%;
 }
 
+/* to make table grid */
 table, th, td {
     border: 1px solid black;
 }
