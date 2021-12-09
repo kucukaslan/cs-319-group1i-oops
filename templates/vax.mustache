@@ -1,0 +1,18 @@
+<div class = "vax">
+    <h2> Vaccine Info </h2>
+    <div class="profile_text">
+        <table>
+            <tr>
+                <th>Vaccination Date</th>
+                <th>Vaccination Type</th>
+            </tr>
+            {{#vaccine}}
+            <tr>
+                <td>{{vaccineDate}}</td>
+                <td>{{vaccineType}}</td>
+            </tr>
+            {{/vaccine}}
+        </table>
+    </div>
+    <input type="submit" class="button button_submit" value="Add Vaccine Card">
+</div>
