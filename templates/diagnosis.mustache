@@ -1,0 +1,17 @@
+<div class = "component">
+    <h2> Past Diagnosis </h2>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Date</th>
+            </tr>
+            {{#diagnosis}}
+                <tr>
+                    <th>{{date}}</th>
+                </tr>
+            {{/diagnosis}}
+        </table>
+    </div>
+    <input type="submit" class="button button_submit" value="Add New Diagnosis">
+    <input type="submit" class="button button_submit" value="Update Diagnosis">
+</div>

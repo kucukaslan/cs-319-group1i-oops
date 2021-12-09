@@ -22,7 +22,9 @@
 </header>
 -->
 <div class="container">
-    <?php
+    <p id='info'>
+
+        <?php
       
         $conn = getDatabaseConnection();
 
@@ -31,46 +33,71 @@
         } else {
             $id = $_SESSION['id'];
             require_once './vendor/autoload.php';
-            $navbar = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
+            $engine = new Mustache_Engine(array(
+                    'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory(). '/templates'),
+
             ));
-            echo $navbar->render('navbar', ['links' => [
+            echo $engine->render('navbar', ['links' => [
                     ['href' => './', 'title' => 'Main Menu'],
                     ['href' => './events', 'title' => 'Events'],
                     ['href' => './closecontact', 'title' => 'Close Contact'],
                     ['href' => './profile', 'title' => 'Profile'],
                     ['href' => './logout.php', 'title' => 'Logout', 'id' => 'logout']]]
             );
-            $welcome = new Mustache_Engine(array(
-                'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory(). '/templates'),
-            ));
-            echo $welcome->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
-            );
-            echo $welcome->render('markup', [
-                    'i' => true,
-                    'top' => 'Welcome to the',
-                    'markup' => ['top' => 'smallest', 'bm' => false, 'b' => true, 'markup' => false, 'bot' => false
-                    ], 'bot' => ' ... University Contact Tracing Service, ',
-                    'bm' => ['top' => 'dwdw', 'bm' => false]]
 
+            echo $engine->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
-            /*
-                                 ['text' => 'Welcome to the', 'i' => true],
-                    ['text' => 'smallest', 'i' => true, 'b' => true],
-                    ['text' => ' ... University Contact Tracing Service, ', 'i' => true],
-                    ['text' => 'ever', 'i' => true, 'b' => true],
-             * */
+
+            // render and print profile component
+            echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => $id, "allowance"=>"Allowed"]);
+
+            // vaccine component
+            echo $engine->render("vax", ['vaccine' => [
+                    ['vaccineDate' => 'bugun', 'vaccineType' => 'TURKOVAC'],
+                    ['vaccineDate' => 'yarin', 'vaccineType' => 'TURKOVAC']]]
+            );
+
+            $pastTest = ["date" => "1.2.4.5", "result" => "negative"];
+            $upcomingTest = ["date" => "2023"];
+
+            // upcoming test are loaded first so that they appear on the top of the table.
+            echo $engine->render("PCRtest", ["upcomingTest" => [
+                $upcomingTest, $upcomingTest
+            ], "pastTest" => [
+                $pastTest, $pastTest
+            ]]);
+
+            echo $engine->render("diagnosis", ["diagnosis" =>[
+                    ["date" => "date 1"],
+                    ["date" =>"date 2"]]]);
         }
 
+
         ?>
+
+      <!-- delete account button !-->
+    <form method='post' action="./delete">
+        <div class="form-group">
+            <input type="submit" href="/delete" class="button button_delete" value="!!! DELETE ACCOUNT !!!">
+        </div>
+    </form>
+
+<!--    </p>
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
             <h2>Some Titles/Tables in the Main Menu</h2>
-            
+
             <br>
         </div>
     </div>
+
+    <form method='post' action="./profile">
+        <div class="form-group">
+            <input type="submit" class="button button_submit" value="Go to Profile Page">
+        </div>
+    </form>
+!-->
 </div>
 </body>
 </html>

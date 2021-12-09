@@ -1,0 +1,24 @@
+<div class = "component">
+    <h2> Past & Upcoming PCR Tests </h2>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Result</th>
+            </tr>
+            {{#upcomingTest}}
+                <tr>
+                    <td>{{date}}</td>
+                    <td> <input type="submit" class="button" value="Cancel"> </td>
+                </tr>
+            {{/upcomingTest}}
+            {{#pastTest}}
+                <tr>
+                    <td>{{date}}</td>
+                    <td>{{result}}</td>
+                </tr>
+            {{/pastTest}}
+        </table>
+    </div>
+    <input type="submit" class="button button_submit" value="Schedule PCR test">
+</div>
