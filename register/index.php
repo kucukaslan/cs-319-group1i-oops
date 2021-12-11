@@ -26,7 +26,7 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     try {
-        $uf = new UserFactory();
+        $uf = new UserFactory(Student::TABLE_NAME);
         $std = $uf->makeUserByRegister($conn, $userid, $password,$username,$usersurname,$usermail);
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();

@@ -48,7 +48,7 @@
             echo $engine->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
 
-            // render and print profile component
+            // render and print profile component sessiondan al name,email falan.
             echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => $id, "allowance"=>"Allowed"]);
 
             // vaccine component

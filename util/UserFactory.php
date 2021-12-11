@@ -4,12 +4,15 @@ class UserFactory{
 
 
     //variables
-    protected ?Student $user;
+    protected ?User $user;
 
 
     //methods
-    public function __construct() {
-        $user = new Student();
+    public function __construct(string $usertype) {
+        if(strcmp($usertype, Student::TABLE_NAME) == 0)
+            $this->user = new Student();
+        else
+            $this->user = new User();
 
     }
 
@@ -38,7 +41,7 @@ class UserFactory{
     public function makeUserByLogin($db, $id, $password) : User
     {
 
-        $this->user = new Student();
+        //$this->user = new Student();
 
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);

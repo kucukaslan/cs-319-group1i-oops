@@ -14,7 +14,7 @@ class User
     protected ?string $firstname;
     protected ?string $lastname;
     protected ?string $email;
-
+    protected ?string $HESCode;
 
     public function __construct() {
         $this->conn = null;
@@ -23,6 +23,7 @@ class User
         $this->firstname = null;
         $this->lastname = null;
         $this->email = null;
+        $this->HESCode = null;
 
 
     }
@@ -106,22 +107,15 @@ class User
         // var_dump($row);
         // echo '<br>';
 
-        echo "pw: ".$this->getPassword();
-        echo "pw: ".$this->password;
-
 
         if (password_verify($this->getPassword(), $row['password_hash'])) {
             $this->firstname = $row['name'];
             $this->lastname = $row['lastname'];
             $this->email = $row['email'];
             $this->password = "The password is verified and no longer needed to be stored!";
+            $this->HESCode = $row['hescode'];
             return true;
         } else {
-            var_dump($row);
-            echo "raw pw: ".password_verify(123, $row['password_hash']);
-            echo $this->getPassword()."raw hash:".password_verify($this->password, '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2' );
-            var_dump($this);
-            echo $this->password;
             $this->id = null;
             return false;
         }
@@ -139,7 +133,7 @@ class User
         $stmt->execute();
     }
 
-    public function addHESCode(string $HESCode) : bool {
+    public function updateHESCode(string $HESCode) : bool {
         try {
             $query = "UPDATE " . $this->getTableName() . " SET hescode = :hescode WHERE id = :id";
             $stmt = $this->conn->prepare($query);
