@@ -20,8 +20,8 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['UserName'];
     $usersurname = $_POST['Surname'];
 
-
-    //$std = new Student()
+    $uf = new UserFactory();
+    $std = $uf->makeUserByRegister($conn, $userid, $password,$username,$usersurname,$usermail);
 
 
 

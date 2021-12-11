@@ -16,7 +16,7 @@ class User
     protected string $email;
 
 
-    public function __construct($db, $id, $password,$firstname,$lastname,$email)
+    public function __construct2($db, $id, $password,$firstname,$lastname,$email)
     {
         $this->conn = $db;
         $this->id = $id;
@@ -29,10 +29,12 @@ class User
 
 
     }
+
+
     /**
      * @throws Exception
      */
-    public function __construct($db, $id, $password)
+    public function __construct3($db, $id, $password)
     {
         $this->conn = $db;
         $this->id = $id;
@@ -136,4 +138,47 @@ class User
     public function getTableName(): string {
         return get_called_class()::TABLE_NAME;
     }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param string $firstname
+     */
+    public function setFirstname(string $firstname): void
+    {
+        $this->firstname = $firstname;
+    }
+
+    /**
+     * @param string $lastname
+     */
+    public function setLastname(string $lastname): void
+    {
+        $this->lastname = $lastname;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setDatabaseConnection( PDO $conn)
+    {
+
+        $this->conn = $conn;
+    }
+
+
+
+
+
 }

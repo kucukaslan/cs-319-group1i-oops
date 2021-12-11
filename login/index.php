@@ -20,8 +20,11 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // var_dump($std);
     // echo ' < br>';
 
+
     try {
         $std = new Student($conn, $userid, $password);
+        $uf = new UserFactory();
+        $std = $uf->makeUserByLogin($conn, $userid, $password);
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
         $_SESSION['id'] = $std->getId();
