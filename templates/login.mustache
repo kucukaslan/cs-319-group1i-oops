@@ -1,59 +1,48 @@
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{title}}</title>
-    <link rel="stylesheet" href="../styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <style>
 
     </style>
 </head>
 <body>
 
-<div class="container">
-    <nav class="navbar">
-        <h4 class="navbar-text">ForThyHealth</h4>
-    </nav>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <h2>Login For Thy Health</h2>
-            <p>Please enter your {{id}} and {{pass}} to login.</p>
+<section class="hero is-primary is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-two-thirds">
+                    <form class="box" id="loginForm" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <label for="userid">{{id}}
+                                    <input type="number" name="userid" class="input" id="userid" min="1" required>
+                                </label>
+                            </div>
+                        </div>
 
-            <form id="loginForm" action="" method="post">
-                <div class="form-group">
-                    <label for="userid">{{id}}</label> <br>
-                    <input type="text" name="userid" class="form-input" id="userid" required='true'>
-
+                        <div class="field">
+                            <div class="control">
+                                <label for="password">{{pass}}
+                                    <input type="password" name="password" class="input" id="password" required>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <input type="submit" class="button is-success" value="Login">
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="password">{{pass}}</label><br>
-                    <input type="password" name="password" class="form-input" id="password" required='true'>
-
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="button button_submit" value="Login">
-                </div>
-            </form>
-            <table class="navbar" align="center">
-                <td>
-                    <a href="../register" class="navbar-text">Register</a>
-                </td>
-            </table>
-            
-            <footer>
-                <table class="navbar">
-                    <tr>
-                        <td>
-                            <a href="../about" class="navbar-text">About</a>
-                        </td>
-                        <td>
-                            <a href="../credits" class="navbar-text">Credits</a>
-                        </td>
-                        
-                    </tr>
-                </table>
-            </footer>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+
 </body>
 </html>

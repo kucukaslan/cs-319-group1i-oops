@@ -1,10 +1,10 @@
 <?php
 include_once("../config.php");
-include_once(rootDirectory()."/util/Student.php");
-require_once rootDirectory().'/vendor/autoload.php';
+include_once(rootDirectory() . "/util/Student.php");
+require_once rootDirectory() . '/vendor/autoload.php';
 
 $m = new Mustache_Engine(array(
-    'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+    'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
 ));
 echo $m->render('login', array('title' => 'Login', 'id' => 'University ID', 'pass' => 'Password'));
 
@@ -18,7 +18,7 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // var_dump($std);
-    // echo '<br>';
+    // echo ' < br>';
 
     try {
         $std = new Student($conn, $userid, $password);
@@ -29,7 +29,7 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         header("location: .."); //redirect to main page
 
     } catch (Exception $e) {
-        echo "<script type='text/javascript'>alert('" . $e->getMessage() . "');</script>";
+        echo "<script type='text / javascript'>alert('" . $e->getMessage() . $_POST['password'] . "');</script>";
     }
 }
 ?>
