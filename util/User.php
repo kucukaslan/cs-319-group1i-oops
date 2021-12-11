@@ -6,15 +6,26 @@ class User
     const TABLE_NAME = "user";
 
     // database connection and table name
-    private PDO $conn;
-    protected string $password;
+    private ?PDO $conn;
+    protected ?string $password;
 
     // object properties
-    protected int $id;
-    protected string $firstname;
-    protected string $lastname;
-    protected string $email;
+    protected ?int $id;
+    protected ?string $firstname;
+    protected ?string $lastname;
+    protected ?string $email;
 
+
+    public function __construct() {
+        $this->conn = null;
+        $this->id = null;
+        $this->password = null;
+        $this->firstname = null;
+        $this->lastname = null;
+        $this->email = null;
+
+
+    }
 
     public function __construct2($db, $id, $password,$firstname,$lastname,$email)
     {
@@ -63,6 +74,22 @@ class User
     {
         return $this->id;
     }
+
+    /**
+     * @return PDO|null
+     */
+    public function getConn(): ?PDO
+    {
+        return $this->conn;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
     
 
     public function verifyPassword() : bool
@@ -78,13 +105,23 @@ class User
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         // var_dump($row);
         // echo '<br>';
-        if (password_verify($this->password, $row['password_hash'])) {
+
+        echo "pw: ".$this->getPassword();
+        echo "pw: ".$this->password;
+
+
+        if (password_verify($this->getPassword(), $row['password_hash'])) {
             $this->firstname = $row['name'];
             $this->lastname = $row['lastname'];
             $this->email = $row['email'];
             $this->password = "The password is verified and no longer needed to be stored!";
             return true;
         } else {
+            var_dump($row);
+            echo "raw pw: ".password_verify(123, $row['password_hash']);
+            echo $this->getPassword()."raw hash:".password_verify($this->password, '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2' );
+            var_dump($this);
+            echo $this->password;
             $this->id = null;
             return false;
         }
@@ -127,7 +164,7 @@ class User
             return false;
         }
     }
-    public function setPassword(string $newPassword)
+    public function updatePassword(string $newPassword)
     {
         $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -137,6 +174,14 @@ class User
 
     public function getTableName(): string {
         return get_called_class()::TABLE_NAME;
+    }
+
+    /**
+     * @param string|null $password
+     */
+    public function setPassword(?string $password): void
+    {
+        $this->password = $password;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 include_once("../config.php");
-include_once(rootDirectory() . "/util/Student.php");
 require_once rootDirectory() . '/vendor/autoload.php';
+include_once(rootDirectory() . "/util/UserFactory.php");
 
 $m = new Mustache_Engine(array(
     'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -22,7 +22,7 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     try {
-        $std = new Student($conn, $userid, $password);
+        //$std = new Student($conn, $userid, $password);
         $uf = new UserFactory();
         $std = $uf->makeUserByLogin($conn, $userid, $password);
         $_SESSION['firstname'] = $std->getFirstName();

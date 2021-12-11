@@ -1,6 +1,8 @@
 <?php
 include_once("../config.php");
 include_once(rootDirectory() . "/util/Student.php");
+include_once(rootDirectory() . "/util/UserFactory.php");
+
 require_once rootDirectory() . '/vendor/autoload.php';
 
 $m = new Mustache_Engine(array(
@@ -16,17 +18,16 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // userid and password sent from the form
     $userid = $_POST['userid'];
     $password = $_POST['password'];
-    $usermail = $_POST['BilkentMail'];
+    $usermail = $_POST['BilkentEmail'];
     $username = $_POST['UserName'];
-    $usersurname = $_POST['Surname'];
+    $usersurname = $_POST['UserSurname'];
 
-    $uf = new UserFactory();
-    $std = $uf->makeUserByRegister($conn, $userid, $password,$username,$usersurname,$usermail);
 
 
 
     try {
-        $std = new Student($conn, $userid, $password);
+        $uf = new UserFactory();
+        $std = $uf->makeUserByRegister($conn, $userid, $password,$username,$usersurname,$usermail);
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
         $_SESSION['id'] = $std->getId();
