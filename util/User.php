@@ -15,6 +15,20 @@ class User
     protected string $lastname;
     protected string $email;
 
+
+    public function __construct($db, $id, $password,$firstname,$lastname,$email)
+    {
+        $this->conn = $db;
+        $this->id = $id;
+        $this->password = $password;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->email = $email;
+
+        // todo insert to database: muh ekle.
+
+
+    }
     /**
      * @throws Exception
      */

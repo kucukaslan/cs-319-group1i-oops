@@ -1,10 +1,78 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+
+    </style>
 </head>
 <body>
-$END$
+
+<section class="hero is-primary is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-two-thirds">
+                    <form class="box" id="RegistrationForm" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <label for="userid">{{id}}
+                                    <input type="number" name="userid" class="input" id="userid" min="1" required>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="password">{{pass}}
+                                    <input type="password" name="password" class="input" id="password" required>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="BilkentEmail">{{mail}}
+                                    <input type="email" name="BilkentEmail" class="input" id="BilkentEmail" required>
+                                </label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="UserName">{{name}}
+                                    <input type="text" name="UserName" class="input" id="UserName" required>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="UserSurname">{{surname}}
+                                    <input type="text" name="UserSurname" class="input" id="UserSurname" required>
+                                </label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="field">
+                            <input type="submit" class="button is-success" value="Registration">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 </body>
 </html>
