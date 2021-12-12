@@ -1,18 +1,18 @@
-<?php 
+<?php
 include_once("User.php");
 
-class Student extends User {
+class SportsCenterStaff extends User {
 
-    const TABLE_NAME = "student";
+    const TABLE_NAME = "sports_center_staff";
     const TABLE_PREFIX =  parent::TABLE_NAME . "_";
 
-    
+
     public function insertToDatabase() : bool
-    { 
+    {
         parent::insertToDatabase();
-        
-        try 
-        { 
+
+        try
+        {
             $query = "INSERT INTO " . self::TABLE_PREFIX.self::TABLE_NAME . " (id) VALUES (:id)";
             $statement = $this->conn->prepare($query);
             $statement->bindParam(":id", $this->id);

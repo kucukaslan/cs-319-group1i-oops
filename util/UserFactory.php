@@ -11,18 +11,21 @@ class UserFactory{
     public function __construct(string $usertype) {
         if(strcmp($usertype, Student::TABLE_NAME) == 0)
             $this->user = new Student();
+        else if(strcmp($usertype, AcademicStaff::TABLE_NAME) == 0)
+            $this->user = new AcademicStaff();
+        else if(strcmp($usertype, UniversityAdministration::TABLE_NAME) == 0)
+            $this->user = new UniversityAdministration();
+
+        else if(strcmp($usertype, SportsCenterStaff::TABLE_NAME) == 0)
+            $this->user = new SportsCenterStaff();
         else
             $this->user = new User();
 
     }
 
 
-
-
     public function makeUserByRegister($db, $id, $password,$firstname,$lastname,$email) : User
     {
-        $this->user = new Student();
-
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
         $this->user->setPassword($password);
@@ -33,16 +36,11 @@ class UserFactory{
         return $this->user;
 
         // todo insert to database: muh ekle.
-
-
     }
 
 
     public function makeUserByLogin($db, $id, $password) : User
     {
-
-        //$this->user = new Student();
-
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
         $this->user->setPassword($password);
@@ -56,12 +54,7 @@ class UserFactory{
 
         return $this->user;
 
-
-
-
         // todo insert to database: muh ekle.
-
-
     }
 
 
