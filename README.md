@@ -1,3 +1,4 @@
+![PHP Composer Build](https://github.com/MuhammedCanKucukaslan/cs-319-group1i-oops/actions/workflows/php.yml/badge.svg)
 # Pandemic Manager for University
 ## Description
 
