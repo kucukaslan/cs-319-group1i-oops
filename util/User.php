@@ -24,39 +24,6 @@ class User
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
-
-
-    }
-
-    public function __construct2($db, $id, $password,$firstname,$lastname,$email)
-    {
-        $this->conn = $db;
-        $this->id = $id;
-        $this->password = $password;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-        $this->email = $email;
-
-        // todo insert to database: muh ekle.
-
-
-    }
-
-
-    /**
-     * @throws Exception
-     */
-    public function __construct3($db, $id, $password)
-    {
-        $this->conn = $db;
-        $this->id = $id;
-        $this->password = $password;
-
-        $pwVerified = $this->verifyPassword();
-        if (!$pwVerified) {
-            throw new Exception("Password is incorrect.");
-        }
-
     }
 
     public function getFirstName(): string
