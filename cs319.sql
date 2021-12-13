@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2021 at 07:26 PM
+-- Generation Time: Dec 13, 2021 at 07:38 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -218,7 +218,7 @@ INSERT INTO `user_university_administration` (`id`) VALUES
 DROP TABLE IF EXISTS `academic_staff`;
 
 DROP VIEW IF EXISTS `academic_staff`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `user_academic_staff`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_academic_staff` join `user` on(`user_academic_staff`.`id` = `user`.`id`)) ;
+CREATE VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `user_academic_staff`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_academic_staff` join `user` on(`user_academic_staff`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -228,7 +228,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `aca
 DROP TABLE IF EXISTS `sports_center_staff`;
 
 DROP VIEW IF EXISTS `sports_center_staff`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `sports_center_staff`  AS SELECT `user`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user` join `user_sports_center_staff` on(`user`.`id` = `user_sports_center_staff`.`id`)) ;
+CREATE VIEW `sports_center_staff`  AS SELECT `user`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user` join `user_sports_center_staff` on(`user`.`id` = `user_sports_center_staff`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -238,7 +238,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `spo
 DROP TABLE IF EXISTS `student`;
 
 DROP VIEW IF EXISTS `student`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_student` join `user` on(`user_student`.`id` = `user`.`id`)) ;
+CREATE VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_student` join `user` on(`user_student`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -248,7 +248,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `stu
 DROP TABLE IF EXISTS `university_administration`;
 
 DROP VIEW IF EXISTS `university_administration`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`cs319-1I`@`%` SQL SECURITY DEFINER VIEW `university_administration`  AS SELECT `user_university_administration`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_university_administration` join `user` on(`user_university_administration`.`id` = `user`.`id`)) ;
+CREATE VIEW `university_administration`  AS SELECT `user_university_administration`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_university_administration` join `user` on(`user_university_administration`.`id` = `user`.`id`)) ;
 
 --
 -- Indexes for dumped tables
