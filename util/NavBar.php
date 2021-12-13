@@ -1,5 +1,6 @@
 <?php
 include_once("../config.php");
+include_once('util/NavBar.php');
 include_once("Student.php");
 require_once rootDirectory() . '/vendor/autoload.php';
 
