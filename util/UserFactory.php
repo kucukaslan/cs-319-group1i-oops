@@ -66,5 +66,27 @@ class UserFactory{
         // todo insert to database: muh ekle.
     }
 
+    public function makeUserById(PDO $db, int $id) : User
+    {
+        $this->user->setId($id);
+        $this->user->setDatabaseConnection($db);
+        try {
+            $query = "SELECT * FROM ".$this->user->getTableName()." WHERE id = :id "; // . $this->id;
+            $stmt = $db->prepare($query);
+            $stmt->execute(array('id'=>$this->user->getId()));
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->user->setFirstname($row['name']);
+            $this->user->setLastname($row['lastname']);
+            $this->user->setEmail($row['email']);
+            $this->user->setHESCode($row['hescode']);
+
+        } catch (PDOException $exception) {
+
+        }
+        return $this->user;
+
+        // todo insert to database: muh ekle.
+    }
+
 
 }

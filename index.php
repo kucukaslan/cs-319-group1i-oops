@@ -1,7 +1,12 @@
+
+
 <?php
-    // Why do we try to connect database before user is logged in? (talking specifically for this page)
-    include("config.php");
-    startDefaultSessionWith();
+
+   // Why do we try to connect database before user is logged in? (talking specifically for this page)
+    require_once("config.php");
+    include_once(rootDirectory() . "/util/UserFactory.php");
+
+startDefaultSessionWith();
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,10 +33,24 @@
       
         $conn = getDatabaseConnection();
 
+        $uf = new UserFactory(Student::TABLE_NAME);
+        $std = $uf->makeUserById($conn, $_SESSION['id']);
+
         if (!isset($_SESSION['id']) || !isset($conn)) {
             header("location: ./login");
         } else {
             $id = $_SESSION['id'];
+
+            //----
+            if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+                if(isset($_POST['HESCode'])) {
+
+                    $hescode = $_POST['HESCode'];
+                    $std->updateHESCode($hescode);
+                    $std = $uf->makeUserById($conn, $_SESSION['id']);
+                }  // userid and password sent from the form
+
+            }
             require_once './vendor/autoload.php';
             $engine = new Mustache_Engine(array(
                     'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory(). '/templates'),
@@ -45,26 +64,15 @@
                     ['href' => './logout.php', 'title' => 'Logout', 'id' => 'logout']]]
             );
 
-            echo $engine->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
+            echo $engine->render('welcome', ['firstname' => $std->getFirstName(), 'lastname' => $std->getLastName()]
             );
 
 
 
             // render and print profile component sessiondan al name,email falan.
-            echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => $id,
-                "allowance"=>"Allowed",'hescode' => $_SESSION['hescode'] ]);
-            //----
-            if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
-              if(isset($_POST['HESCode'])) {
+            echo $engine->render("profile", ["name"=>$std->getFirstName(), "email"=>$std->getEmail(), "id" => $std ->getId(),
+                "allowance"=>"Allowed",'hescode' => $std->getHESCode() ]);
 
-                  $hescode = $_POST['HESCode'];
-                  $uf = new UserFactory(Student::TABLE_NAME);
-                  $std = $uf->makeUserForHesCode($conn, $_SESSION['id']);
-                  $std->updateToDatabase();
-
-              }  // userid and password sent from the form
-
-            }
 
 
 

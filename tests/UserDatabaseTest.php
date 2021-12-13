@@ -115,8 +115,11 @@ final class UserDatabaseTest extends TestCase
         $this->assertEquals($id."@test.com", $u1->getEmail());
         $this->assertEquals(123, $u1->getPassword());
 
+
+        $u1 = $uf->makeUserById($conn, 1);
+
+        $this->assertInstanceOf( User::class, $u1);
+        $this->assertInstanceOf( SportsCenterStaff::class, $u1);
         return $u1;
     }
-
-
 }
