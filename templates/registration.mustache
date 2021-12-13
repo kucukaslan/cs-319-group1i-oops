@@ -17,7 +17,7 @@
         <div class="container">
             <div class="columns is-centered">
                 <div class="column is-two-thirds">
-                    <form class="box" id="loginForm" action="" method="post">
+                    <form class="box" id="RegistrationForm" action="" method="post">
                         <div class="field">
                             <div class="control">
                                 <label for="userid">{{id}}
@@ -33,14 +33,40 @@
                                 </label>
                             </div>
                         </div>
+
                         <div class="field">
-                            <input type="submit" class="button is-success" value="Login">
+                            <div class="control">
+                                <label for="BilkentEmail">{{mail}}
+                                    <input type="email" name="BilkentEmail" class="input" id="BilkentEmail" required>
+                                </label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="UserName">{{name}}
+                                    <input type="text" name="UserName" class="input" id="UserName" required>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="UserSurname">{{surname}}
+                                    <input type="text" name="UserSurname" class="input" id="UserSurname" required>
+                                </label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="field">
+                            <input type="submit" class="button is-success" value="Registration">
                         </div>
                     </form>
-
-                    <a href = "../register" > Dont Have an Account ?
-
-                    </a>
                 </div>
             </div>
         </div>

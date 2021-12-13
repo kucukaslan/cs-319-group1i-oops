@@ -1,51 +1,43 @@
-<?php 
-    include_once("../config.php");
-    startDefaultSessionWith();
-?>    
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Profile Page <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
-    <link rel="stylesheet" href="../styles.css">
-
-    <meta name="author" content="Muhammed Can Küçükaslan">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-</head>
-<body>
-<div class="container">
-
 <?php
-    require_once rootDirectory().'/vendor/autoload.php';
+include_once("../config.php");
+include_once(rootDirectory() . "/util/Student.php");
+include_once(rootDirectory() . "/util/UserFactory.php");
 
-    $conn = getDatabaseConnection();
+require_once rootDirectory() . '/vendor/autoload.php';
 
-    if (isset($_SESSION['id'])) {
-        header("location: ../");
-    } else {
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
-        ));
-        echo $m->render('navbar', ['links' => [
-                ['href' => '../login', 'title' => 'Login']
-                ]]
-        );
+$m = new Mustache_Engine(array(
+    'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
+));
+echo $m->render('registration', array('title' => 'Registration', 'id' => 'University ID', 'pass' => 'Password',
+    'name' => 'Your Name','surname' => 'Your Surname','mail' => 'Bilkent Email'));
+
+startDefaultSessionWith();
+$conn = getDatabaseConnection();
+
+if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    // userid and password sent from the form
+    $userid = $_POST['userid'];
+    $password = $_POST['password'];
+    $usermail = $_POST['BilkentEmail'];
+    $username = $_POST['UserName'];
+    $usersurname = $_POST['UserSurname'];
 
 
+
+
+    try {
+        $uf = new UserFactory(Student::TABLE_NAME);
+        $std = $uf->makeUserByRegister($conn, $userid, $password,$username,$usersurname,$usermail);
+        $_SESSION['firstname'] = $std->getFirstName();
+        $_SESSION['lastname'] = $std->getLastName();
+        $_SESSION['id'] = $std->getId();
+        $_SESSION['email'] = $std->getEmail();
+
+        $std->insertToDatabase();
+        header("location: .."); //redirect to main page
+
+    } catch (Exception $e) {
+        echo "<script type='text / javascript'>alert('" . $e->getMessage() . $_POST['password'] . "');</script>";
     }
-
-    ?>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br>
-            <h3>Registration form etc.</h3>
-            <br>
-        </div>
-    </div>
-
-
-</div>
-
-</body>
-</html>
+}
+?>
