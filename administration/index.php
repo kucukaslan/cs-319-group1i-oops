@@ -1,7 +1,7 @@
-<?php 
-    include_once("../config.php");
-    startDefaultSessionWith();
-    ?>
+<?php
+include_once("../config.php");
+startDefaultSessionWith();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,7 @@
 <body>
 <div class="container">
     <?php
-    require_once rootDirectory().'/vendor/autoload.php';
+    require_once rootDirectory() . '/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
 
@@ -34,13 +34,15 @@
         ));
         echo $m->render('navbar', ['links' => [
                 ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../administration', 'title' => 'Administration','id'=> 'selected'],
+                ['href' => '../administration', 'title' => 'Administration', 'id' => 'selected'],
                 ['href' => '../lectures', 'title' => 'Lectures'],
                 //['href' => '../reservations', 'title' => 'Reservations'],
                 ['href' => '../events', 'title' => 'Events'],
                 ['href' => '../closecontact', 'title' => 'Close Contact'],
                 ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
+                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']
+            ]
+            ]
         );
 
         echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";

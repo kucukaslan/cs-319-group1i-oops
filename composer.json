@@ -1,7 +1,8 @@
 {
-    "name" : "bilkent-cs319-2021f/forthyhealth",
-    "description" : "For Thy Health: the ultimate surveillance tool for your good",
-    "require": {
-        "mustache/mustache": "^2.13"
-    }
+  "name": "bilkent-cs319-2021f/forthyhealth",
+  "description": "For Thy Health: the ultimate surveillance tool for your good",
+  "require": {
+    "mustache/mustache": "^2.13",
+    "vimeo/psalm": "^4.15"
+  }
 }
