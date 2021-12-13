@@ -4,7 +4,9 @@
 
    // Why do we try to connect database before user is logged in? (talking specifically for this page)
     require_once("config.php");
+    require_once(rootDirectory() . "/util/class.pdf2text.php");
     include_once(rootDirectory() . "/util/UserFactory.php");
+    include_once(rootDirectory() . "/util/Vaccine.php");
 
 startDefaultSessionWith();
     ?>
@@ -33,14 +35,14 @@ startDefaultSessionWith();
       
         $conn = getDatabaseConnection();
 
-        $uf = new UserFactory(Student::TABLE_NAME);
-        $std = $uf->makeUserById($conn, $_SESSION['id']);
-
         if (!isset($_SESSION['id']) || !isset($conn)) {
             header("location: ./login");
         } else {
             $id = $_SESSION['id'];
 
+
+            $uf = new UserFactory(Student::TABLE_NAME);
+            $std = $uf->makeUserById($conn, $_SESSION['id']);
             //----
             if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
                 if(isset($_POST['HESCode'])) {
@@ -48,7 +50,38 @@ startDefaultSessionWith();
                     $hescode = $_POST['HESCode'];
                     $std->updateHESCode($hescode);
                     $std = $uf->makeUserById($conn, $_SESSION['id']);
-                }  // userid and password sent from the form
+                }
+
+                if(isset($_POST['vaccinecard'])) {
+                    if ($_FILES['file']['type'] == "application/pdf") {
+                        $a = new PDF2Text();
+                        $a->setFilename($_FILES['file']['tmp_name']);
+                        $a->decodePDF();
+
+                        $vaccinecardasString = $a->output();
+
+                        $pieces = explode(" ", $vaccinecardasString);
+
+                        $date = $pieces[0];
+                        $type = $pieces[1];
+
+                        $date = str_replace(' ', '', $pieces[0]);
+                        $date = str_replace("\n", '', $date);
+
+                        $type = str_replace(' ', '', $pieces[1]);
+                        $type = str_replace("\n", '', $type);
+
+
+                        $vaccineInstance = new Vaccine($date,$type);
+
+                        echo $vaccineInstance->getVaccineName();
+                        echo $vaccineInstance->getDateApplied()->format(DATE_RFC3339);
+
+
+                    }
+                }
+
+                // userid and password sent from the form
 
             }
             require_once './vendor/autoload.php';

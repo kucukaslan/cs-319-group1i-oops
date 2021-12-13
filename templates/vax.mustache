@@ -1,6 +1,9 @@
 <div class = "component">
     <h2> Vaccine Info </h2>
     <div class="table">
+
+        <label for="start">Current Vaccines :</label>
+
         <table>
             <tr>
                 <th>Vaccination Date</th>
@@ -13,6 +16,27 @@
             </tr>
             {{/vaccine}}
         </table>
+
+
+        <br> </br>
+        <div class="table">
+
+
+
+            <form method="post" enctype="multipart/form-data">
+                Choose Your File
+                <input type="file" name="file" />
+                <br>
+                <input type="submit" value="Read PDF" name="vaccinecard" />
+            </form>
+
+
+
+
+        </div>
+
     </div>
-    <input type="submit" class="button button_submit" value="Add Vaccine Card">
+
+
+
 </div>
