@@ -1,9 +1,43 @@
-<header class="navbar">
-    {{# links }}
-        <a class="navbar-text" href="{{ href }}"
-            {{# id }}
-           id="{{ id }}"
-            {{/ id }}
-        >{{ title }}</a>
-    {{/ links }}
-</header>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="/favicon.ico" alt="Main Page">
+        </a>
+    </div>
+
+    <div class="navbar-menu is-active">
+        <div class="navbar-start">
+            {{# links }}
+                <a class="navbar-item" href="{{ href }}">
+                    {{ title }}
+                </a>
+            {{/ links }}
+        </div>
+
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-danger" href="/logout.php" id="logout">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</nav>
+</body>
+</html>
