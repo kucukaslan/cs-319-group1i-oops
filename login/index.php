@@ -36,4 +36,3 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script type='text / javascript'>alert('" . $e->getMessage() . $_POST['password'] . "');</script>";
     }
 }
-?>
