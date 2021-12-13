@@ -48,8 +48,27 @@
             echo $engine->render('welcome', ['firstname' => $_SESSION['firstname'], 'lastname' => $_SESSION['lastname']]
             );
 
+
+
             // render and print profile component sessiondan al name,email falan.
-            echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => $id, "allowance"=>"Allowed"]);
+            echo $engine->render("profile", ["name"=>"Feridun", "email"=>"email@emailoglu", "id" => $id,
+                "allowance"=>"Allowed",'hescode' => $_SESSION['hescode'] ]);
+            //----
+            if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+              if(isset($_POST['HESCode'])) {
+
+                  $hescode = $_POST['HESCode'];
+                  $uf = new UserFactory(Student::TABLE_NAME);
+                  $std = $uf->makeUserForHesCode($conn, $_SESSION['id']);
+                  $std->updateToDatabase();
+
+              }  // userid and password sent from the form
+
+            }
+
+
+
+
 
             // vaccine component
             echo $engine->render("vax", ['vaccine' => [

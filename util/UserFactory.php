@@ -37,6 +37,15 @@ class UserFactory{
 
     }
 
+    // id session arrayde var.
+    public function makeUserForHesCode($db,$id) : User{
+
+        $this->user->setDatabaseConnection($db);
+        $this->user->setId($id);
+
+        return $this->user;
+    }
+
 
     public function makeUserByLogin($db, $id, $password) : User
     {

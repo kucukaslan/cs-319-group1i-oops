@@ -210,6 +210,22 @@ class User
         $this->email = $email;
     }
 
+    /**
+     * @param string|null $HESCode
+     */
+    public function setHESCode(?string $HESCode): void
+    {
+        $this->HESCode = $HESCode;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHESCode(): ?string
+    {
+        return $this->HESCode;
+    }
+
     public function setDatabaseConnection( PDO $conn)
     {
 
