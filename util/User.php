@@ -6,7 +6,7 @@ class User
     const TABLE_NAME = "user";
 
     // database connection and table name
-    private ?PDO $conn;
+    protected ?PDO $conn;
     protected ?string $password;
 
     // object properties
@@ -24,39 +24,6 @@ class User
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
-
-
-    }
-
-    public function __construct2($db, $id, $password,$firstname,$lastname,$email)
-    {
-        $this->conn = $db;
-        $this->id = $id;
-        $this->password = $password;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-        $this->email = $email;
-
-        // todo insert to database: muh ekle.
-
-
-    }
-
-
-    /**
-     * @throws Exception
-     */
-    public function __construct3($db, $id, $password)
-    {
-        $this->conn = $db;
-        $this->id = $id;
-        $this->password = $password;
-
-        $pwVerified = $this->verifyPassword();
-        if (!$pwVerified) {
-            throw new Exception("Password is incorrect.");
-        }
-
     }
 
     public function getFirstName(): string
@@ -121,7 +88,20 @@ class User
         }
     }
 
-
+    public function insertToDatabase() : bool
+    { 
+        try {
+             $query = "INSERT INTO ".User::TABLE_NAME." (id, password_hash, name, lastname, email, hescode) VALUES (:id, :password_hash, :name, :lastname, :email, :hescode)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute(array('id'=>$this->id, 'password_hash'=>password_hash( $this->password, PASSWORD_ARGON2I), 'name'=>$this->firstname, 'lastname'=>$this->lastname, 'email'=>$this->email, 'hescode'=>$this->HESCode));
+    
+            return true;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            throw new Exception("Error inserting to database.".$this->getTableName());
+            return false;
+        }
+    }
     public function updateToDatabase()
     {
         $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";

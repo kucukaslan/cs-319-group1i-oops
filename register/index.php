@@ -32,6 +32,8 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['lastname'] = $std->getLastName();
         $_SESSION['id'] = $std->getId();
         $_SESSION['email'] = $std->getEmail();
+
+        $std->insertToDatabase();
         header("location: .."); //redirect to main page
 
     } catch (Exception $e) {
