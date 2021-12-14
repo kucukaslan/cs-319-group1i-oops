@@ -1,38 +1,33 @@
-
-
 <?php
 
    // Why do we try to connect database before user is logged in? (talking specifically for this page)
     require_once("config.php");
     require_once(rootDirectory() . "/util/class.pdf2text.php");
-    include_once(rootDirectory() . "/util/UserFactory.php");
-    include_once(rootDirectory() . "/util/Vaccine.php");
+    require_once(rootDirectory() . "/util/UserFactory.php");
+    require_once(rootDirectory() . "/util/Vaccine.php");
+    require_once(rootDirectory()."/util/NavBar.php");
+    $pagename = '/';
 
 startDefaultSessionWith();
-    ?>
+?>
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Main Page</title>
-    <link rel="stylesheet" href="./styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
 
-    <meta name="author" content="CS319">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    </style>
 </head>
 <body>
-<!--
-<header class="navbar">
-    <div class="navbar-text">Simple e-trade app <div class="navbar-text" style="text-align:right">Logout</div>
-    </div>
-</header>
--->
-<div class="container">
-    <p id='info'>
 
+
+<div class="container">
+    <p id="info">
         <?php
-      
         $conn = getDatabaseConnection();
 
         if (!isset($_SESSION['id']) || !isset($conn)) {
@@ -43,9 +38,10 @@ startDefaultSessionWith();
 
             $uf = new UserFactory(Student::TABLE_NAME);
             $std = $uf->makeUserById($conn, $_SESSION['id']);
+
             //----
             if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
-                if(isset($_POST['HESCode'])) {
+                if (isset($_POST['HESCode'])) {
 
                     $hescode = $_POST['HESCode'];
                     $std->updateHESCode($hescode);
@@ -84,38 +80,28 @@ startDefaultSessionWith();
                 // userid and password sent from the form
 
             }
-            require_once './vendor/autoload.php';
+
+            $navbar = new NavBar(Student::TABLE_NAME, $pagename);
+            echo $navbar->draw();
             $engine = new Mustache_Engine(array(
-                    'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory(). '/templates'),
+                'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
 
             ));
-            echo $engine->render('navbar', ['links' => [
-                    ['href' => './', 'title' => 'Main Menu'],
-                    ['href' => './events', 'title' => 'Events'],
-                    ['href' => './closecontact', 'title' => 'Close Contact'],
-                    ['href' => './profile', 'title' => 'Profile'],
-                    ['href' => './logout.php', 'title' => 'Logout', 'id' => 'logout']]]
-            );
-
-            echo $engine->render('welcome', ['firstname' => $std->getFirstName(), 'lastname' => $std->getLastName()]
-            );
-
+            echo $engine->render('welcome', ['firstname' => $std->getFirstName(), 'lastname' => $std->getLastName()]);
 
 
             // render and print profile component sessiondan al name,email falan.
-            echo $engine->render("profile", ["name"=>$std->getFirstName(), "email"=>$std->getEmail(), "id" => $std ->getId(),
-                "allowance"=>"Allowed",'hescode' => $std->getHESCode() ]);
-
-
-
-
+            echo $engine->render("profile", ["name" => $std->getFirstName(), "email" => $std->getEmail(), "id" => $std->getId(),
+                "allowance" => "Allowed", 'hescode' => $std->getHESCode()]);
 
 
             // vaccine component
-            echo $engine->render("vax", ['vaccine' => [
+            echo $engine->render('vax',
+                ['vaccine' => [
                     ['vaccineDate' => 'bugun', 'vaccineType' => 'TURKOVAC'],
-                    ['vaccineDate' => 'yarin', 'vaccineType' => 'TURKOVAC']]]
-            );
+                    ['vaccineDate' => 'yarin', 'vaccineType' => 'TURKOVAC']
+                ]
+                ]);
 
             $pastTest = ["date" => "1.2.4.5", "result" => "negative"];
             $upcomingTest = ["date" => "2023"];
@@ -127,37 +113,37 @@ startDefaultSessionWith();
                 $pastTest, $pastTest
             ]]);
 
-            echo $engine->render("diagnosis", ["diagnosis" =>[
-                    ["date" => "date 1"],
-                    ["date" =>"date 2"]]]);
+            echo $engine->render("diagnosis", ["diagnosis" => [
+                ["date" => "date 1"],
+                ["date" => "date 2"]]]);
         }
 
 
         ?>
 
-      <!-- delete account button !-->
+        <!-- delete account button !-->
     <form method='post' action="./delete">
         <div class="form-group">
             <input type="submit" href="/delete" class="button button_delete" value="!!! DELETE ACCOUNT !!!">
         </div>
     </form>
+    </p>
+</div>
+<div class="">
+    <div class="centerdiv">
+        <br><br>
+        <h2>Some Titles/Tables in the Main Menu</h2>
 
-<!--    </p>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Some Titles/Tables in the Main Menu</h2>
-
-            <br>
-        </div>
+        <br>
     </div>
 
-    <form method='post' action="./profile">
+
+    <form method="post" action="./profile">
         <div class="form-group">
             <input type="submit" class="button button_submit" value="Go to Profile Page">
         </div>
     </form>
-!-->
+
 </div>
 </body>
 </html>

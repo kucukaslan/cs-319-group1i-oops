@@ -1,6 +1,6 @@
 
 <?php
-include_once("User.php");
+require_once("User.php");
 
 class UniversityAdministration extends User {
 

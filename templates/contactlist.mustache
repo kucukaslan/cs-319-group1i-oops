@@ -1,0 +1,19 @@
+<div class = "component">
+    <h2> Close Contact List </h2>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Remove</th>
+            </tr>
+            {{#person}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{id}}</td>
+                    <td> <input type="submit" class="button" value="Remove"> </td>
+                </tr>
+            {{/person}}
+        </table>
+    </div>
+</div>

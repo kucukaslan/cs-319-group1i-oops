@@ -1,11 +1,12 @@
-<?php declare(strict_types=1);
-include_once ("config.php");
-include_once("util/UserFactory.php");
-include_once("util/User.php");
-include_once("util/Student.php");
-include_once("util/AcademicStaff.php");
-include_once("util/UniversityAdministration.php");
-include_once("util/SportsCenterStaff.php");
+<?php
+declare(strict_types=1);
+require_once("config.php");
+require_once("util/UserFactory.php");
+require_once("util/User.php");
+require_once("util/Student.php");
+require_once("util/AcademicStaff.php");
+require_once("util/UniversityAdministration.php");
+require_once("util/SportsCenterStaff.php");
 
 use PHPUnit\Framework\TestCase;
 

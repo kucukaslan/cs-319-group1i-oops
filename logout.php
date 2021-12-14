@@ -1,5 +1,5 @@
 <?php
-include_once("config.php");
+require_once(__DIR__."config.php");
 startDefaultSessionWith();
 
 // Clear all the session variables
