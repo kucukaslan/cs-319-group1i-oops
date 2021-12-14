@@ -2,11 +2,6 @@
 declare(strict_types=1);
 require_once("config.php");
 require_once("util/UserFactory.php");
-require_once("util/User.php");
-require_once("util/Student.php");
-require_once("util/AcademicStaff.php");
-require_once("util/UniversityAdministration.php");
-require_once("util/SportsCenterStaff.php");
 
 use PHPUnit\Framework\TestCase;
 
