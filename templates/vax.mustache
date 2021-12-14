@@ -1,5 +1,5 @@
-<div class = "component">
-    <h2> Vaccine Info </h2>
+<div class="container">
+    <p class="title">Vaccine Info</p>
     <div class="table">
         <table>
             <tr>
@@ -7,10 +7,10 @@
                 <th>Vaccination Type</th>
             </tr>
             {{#vaccine}}
-            <tr>
-                <td>{{vaccineDate}}</td>
-                <td>{{vaccineType}}</td>
-            </tr>
+                <tr>
+                    <td>{{vaccineDate}}</td>
+                    <td>{{vaccineType}}</td>
+                </tr>
             {{/vaccine}}
         </table>
     </div>

@@ -1,18 +1,28 @@
-<div class="component">
-    <h2> Profile </h2>
-    <img src="/srcs/default_profile_pic.jpg" alt="Avatar" style="width:150px; height: 150px;">
+<div class="component is-info">
+    <p class="title">Profile</p>
+    <img src="/srcs/default_profile_pic.jpg" alt="Avatar" class="image is-128x128">
 
 
-    <div class="profile_text">
+    <div class="content">
         <p>ID: {{id}}</p>
         <p>Name: {{name}}</p>
         <p>E-mail: {{email}}</p>
         <p>Allowance Status: {{allowance}}</p>
-        <p>HES Code : {{hescode}}</p>
-        <form class="box" id="hescodeForm" action="" method="post">
-            <input type="submit" class="button button_submit" value="Change HES Code">
-            <label for="HESCode"></label><input type="text" name="HESCode" class="form-input" id="HESCode">
-        </form>
+        <p>HES Code: {{hescode}}</p>
+        <div class="control">
+            <form class="box" id="hescodeForm" action="" method="post">
+                <div class="field">
+                    <div class="control">
+                        <input type="submit" class="button is-info" value="Change HES Code">
+                    </div>
+
+                    <label for="HESCode"></label>
+                    <input type="text" name="HESCode" class="input" id="HESCode" required minlength="1"
+                           placeholder="Enter HES code">
+                </div>
+            </form>
+        </div>
+        <a class="is-link" href="/profile">Go to Profile Page</a>
     </div>
 
 </div>
