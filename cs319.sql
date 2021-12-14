@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2021 at 07:38 PM
+-- Generation Time: Dec 14, 2021 at 04:49 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -118,7 +118,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_hash`, `hescode`, `profile_picture`) VALUES
-(1, 1, 'Muhammed', 'lol', 'a@a', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, NULL),
+(1, 1, 'Muhammed', 'lol', 'a@a', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', 'fasv', NULL),
 (2, 2, 'Mustafa', 'K', 'a@b', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, NULL),
 (3, 3, 'Mustafa', 'K', 'a@c', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, NULL),
 (5, 5, 'Testing', 'lol', 'a@e', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '1234567890', NULL),
@@ -213,6 +213,49 @@ INSERT INTO `user_university_administration` (`id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `vaccine`
+--
+
+DROP TABLE IF EXISTS `vaccine`;
+CREATE TABLE `vaccine` (
+  `id` int(11) NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
+  `producer` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
+  `cvx_code` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- Dumping data for table `vaccine`
+--
+
+INSERT INTO `vaccine` (`id`, `type`, `name`, `producer`, `cvx_code`) VALUES
+(1, 'mRNA', 'Pfizer-BioNTech COVID-19 Vaccine', 'Pfizer-BioNTech', 208);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vaccine_administration`
+--
+
+DROP TABLE IF EXISTS `vaccine_administration`;
+CREATE TABLE `vaccine_administration` (
+  `id` int(11) NOT NULL,
+  `vaccine_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- Dumping data for table `vaccine_administration`
+--
+
+INSERT INTO `vaccine_administration` (`id`, `vaccine_id`, `user_id`, `date`) VALUES
+(1, 1, 1, '2021-12-13 01:04:00');
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `academic_staff`
 --
 DROP TABLE IF EXISTS `academic_staff`;
@@ -291,6 +334,20 @@ ALTER TABLE `user_university_administration`
   ADD UNIQUE KEY `instructor_id_uindex` (`id`);
 
 --
+-- Indexes for table `vaccine`
+--
+ALTER TABLE `vaccine`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `vaccine_administration`
+--
+ALTER TABLE `vaccine_administration`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_va_user` (`user_id`),
+  ADD KEY `fk_va_vaccine` (`vaccine_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -299,6 +356,18 @@ ALTER TABLE `user_university_administration`
 --
 ALTER TABLE `user`
   MODIFY `index_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `vaccine`
+--
+ALTER TABLE `vaccine`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `vaccine_administration`
+--
+ALTER TABLE `vaccine_administration`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -327,6 +396,13 @@ ALTER TABLE `user_student`
 --
 ALTER TABLE `user_university_administration`
   ADD CONSTRAINT `fk_uua_user` FOREIGN KEY (`id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `vaccine_administration`
+--
+ALTER TABLE `vaccine_administration`
+  ADD CONSTRAINT `fk_va_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_va_vaccine` FOREIGN KEY (`vaccine_id`) REFERENCES `vaccine` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
