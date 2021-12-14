@@ -11,12 +11,62 @@ class Vaccine
     // object properties
     protected ?string $vaccineName;
     protected ?DateTime $dateApplied;
+    protected ?string $vaccineType;
 
-    public function __construct(string $date, string $type) {
+    /**
+     * @return string|null
+     */
+    public function getVaccineType(): ?string
+    {
+        return $this->vaccineType;
+    }
+
+    /**
+     * @param string|null $vaccineType
+     */
+    public function setVaccineType(?string $vaccineType): void
+    {
+        $this->vaccineType = $vaccineType;
+    }
+    protected ?int $correspondingUserid;
+
+    public function __construct(string $date, string $type, string $vaccineType,int $correspondingUserid) {
 
         $this->vaccineName = $type;
         $this->dateApplied = new DateTime($date);
+        $this->vaccineType = $vaccineType;
+        $this->$correspondingUserid = $correspondingUserid;
 
+    }
+
+
+    // vaccine'i databaseye koyacak metodu yaz muh.
+
+
+
+
+    ///
+    ///  
+    ///
+    ///
+    ///
+
+
+
+    /**
+     * @return int|null
+     */
+    public function getCorrespondingUserid(): ?int
+    {
+        return $this->correspondingUserid;
+    }
+
+    /**
+     * @param int|null $correspondingUserid
+     */
+    public function setCorrespondingUserid(?int $correspondingUserid): void
+    {
+        $this->correspondingUserid = $correspondingUserid;
     }
 
     /**
