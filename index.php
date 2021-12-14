@@ -2,8 +2,8 @@
 
 // Why do we try to connect database before user is logged in? (talking specifically for this page)
 require_once("config.php");
-include_once('util/NavBar.php');
-include_once(rootDirectory() . "/util/UserFactory.php");
+require_once('util/NavBar.php');
+require_once(rootDirectory() . "/util/UserFactory.php");
 
 startDefaultSessionWith();
 ?>

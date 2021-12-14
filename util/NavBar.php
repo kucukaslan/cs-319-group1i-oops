@@ -1,7 +1,8 @@
 <?php
-include_once("../config.php");
-include_once('util/NavBar.php');
-include_once("Student.php");
+$path = __DIR__."/../config.php";
+require_once($path);
+require_once('util/NavBar.php');
+require_once("Student.php");
 require_once rootDirectory() . '/vendor/autoload.php';
 
 

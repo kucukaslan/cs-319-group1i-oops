@@ -7,10 +7,17 @@ This file will contain some features and methods of the php that is good to know
 e.g.
 ```
 <?php 
-    include_once("../config.php");
+    // assuming that config.php is in the parent directory
+    require_once( __DIR__."/../config.php");
     startDefaultSessionWith();
-    ?>
+    
 ```
+#### require, include, and *_once
+If you're not sure, then use `require_once`. 
+`to be updated`, further discussion can be found: https://stackoverflow.com/a/2418514/13555389
+#### Path issues: the file cannot be found (opened)
+
+https://stackoverflow.com/a/36577021/13555389
 #### Sessions
 * Use the ``startDefaultSessionWith()`` method defined in config.php to start a session.
 * Use the `getDatabaseConnection()` method defined in config.php to establish a Database connexion (it initializes a PDO object).
@@ -46,8 +53,8 @@ sample definition
 `public function getTableName(): string {}`
 
 ## Strict (type enforcement)
-!todo
-declare(strict_types=1)
+!todo  
+`declare(strict_types=1)`  
 url: https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict
 
 ## var_dump()
