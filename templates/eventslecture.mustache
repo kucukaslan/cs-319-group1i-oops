@@ -1,4 +1,4 @@
-<div class = "component">
+<div class="container">
     <h2> Enrolled Courses </h2>
     <div class="table">
         <table>
@@ -11,14 +11,21 @@
                 <tr>
                     <td>{{courseCode}}</td>
                     <td>{{lectureDate}}</td>
-                    <td> <input type="submit" class="button" value="Leave"> </td>
+                    <td><input type="submit" class="button is-warning" value="Leave"></td>
                 </tr>
             {{/event}}
         </table>
     </div>
-    <div class = "enroll_by_pin">
-        <h3>Add course by pin</h3>
-        <input type="submit" class="button" value="Add">
-        <input type="text" name="pin" class="input" id="pin">
+    <div class="columns">
+        <div class="column is-two-fifths">
+            <form class="box" id="loginForm" action="" method="post">
+                <div class="field">
+                    <div class="control">
+                        <input type="submit" class="button is-success" value="Add Course (By Pin)">
+                        <input type="text" name="pin" class="input" id="pin">
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

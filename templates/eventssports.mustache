@@ -1,4 +1,4 @@
-<div class = "component">
+<div class="component">
     <h2> Reserve & Cancel Sports Hall Reservation </h2>
     <div class="table">
         <table>
@@ -13,7 +13,7 @@
                     <td>{{place}}</td>
                     <td>{{dayslot}}</td>
                     <td>{{timeslot}}</td>
-                    <td><input type="submit" class="button" value="Leave"></td>
+                    <td><input type="submit" class="button is-warning" value="Leave"></td>
                 </tr>
             {{/enrolledevent}}
             {{#notenrolledevent}}
@@ -21,7 +21,7 @@
                     <td>{{place}}</td>
                     <td>{{dayslot}}</td>
                     <td>{{timeslot}}</td>
-                    <td> <input type="submit" class="button" value="Enroll"></td>
+                    <td><input type="submit" class="button is-success" value="Enroll"></td>
                 </tr>
             {{/notenrolledevent}}
         </table>
