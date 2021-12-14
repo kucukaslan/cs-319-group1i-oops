@@ -3,12 +3,14 @@
     <div class="table">
         <table>
             <tr>
+                <th>Photo</th>
                 <th>Name</th>
                 <th>ID</th>
                 <th>Remove</th>
             </tr>
             {{#person}}
                 <tr>
+                    <td><img src="{{imgsource}}" alt="Avatar" style="height: 50px; width: 50px;"></td>
                     <td>{{name}}</td>
                     <td>{{id}}</td>
                     <td> <input type="submit" class="button" value="Remove"> </td>
