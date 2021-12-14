@@ -1,9 +1,11 @@
 <?php
-$path = __DIR__."/../config.php";
-require_once($path);
-require_once('util/NavBar.php');
+require_once(__DIR__."/../config.php");
+require_once("User.php");
 require_once("Student.php");
-require_once rootDirectory() . '/vendor/autoload.php';
+require_once("UniversityAdministration.php");
+require_once("AcademicStaff.php");
+require_once("SportsCenterStaff.php");
+require_once(rootDirectory().'/vendor/autoload.php');
 
 
 class NavBar
@@ -15,10 +17,10 @@ class NavBar
      * @param string $userType
      * @throws Exception
      */
-    public function __construct(string $userType)
+    public function __construct(string $userType, string $currPage = "")
     {
         $this->userType = $userType;
-        $this->currPage = '';
+        $this->currPage = $currPage;
     }
 
     public function draw(): string
@@ -26,7 +28,7 @@ class NavBar
 
 
         $EENGINE = new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),]);
-        if (0 == strcmp($this->userType, 'administration')) {
+        if (0 == strcmp($this->userType, UniversityAdministration::TABLE_NAME)) {
             $nav = $EENGINE->render('navbar', [
                 'title' => 'Main Page',
                 'links' => [
@@ -38,7 +40,7 @@ class NavBar
                     ['href' => '/profile', 'title' => 'Profile']
                 ]
             ]);
-        } elseif (0 == strcmp($this->userType, 'academic')) {
+        } elseif (0 == strcmp($this->userType, AcademicStaff::TABLE_NAME)) {
             $nav = $EENGINE->render('navbar', [
                 'title' => 'Main Page',
                 'links' => [
@@ -50,7 +52,7 @@ class NavBar
                     ['href' => '/profile', 'title' => 'Profile']
                 ]
             ]);
-        } elseif (0 == strcmp($this->userType, 'sport')) {
+        } elseif (0 == strcmp($this->userType, SportsCenterStaff::TABLE_NAME)) {
             $nav = $EENGINE->render('navbar', [
                 'title' => 'Main Page',
                 'links' => [
