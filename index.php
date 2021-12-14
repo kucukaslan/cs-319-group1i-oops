@@ -2,8 +2,9 @@
 
 // Why do we try to connect database before user is logged in? (talking specifically for this page)
 require_once("config.php");
-require_once('util/NavBar.php');
+require_once(rootDirectory()."/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
+$pagename = '/';
 
 startDefaultSessionWith();
 ?>
@@ -46,7 +47,7 @@ startDefaultSessionWith();
 
             }
 
-            $navbar = new NavBar(Student::TABLE_NAME);
+            $navbar = new NavBar(Student::TABLE_NAME, $pagename);
             echo $navbar->draw();
             $engine = new Mustache_Engine(array(
                 'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),

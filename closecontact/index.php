@@ -1,9 +1,9 @@
 <?php
-    include_once("../config.php");
-    // require_once("../util/NavBar.php");
-    // include_once("../util/NavBar.php");
+    require_once(__DIR__."/../config.php");
+    require_once(rootDirectory()."/util/NavBar.php");
     // require_once(rootDirectory() . "/util/UserFactory.php");
     startDefaultSessionWith();
+    $pagename = '/closecontact';
     ?>
 
 <!DOCTYPE html>
@@ -13,6 +13,8 @@
     <title>Close Contacts</title>
 
     <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -36,15 +38,8 @@
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
-        /*$navbar = new NavBar(Student::TABLE_NAME);
-        echo $navbar->draw();*/
-        echo $m->render('navbar', ['links' => [
-                ['href' => '../../', 'title' => 'Main Menu'],
-                ['href' => '../../events', 'title' => 'Events'],
-                ['href' => '../../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../../profile', 'title' => 'Profile'],
-                ['href' => '../../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
-        );
+        $navbar = new NavBar(Student::TABLE_NAME, $pagename);
+        echo $navbar->draw();
 
         echo $m->render("contactlist", ["person" => [
                 ["name" => "name 1", "id" => 123],
