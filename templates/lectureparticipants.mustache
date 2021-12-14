@@ -1,0 +1,24 @@
+<div class = "component">
+    <h2> Course Code: {{courseCode}}   Date: {{date}}</h2>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Student Name</th>
+                <th>Add/Remove as Closed Contact</th>
+            </tr>
+            {{#addedStudent}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td> <input type="submit" class="button" value="Remove"> </td>
+                </tr>
+            {{/addedStudent}}
+            {{#nonAddedStudent}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td> <input type="submit" class="button" value="Add"> </td>
+                </tr>
+            {{/nonAddedStudent}}
+
+        </table>
+    </div>
+</div>

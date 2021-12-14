@@ -1,5 +1,6 @@
 <?php 
     include_once("../../config.php");
+
     startDefaultSessionWith();
     ?>
 
@@ -41,18 +42,27 @@
                 ['href' => '../../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
+        echo "<h2>Event Details Page</h2>";
+
+        /*echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
         echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
         echo "<br> You are seeing the details of the contacts you have made with other students ".( (array_key_exists('eventid',$_GET)) ? "for the event " . $_GET['eventid']  :  "");
+        */
 
+        // render participants
+        echo $m->render('lectureparticipants', [
+            'addedStudent' => [
+                ['name' => 'added student name'], ["name" => "added name 2"]],
+            "nonAddedStudent" => [
+                ['name' => 'nonadded student name']],
+            "courseCode" => "example Course Code",
+            "date" => "example datee"
+            ]);
     }
 
     ?>
     <div class="centerwrapper">
         <div class="centerdiv">
-            <br><br>
-            <h2>Event Details Page</h2>
-            <br>
             <form method='get' action="../"><div class="form-group">
                     <input type="submit" class="button button_submit" value="Return to Close Contact Page">
                 </div>

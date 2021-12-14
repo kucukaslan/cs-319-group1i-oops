@@ -1,5 +1,8 @@
-<?php 
+<?php
     include_once("../config.php");
+    // require_once("../util/NavBar.php");
+    // include_once("../util/NavBar.php");
+    // require_once(rootDirectory() . "/util/UserFactory.php");
     startDefaultSessionWith();
     ?>
 
@@ -33,20 +36,40 @@
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
+        /*$navbar = new NavBar(Student::TABLE_NAME);
+        echo $navbar->draw();*/
         echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
+                ['href' => '../../', 'title' => 'Main Menu'],
+                ['href' => '../../events', 'title' => 'Events'],
+                ['href' => '../../closecontact', 'title' => 'Close Contact'],
+                ['href' => '../../profile', 'title' => 'Profile'],
+                ['href' => '../../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+        echo $m->render("contactlist", ["person" => [
+                ["name" => "name 1", "id" => 123],
+                ["name"=>"name 2", "id"=>333]
+        ]]);
+
+
+        echo $m->render('eventlist',
+            ['event' => [
+                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020'],
+                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']            ]
+            ]);
+
+        // close contact compo
+        echo $m->render("addclosecontact");
+
+
+
+        //echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
+        //echo "<i> Welcome asdsa to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
 
     }
 
     ?>
+    <!--
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
@@ -59,7 +82,7 @@
             </form>
         </div>
     </div>
-
+    !-->
 
 </div>
 
