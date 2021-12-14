@@ -1,0 +1,24 @@
+<div class = "component">
+    <h2> Enrolled Courses </h2>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Course Code</th>
+                <th>Lecture Date</th>
+                <th>Leave Course</th>
+            </tr>
+            {{#event}}
+                <tr>
+                    <td>{{courseCode}}</td>
+                    <td>{{lectureDate}}</td>
+                    <td> <input type="submit" class="button" value="Leave"> </td>
+                </tr>
+            {{/event}}
+        </table>
+    </div>
+    <div class = "enroll_by_pin">
+        <h3>Add course by pin</h3>
+        <input type="submit" class="button" value="Add">
+        <input type="text" name="pin" class="input" id="pin">
+    </div>
+</div>

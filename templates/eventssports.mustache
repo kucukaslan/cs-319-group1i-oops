@@ -1,0 +1,29 @@
+<div class = "component">
+    <h2> Reserve & Cancel Sports Hall Reservation </h2>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Place</th>
+                <th>Day Slot</th>
+                <th>Time Slot</th>
+                <th>Reserve/Cancel</th>
+            </tr>
+            {{#enrolledevent}}
+                <tr>
+                    <td>{{place}}</td>
+                    <td>{{dayslot}}</td>
+                    <td>{{timeslot}}</td>
+                    <td><input type="submit" class="button" value="Leave"></td>
+                </tr>
+            {{/enrolledevent}}
+            {{#notenrolledevent}}
+                <tr>
+                    <td>{{place}}</td>
+                    <td>{{dayslot}}</td>
+                    <td>{{timeslot}}</td>
+                    <td> <input type="submit" class="button" value="Enroll"></td>
+                </tr>
+            {{/notenrolledevent}}
+        </table>
+    </div>
+</div>
