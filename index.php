@@ -74,8 +74,8 @@ startDefaultSessionWith();
 
                         $vaccineInstance = new Vaccine($date,$type);
 
-                        echo $vaccineInstance->getVaccineName();
-                        echo $vaccineInstance->getDateApplied()->format(DATE_RFC3339);
+                        //echo $vaccineInstance->getVaccineName();
+                        //echo $vaccineInstance->getDateApplied()->format(DATE_RFC3339);
 
 
                     }
