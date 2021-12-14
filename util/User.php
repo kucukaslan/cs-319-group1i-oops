@@ -212,6 +212,15 @@ class User
         $this->conn = $conn;
     }
 
+    /**
+     * @param int $id is user if to add the database
+     * @return bool if addition is successful.
+     */
+    public function addCloseContact(int $id): bool {
+        // TODO: write given id to the database
+        return TRUE;
+    }
+
 
 
 

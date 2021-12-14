@@ -35,6 +35,9 @@
         echo "</div> </div>";
         exit();
     } else {
+        // for testing
+        $std = new Student();
+
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
@@ -42,10 +45,19 @@
         echo $navbar->draw();
 
         $imgsource ="../srcs/default_profile_pic.jpg";
-        echo $m->render("contactlist", ["person" => [
-                ["imgsource" => $imgsource,"name" => "name 1", "id" => 123],
-                ["imgsource" => $imgsource,"name"=>"name 2", "id"=>333]
-        ]]);
+
+        // TODO: this array will be fetched from the database using user
+        $contact_list = [
+            ["imgsource" => $imgsource,"name" => "name 1", "id" => 1],
+            ["imgsource" => $imgsource,"name"=>"name 2", "id"=>2]
+        ];
+
+        // using session array for test purposes
+        if (isset($_SESSION["third"])) {
+            $contact_list[] = ["imgsource" => $imgsource,"name" => "added", "id" => $_SESSION["third"]];
+        }
+
+        echo $m->render("contactlist", ["person" => $contact_list]);
 
 
         echo $m->render('pasteventlist',
@@ -54,17 +66,51 @@
                 ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']            ]
             ]);
 
-        // close contact compo
+        // if the input is numeric try to add this id
+        if(isset($_POST['closeContact'])) {
+            if (is_numeric($_POST['closeContact'])) {
+                $contactIdToAdd = intval($_POST['closeContact']);
+
+                if ($std->addCloseContact($contactIdToAdd)) {
+                    // testing
+                    $_SESSION["third"] = $contactIdToAdd;
+                    $successMass = <<<EOF
+<h2> SUCESS added: </h2>
+EOF;
+                    echo $successMass;
+                    echo $contactIdToAdd;
+                } else {
+                    $alertScript = <<<EOF
+                        <script> alert("Close contact id not entered is not valid!") </script>
+                    EOF;
+                    echo $alertScript;
+                }
+            } else {
+                $alertScript = <<<EOF
+                    <script> alert("Given id is not valid") </script>
+                EOF;
+                echo $alertScript;
+            }
+
+        }
+
+        // close contact component
         echo $m->render("addclosecontact");
-
-
-
-        //echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        //echo "<i> Welcome asdsa to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-
     }
 
+
     ?>
+    <!--
+    <div class = "component">
+        <h2>Add Close Contact by ID</h2>
+        <div>
+            <form method="post">
+                <input type="text" name="HESCode" class="input" id="HESCode" min="1" required>
+                <input type="submit" class="button" value="Add">
+            </form>
+        </div>
+    </div>
+    !-->
     <!--
     <div class="centerwrapper">
         <div class="centerdiv">
