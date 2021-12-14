@@ -15,6 +15,7 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // userid and password sent from the form
     $userid = $_POST['userid'];
     $password = $_POST['password'];
+    //$usertype = $_POST['usertype']
 
 
     // var_dump($std);

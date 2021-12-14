@@ -38,6 +38,8 @@
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
+
+        // todo sessiondan al
         $navbar = new NavBar(Student::TABLE_NAME, $pagename);
         echo $navbar->draw();
 
