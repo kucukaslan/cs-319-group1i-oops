@@ -27,14 +27,14 @@ startDefaultSessionWith();
         <?php
         $conn = getDatabaseConnection();
 
-        $uf = new UserFactory(Student::TABLE_NAME);
-        $std = $uf->makeUserById($conn, $_SESSION['id']);
-
+        
         if (!isset($_SESSION['id']) || !isset($conn)) {
             header("location: ./login");
         } else {
             $id = $_SESSION['id'];
-
+            $uf = new UserFactory(Student::TABLE_NAME);
+            $std = $uf->makeUserById($conn, $_SESSION['id']);
+    
             //----
             if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
                 if (isset($_POST['HESCode'])) {
