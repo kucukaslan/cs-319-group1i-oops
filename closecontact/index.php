@@ -40,7 +40,8 @@
         ));
 
         // todo sessiondan al
-        $navbar = new NavBar(Student::TABLE_NAME, $pagename);
+        $usertype = $_SESSION['usertype'];
+        $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
 
         echo $m->render("contactlist", ["person" => [
