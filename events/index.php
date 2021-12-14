@@ -30,6 +30,13 @@
         echo "</div> </div>";
         exit();
     } else {
+         $title = <<<EOF
+        <div class="centerwrapper">
+        <div class="centerdiv">
+            <h2>Events Page</h2>
+        </div>
+    </div>
+    EOF;
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
         ));
@@ -40,24 +47,19 @@
                 ['href' => '../profile', 'title' => 'Profile'],
                 ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
-
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-
+        echo $title;
+        echo $m->render("eventslecture", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
+        // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
+        echo $m->render('eventssports', [
+            'enrolledevent' => [
+                ['place' => 'place1', "dayslot"=>"day1", "timeslot"=>"13.30"]],
+            "notenrolledevent" => [
+                ['place' => 'place1', "dayslot"=>"day2", "timeslot"=>"13.30"]]
+        ]);
     }
 
     ?>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Events Page</h2>
-            <br>
-        </div>
-    </div>
-
-
 </div>
-
 
 </body>
 </html>

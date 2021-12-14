@@ -41,13 +41,14 @@
         $navbar = new NavBar(Student::TABLE_NAME, $pagename);
         echo $navbar->draw();
 
+        $imgsource ="../srcs/default_profile_pic.jpg";
         echo $m->render("contactlist", ["person" => [
-                ["name" => "name 1", "id" => 123],
-                ["name"=>"name 2", "id"=>333]
+                ["imgsource" => $imgsource,"name" => "name 1", "id" => 123],
+                ["imgsource" => $imgsource,"name"=>"name 2", "id"=>333]
         ]]);
 
 
-        echo $m->render('eventlist',
+        echo $m->render('pasteventlist',
             ['event' => [
                 ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020'],
                 ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']            ]
