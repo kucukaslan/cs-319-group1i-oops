@@ -26,6 +26,15 @@ class User
         $this->HESCode = null;
     }
 
+
+
+    // spesifik bir user için database'de olan tüm vaccineleri getiren bir metot yaz muh.
+
+
+    ///
+
+
+
     public function getFirstName(): string
     {
         return $this->firstname;

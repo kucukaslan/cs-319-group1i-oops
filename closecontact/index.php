@@ -38,7 +38,10 @@
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
-        $navbar = new NavBar(Student::TABLE_NAME, $pagename);
+
+        // todo sessiondan al
+        $usertype = $_SESSION['usertype'];
+        $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
 
         $imgsource ="../srcs/default_profile_pic.jpg";

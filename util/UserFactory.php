@@ -1,5 +1,9 @@
 <?php
 require_once ("Student.php");
+require_once ("AcademicStaff.php");
+require_once ("SportsCenterStaff.php");
+require_once ("UniversityAdministration.php");
+
 class UserFactory{
 
 

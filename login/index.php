@@ -15,6 +15,9 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     // userid and password sent from the form
     $userid = $_POST['userid'];
     $password = $_POST['password'];
+    $usertype = $_POST['usertype'];
+
+
 
 
     // var_dump($std);
@@ -23,7 +26,8 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         //$std = new Student($conn, $userid, $password);
-        $uf = new UserFactory(Student::TABLE_NAME);
+        $uf = new UserFactory($usertype);
+        $_SESSION['usertype'] = $usertype;
         $std = $uf->makeUserByLogin($conn, $userid, $password);
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
