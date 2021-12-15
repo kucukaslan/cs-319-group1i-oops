@@ -10,13 +10,23 @@ class Vaccine
     protected ?string $vaccineName;
     protected int $cvx_code;
     protected ?string $vaccineType;
-
+    protected ?string $vaccineDate;
     /**
      * @return string|null
      */
     public function getVaccineType(): ?string
     {
         return $this->vaccineType;
+    }
+
+    public function getVaccineDate(): ?string
+    {
+        return $this->vaccineDate;
+    }
+
+    public function setVaccineDate(?string $date ) : void
+    {
+        $this->vaccineDate = $date;
     }
 
     /**

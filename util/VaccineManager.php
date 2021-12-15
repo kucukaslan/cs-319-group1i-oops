@@ -6,7 +6,7 @@ class VaccineManager
 
     // attributes
     private $conn;
-    private $id;   
+    private $userId;   
 
     // constructor with user id
     public function __construct(PDO $conn, int $userId)
@@ -31,6 +31,7 @@ class VaccineManager
             $vaccine->setCvxCode($row["cvx_code"]);
             $vaccine->setVaccineName($row["vaccine_name"]);
             $vaccine->setVaccineType($row["vaccine_type"]);
+            $vaccine->setVaccineDate($row["administration_date"]);
             $vaccines[] = $vaccine;
         }
         return $vaccines;

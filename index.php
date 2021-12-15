@@ -135,8 +135,9 @@
                 $i = 0;
                 foreach($myVaccines as $vaccine)
                 {
-                    $myType = $vaccine->getVaccineType();
-                    $abc[$i] = ['vaccineDate'=> $i, 'vaccineType'=> $myType];
+                    $myVaccineType = $vaccine->getVaccineType();
+                    $myVaccineDate = $vaccine->getVaccineDate();
+                    $abc[$i] = ['vaccineDate'=> $myVaccineDate, 'vaccineType'=> $myVaccineType];
                     $i = $i + 1;
                 }
                 
