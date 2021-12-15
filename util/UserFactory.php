@@ -12,7 +12,7 @@ class UserFactory{
 
 
     //methods
-    public function __construct(string $usertype) {
+    public function __construct(string $usertype)  {
         if(strcmp($usertype, Student::TABLE_NAME) == 0)
             $this->user = new Student();
         else if(strcmp($usertype, AcademicStaff::TABLE_NAME) == 0)
@@ -23,7 +23,7 @@ class UserFactory{
         else if(strcmp($usertype, SportsCenterStaff::TABLE_NAME) == 0)
             $this->user = new SportsCenterStaff();
         else
-            $this->user = new User();
+            throw(new Exception("User type not found"));
 
     }
 

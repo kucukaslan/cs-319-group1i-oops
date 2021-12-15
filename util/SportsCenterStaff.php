@@ -7,10 +7,8 @@ class SportsCenterStaff extends User {
     const TABLE_PREFIX =  parent::TABLE_NAME . "_";
 
 
-    public function insertToDatabase() : bool
+    protected function insertToSpecializedTable() : bool
     {
-        parent::insertToDatabase();
-
         try
         {
             $query = "INSERT INTO " . self::TABLE_PREFIX.self::TABLE_NAME . " (id) VALUES (:id)";

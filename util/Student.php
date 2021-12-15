@@ -7,9 +7,8 @@ class Student extends User {
     const TABLE_PREFIX =  parent::TABLE_NAME . "_";
 
     
-    public function insertToDatabase() : bool
+    protected function insertToSpecializedTable() : bool
     { 
-        parent::insertToDatabase();
         
         try 
         { 
