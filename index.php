@@ -4,6 +4,8 @@
     require_once(rootDirectory() . "/util/class.pdf2text.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
     require_once(rootDirectory() . "/util/Vaccine.php");
+    require_once(rootDirectory() . "/util/VaccineFactory.php");
+    require_once(rootDirectory() . "/util/VaccineManager.php");
     require_once(rootDirectory()."/util/NavBar.php");
     $conn = getDatabaseConnection();
     $pagename = '/';
@@ -14,6 +16,9 @@
 
     }
     $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+
+
+
 ?>
 <!DOCTYPE html>
 
@@ -95,6 +100,10 @@
 <div class="tile is-ancestor notification is-primary">
     <div class="tile is-parent is-4">
         <div class="tile is-child box">
+
+
+
+
             <p class="title">
                 <?php
                 $engine = new Mustache_Engine(array(
@@ -117,13 +126,31 @@
         <div class="tile is-child box">
             <div class="container">
                 <?php
-                // vaccine component
+                
+                $vaccineManager = new VaccineManager($conn,$_SESSION['id']);
+                $myVaccines = $vaccineManager->getUserVaccines();
+                
+
+                $abc = [];
+                $i = 0;
+                foreach($myVaccines as $vaccine)
+                {
+                    $myType = $vaccine->getVaccineType();
+                    $abc[$i] = ['vaccineDate'=> $i, 'vaccineType'=> $myType];
+                    $i = $i + 1;
+                }
+                
+                echo $engine->render('vax',
+                ['vaccine' => $abc
+                ]);
+                /*
                 echo $engine->render('vax',
                     ['vaccine' => [
-                        ['vaccineDate' => 'bugun', 'vaccineType' => 'TURKOVAC'],
+                        ['vaccineDate' => 'bugun',  'vaccineType' => 'TURKOVAC'],
                         ['vaccineDate' => 'yarin', 'vaccineType' => 'TURKOVAC']
                     ]
                     ]);
+                    */
 
                 ?>
             </div>
