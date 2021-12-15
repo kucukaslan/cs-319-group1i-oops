@@ -1,7 +1,7 @@
 <?php
     require_once(__DIR__."/../config.php");
     require_once(rootDirectory()."/util/NavBar.php");
-    // require_once(rootDirectory() . "/util/UserFactory.php");
+    require_once(rootDirectory() . "/util/UserFactory.php");
     startDefaultSessionWith();
     $pagename = '/closecontact';
     ?>
@@ -35,8 +35,8 @@
         echo "</div> </div>";
         exit();
     } else {
-        // for testing
-        $std = new Student();
+        $uf = new UserFactory(Student::TABLE_NAME);
+        $user = $uf->makeUserById($conn, $_SESSION["id"]);
 
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
@@ -44,19 +44,21 @@
         $navbar = new NavBar(Student::TABLE_NAME, $pagename);
         echo $navbar->draw();
 
-        $imgsource ="../srcs/default_profile_pic.jpg";
+        $imgSource ="../srcs/default_profile_pic.jpg";
 
-        // TODO: this array will be fetched from the database using user
-        $contact_list = [
-            ["imgsource" => $imgsource,"name" => "name 1", "id" => 1],
-            ["imgsource" => $imgsource,"name"=>"name 2", "id"=>2]
-        ];
+        $buttonNames = [];
+        $contact_list = [];
+        $contactIds = $user->getCloseContacts();
 
-        // using session array for test purposes
-        if (isset($_SESSION["third"])) {
-            $contact_list[] = ["imgsource" => $imgsource,"name" => "added", "id" => $_SESSION["third"]];
+        for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
+            // set button names
+            $buttonNames[] = "button" . ($i + 1);
+
+            // add close contact to contact list
+            $contact_list[] = ["imgsource" => $imgSource, "buttonname" => $buttonNames[$i], "name" => $user->giveName($contactIds[$i]), "id" => $contactIds[$i]];
         }
 
+        // render close contacts
         echo $m->render("contactlist", ["person" => $contact_list]);
 
 
@@ -65,15 +67,17 @@
                 ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020'],
                 ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']            ]
             ]);
+        // close contact component
+        echo $m->render("addclosecontact");
 
+
+        // implementation of add close contact by id
         // if the input is numeric try to add this id
         if(isset($_POST['closeContact'])) {
             if (is_numeric($_POST['closeContact'])) {
                 $contactIdToAdd = intval($_POST['closeContact']);
 
-                if ($std->addCloseContact($contactIdToAdd)) {
-                    // testing
-                    $_SESSION["third"] = $contactIdToAdd;
+                if ($user->addCloseContact($contactIdToAdd)) {
                     $successMass = <<<EOF
 <h2> SUCESS added: </h2>
 EOF;
@@ -81,21 +85,38 @@ EOF;
                     echo $contactIdToAdd;
                 } else {
                     $alertScript = <<<EOF
-                        <script> alert("Close contact id not entered is not valid!") </script>
-                    EOF;
+<script> alert("Cannot add given ID") </script>
+EOF;
                     echo $alertScript;
                 }
             } else {
                 $alertScript = <<<EOF
-                    <script> alert("Given id is not valid") </script>
-                EOF;
+<script> alert("Given id is not valid") </script>
+EOF;
                 echo $alertScript;
             }
 
         }
 
-        // close contact component
-        echo $m->render("addclosecontact");
+        // implementation of deleting user from the close contact list
+        // check if a button is pressed for any user in the table
+        for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
+            $buttonName = "button" . ($i + 1);
+            if(isset($_POST[$buttonName])) {
+                // delete the user at the ($i + 1)th row in the contact list
+                $idToDeleteFromContactList = $contact_list[$i]["id"];
+                if ($user->deleteCloseContact($idToDeleteFromContactList)) {
+                    echo "DELETED USER WITH ID: " . $idToDeleteFromContactList;
+                } else {
+                    echo "DID NOT MANAGE TO DELETE " . $idToDeleteFromContactList;
+                }
+
+                break;
+            }
+        }
+
+
+
     }
 
 
