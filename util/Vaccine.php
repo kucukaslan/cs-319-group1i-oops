@@ -10,14 +10,23 @@ class Vaccine
     protected ?string $vaccineName;
     protected int $cvx_code;
     protected ?string $vaccineType;
-    protected ?int $correspondingUserid;
-
+    protected ?string $vaccineDate;
     /**
      * @return string|null
      */
     public function getVaccineType(): ?string
     {
         return $this->vaccineType;
+    }
+
+    public function getVaccineDate(): ?string
+    {
+        return $this->vaccineDate;
+    }
+
+    public function setVaccineDate(?string $date ) : void
+    {
+        $this->vaccineDate = $date;
     }
 
     /**
@@ -33,23 +42,6 @@ class Vaccine
         
     }
 
-    
-
-    /**
-     * @return int|null
-     */
-    public function getCorrespondingUserid(): ?int
-    {
-        return $this->correspondingUserid;
-    }
-
-    /**
-     * @param int|null $correspondingUserid
-     */
-    public function setCorrespondingUserid(?int $correspondingUserid): void
-    {
-        $this->correspondingUserid = $correspondingUserid;
-    }
 
     /**
      * @return string|null
@@ -59,26 +51,9 @@ class Vaccine
         return $this->vaccineName;
     }
 
-    
-    /**
-     * @return PDO|null
-     */
-    public function getConn(): ?PDO
-    {
-        return $this->conn;
-    }
-
 
     public function getTableName(): string {
         return get_called_class()::TABLE_NAME;
-    }
-
-    /**
-     * @param PDO|null $conn
-     */
-    public function setConn(?PDO $conn): void
-    {
-        $this->conn = $conn;
     }
 
     /**
