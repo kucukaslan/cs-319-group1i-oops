@@ -1,5 +1,5 @@
 <?php
-
+require_once("User.php");
 class Event
 {
     // CONSTANTS
@@ -15,80 +15,97 @@ class Event
     protected ?bool $canPeopleJoin;
     protected ?string $place;
     protected ?int $maxNoOfParticipant;
-  
+    protected ?array $participants;
+    protected ?int $currentNumberOfParticipants;
+
+
+    // constructors and methods
+
+    /**
+     * @param PDO|null $conn
+     * @param int|null $eventID
+     * @param string|null $title
+     * @param DateTime|null $startDate
+     * @param bool|null $canPeopleJoin
+     * @param string|null $place
+     * @param int|null $maxNoOfParticipant
+     * @param User|null $participants
+     * @param int|null $currentNumberOfParticipants
+     */
+    public function __construct(?PDO $conn, ?int $eventID, ?string $title, ?DateTime $startDate, ?bool $canPeopleJoin, ?string $place, ?int $maxNoOfParticipant, $participants, ?int $currentNumberOfParticipants)
+    {
+        $this->conn = $conn;
+        $this->eventID = $eventID;
+        $this->title = $title;
+        $this->startDate = $startDate;
+        $this->canPeopleJoin = $canPeopleJoin;
+        $this->place = $place;
+        $this->maxNoOfParticipant = $maxNoOfParticipant;
+        $this->participants = $participants;
+        $this->currentNumberOfParticipants = $currentNumberOfParticipants;
+    }
+
+
+    public function addParticipant(User $user): void
+    {
+        if( $this->getCurrentNumberOfParticipants() != $this->getMaxNoOfParticipant()) {
+            $this->participants[$user->getId()] = $user;
+            $this->currentNumberOfParticipants++;
+
+            $this->setCanPeopleJoin($this->getCurrentNumberOfParticipants() != $this->getMaxNoOfParticipant());
+        }
+
+        else{
+            return;
+        }
+
+
+    }
+
+    public function removeParticipant(User $user): void{
+        unset($this->participants[$user->getId()]);
+        if($this->currentNumberOfParticipants > 0) {
+            $this->currentNumberOfParticipants--;
+        }
+        $this->setCanPeopleJoin($this->getCurrentNumberOfParticipants() != $this->getMaxNoOfParticipant());
+
+    }
 
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getVaccineType(): ?string
+    public function getParticipants(): ?array
     {
-        return $this->vaccineType;
+        return $this->participants;
     }
 
     /**
-     * @param string|null $vaccineType
+     * @param array|null $participants
      */
-    public function setVaccineType(?string $vaccineType): void
+    public function setParticipants($participants): void
     {
-        $this->vaccineType = $vaccineType;
+        $this->participants = $participants;
     }
-    protected ?int $correspondingUserid;
-
-    public function __construct(string $date, string $type, string $vaccineType,int $correspondingUserid) {
-
-        $this->vaccineName = $type;
-        $this->dateApplied = new DateTime($date);
-        $this->vaccineType = $vaccineType;
-        $this->$correspondingUserid = $correspondingUserid;
-
-    }
-
-
-    // vaccine'i databaseye koyacak metodu yaz muh.
-
-
-
-
-    ///
-    ///
-    ///
-    ///
-    ///
-
-
 
     /**
      * @return int|null
      */
-    public function getCorrespondingUserid(): ?int
+    public function getCurrentNumberOfParticipants(): ?int
     {
-        return $this->correspondingUserid;
+        return $this->currentNumberOfParticipants;
     }
 
     /**
-     * @param int|null $correspondingUserid
+     * @param int|null $currentNumberOfParticipants
      */
-    public function setCorrespondingUserid(?int $correspondingUserid): void
+    public function setCurrentNumberOfParticipants(?int $currentNumberOfParticipants): void
     {
-        $this->correspondingUserid = $correspondingUserid;
+        $this->currentNumberOfParticipants = $currentNumberOfParticipants;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getVaccineName(): ?string
-    {
-        return $this->vaccineName;
-    }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getDateApplied(): ?DateTime
-    {
-        return $this->dateApplied;
-    }
+
 
     /**
      * @return PDO|null
@@ -96,37 +113,6 @@ class Event
     public function getConn(): ?PDO
     {
         return $this->conn;
-    }
-
-
-    public function insertToDatabase() : bool
-    {
-        try {
-            $query = "INSERT INTO ".User::TABLE_NAME." (id, password_hash, name, lastname, email, hescode) VALUES (:id, :password_hash, :name, :lastname, :email, :hescode)";
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute(array('id'=>$this->id, 'password_hash'=>password_hash( $this->password, PASSWORD_ARGON2I), 'name'=>$this->firstname, 'lastname'=>$this->lastname, 'email'=>$this->email, 'hescode'=>$this->HESCode));
-
-            return true;
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            throw new Exception("Error inserting to database.".$this->getTableName());
-            return false;
-        }
-    }
-    public function updateToDatabase()
-    {
-        $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':name', $this->firstname);
-        $stmt->bindParam(':lastname', $this->lastname);
-        $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->execute();
-    }
-
-
-    public function getTableName(): string {
-        return get_called_class()::TABLE_NAME;
     }
 
     /**
@@ -138,22 +124,100 @@ class Event
     }
 
     /**
-     * @param string|null $vaccineName
+     * @return int|null
      */
-    public function setVaccineName(?string $vaccineName): void
+    public function getEventID(): ?int
     {
-        $this->vaccineName = $vaccineName;
+        return $this->eventID;
     }
 
     /**
-     * @param Date|null $dateApplied
+     * @param int|null $eventID
      */
-    public function setDateApplied(?Date $dateApplied): void
+    public function setEventID(?int $eventID): void
     {
-        $this->dateApplied = $dateApplied;
+        $this->eventID = $eventID;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
 
+    /**
+     * @param string|null $title
+     */
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getStartDate(): ?DateTime
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param DateTime|null $startDate
+     */
+    public function setStartDate(?DateTime $startDate): void
+    {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getCanPeopleJoin(): ?bool
+    {
+        return $this->canPeopleJoin;
+    }
+
+    /**
+     * @param bool|null $canPeopleJoin
+     */
+    public function setCanPeopleJoin(?bool $canPeopleJoin): void
+    {
+        $this->canPeopleJoin = $canPeopleJoin;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlace(): ?string
+    {
+        return $this->place;
+    }
+
+    /**
+     * @param string|null $place
+     */
+    public function setPlace(?string $place): void
+    {
+        $this->place = $place;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMaxNoOfParticipant(): ?int
+    {
+        return $this->maxNoOfParticipant;
+    }
+
+    /**
+     * @param int|null $maxNoOfParticipant
+     */
+    public function setMaxNoOfParticipant(?int $maxNoOfParticipant): void
+    {
+        $this->maxNoOfParticipant = $maxNoOfParticipant;
+    }
 
 
 
