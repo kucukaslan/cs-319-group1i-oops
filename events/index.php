@@ -2,6 +2,15 @@
 include_once("../config.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 startDefaultSessionWith();
+
+require_once rootDirectory() . '/vendor/autoload.php';
+
+$conn = getDatabaseConnection();
+
+if (!isset($_SESSION['id']) || !isset($conn)) {
+    header("location: ../login");
+}
+$usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 ?>
 
 <!DOCTYPE html>
@@ -19,20 +28,6 @@ startDefaultSessionWith();
 <div class="container">
 
     <?php
-    require_once rootDirectory() . '/vendor/autoload.php';
-
-    $conn = getDatabaseConnection();
-
-    if (!isset($_SESSION['id'])) {
-
-        echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
-            . "You haven't logged in";
-        echo "<form method='get' action=\"..\"><div class=\"form-group\">
-                        <input type=\"submit\" class=\"button button_submit\" value=\"Go to Login Page\">
-                    </div> </form>";
-        echo "</div> </div>";
-        exit();
-    } else {
         $title = <<<EOF
         <div class="centerwrapper">
         <div class="centerdiv">
@@ -40,11 +35,13 @@ startDefaultSessionWith();
         </div>
     </div>
     EOF;
-        $nav = new NavBar(Student::TABLE_NAME);
-        echo $nav->draw();
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
         ));
+        
         echo $title;
         echo $m->render("eventslecture", ["event" => [["courseCode" => "cs123", "lectureDate" => "1.2.3444"]]]);
         // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
@@ -57,8 +54,6 @@ startDefaultSessionWith();
             "notenrolledevent" => [
                 ['place' => 'place1', "dayslot" => "day2", "timeslot" => "13.30"]]
         ]);
-    }
-
     ?>
 </div>
 

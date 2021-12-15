@@ -1,5 +1,4 @@
 <?php
-
    // Why do we try to connect database before user is logged in? (talking specifically for this page)
     require_once("config.php");
     require_once(rootDirectory() . "/util/class.pdf2text.php");
@@ -8,8 +7,13 @@
     require_once(rootDirectory()."/util/NavBar.php");
     $conn = getDatabaseConnection();
     $pagename = '/';
+    startDefaultSessionWith();
 
-startDefaultSessionWith();
+    if (!isset($_SESSION['id']) || !isset($conn)) {
+        header("location: ./login");
+
+    }
+    $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 ?>
 <!DOCTYPE html>
 
@@ -26,7 +30,7 @@ startDefaultSessionWith();
 <body>
     <header>
         <?php
-            $navbar = new NavBar(Student::TABLE_NAME);
+            $navbar = new NavBar($usertype);
             echo $navbar->draw();
             ?>
     </header>
@@ -34,13 +38,11 @@ startDefaultSessionWith();
     <p id="info">
         <?php
 
-        if (!isset($_SESSION['id']) || !isset($conn)) {
-            header("location: ./login");
-        } else {
+        
             $id = $_SESSION['id'];
 
 
-            $uf = new UserFactory(Student::TABLE_NAME);
+            $uf = new UserFactory($usertype);
             $std = $uf->makeUserById($conn, $_SESSION['id']);
 
             //----
@@ -87,7 +89,7 @@ startDefaultSessionWith();
                     }
                 }
             }
-        }
+        
 ?>
 <div class="block"></div>
 <div class="tile is-ancestor notification is-primary">

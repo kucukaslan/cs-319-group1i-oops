@@ -33,9 +33,9 @@
         echo "</div> </div>";
         exit();
     } else {
-        
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         echo '<header>';
-        $navbar = new NavBar(Student::TABLE_NAME, $pagename);
+        $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
         echo "<h2>Event Details Page</h2>";
         echo '</header>';
