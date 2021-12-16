@@ -1,6 +1,6 @@
 <?php
 
-class User
+abstract class User
 {
     // CONSTANTS
     const TABLE_NAME = "user";
@@ -97,21 +97,28 @@ class User
         }
     }
 
+    /*
+        This might be an example of template method pattern.
+    */
+    
     public function insertToDatabase() : bool
     { 
         try {
-             $query = "INSERT INTO ".User::TABLE_NAME." (id, password_hash, name, lastname, email, hescode) VALUES (:id, :password_hash, :name, :lastname, :email, :hescode)";
+            $query = "INSERT INTO ".User::TABLE_NAME." (id, password_hash, name, lastname, email, hescode) VALUES (:id, :password_hash, :name, :lastname, :email, :hescode)";
             $stmt = $this->conn->prepare($query);
             $stmt->execute(array('id'=>$this->id, 'password_hash'=>password_hash( $this->password, PASSWORD_ARGON2I), 'name'=>$this->firstname, 'lastname'=>$this->lastname, 'email'=>$this->email, 'hescode'=>$this->HESCode));
     
-            return true;
+            return insertToSpecializedTable();
         } catch (Exception $e) {
             echo $e->getMessage();
             throw new Exception("Error inserting to database.".$this->getTableName());
             return false;
         }
     }
-    public function updateToDatabase()
+
+    protected abstract function insertToSpecializedTable() : bool;
+
+    public function updateToDatabase() 
     {
         $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -266,8 +273,4 @@ class User
 
         return "????";
     }
-
-
-
-
 }
