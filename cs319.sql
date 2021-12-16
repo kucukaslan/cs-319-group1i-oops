@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 16, 2021 at 10:13 PM
+-- Generation Time: Dec 16, 2021 at 11:28 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -43,6 +43,41 @@ CREATE TABLE `academic_staff` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `contact`
+--
+-- Creation: Dec 17, 2021 at 12:30 AM
+--
+
+DROP TABLE IF EXISTS `contact`;
+CREATE TABLE `contact` (
+  `main_user_id` int(11) NOT NULL,
+  `contacted_user_id` int(11) NOT NULL,
+  `event_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `contact`:
+--   `main_user_id`
+--       `user` -> `id`
+--   `event_id`
+--       `event` -> `event_id`
+--   `contacted_user_id`
+--       `user` -> `id`
+--
+
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`main_user_id`, `contacted_user_id`, `event_id`) VALUES
+(1, 2, 1),
+(1, 3, 2),
+(2, 1, 1),
+(2, 3, 4);
+
+-- --------------------------------------------------------
+
+--
 -- Stand-in structure for view `course`
 -- (See below for the actual view)
 --
@@ -63,7 +98,6 @@ CREATE TABLE `course` (
 -- Table structure for table `event`
 --
 -- Creation: Dec 16, 2021 at 11:02 PM
--- Last update: Dec 16, 2021 at 11:40 PM
 --
 
 DROP TABLE IF EXISTS `event`;
@@ -111,13 +145,20 @@ CREATE TABLE `event_control` (
 --       `user` -> `index_id`
 --
 
+--
+-- Dumping data for table `event_control`
+--
+
+INSERT INTO `event_control` (`event_id`, `user_id`) VALUES
+(1, 2),
+(3, 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `event_course`
 --
 -- Creation: Dec 16, 2021 at 11:36 PM
--- Last update: Dec 16, 2021 at 11:40 PM
 --
 
 DROP TABLE IF EXISTS `event_course`;
@@ -179,7 +220,6 @@ INSERT INTO `event_participation` (`event_id`, `user_id`) VALUES
 -- Table structure for table `event_sport`
 --
 -- Creation: Dec 16, 2021 at 11:22 PM
--- Last update: Dec 16, 2021 at 11:41 PM
 --
 
 DROP TABLE IF EXISTS `event_sport`;
@@ -280,7 +320,7 @@ CREATE TABLE `university_administration` (
 --
 -- Table structure for table `user`
 --
--- Creation: Dec 12, 2021 at 04:17 PM
+-- Creation: Dec 17, 2021 at 12:40 AM
 --
 
 DROP TABLE IF EXISTS `user`;
@@ -292,6 +332,7 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `hescode` char(10) DEFAULT NULL,
+  `hescode_status` tinyint(1) NOT NULL DEFAULT 1,
   `profile_picture` blob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -303,14 +344,14 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_hash`, `hescode`, `profile_picture`) VALUES
-(1, 1, 'Muhammed', 'lol', 'a@a', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', 'Hahaha', NULL),
-(2, 2, 'Mustafa', 'K', 'a@b', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, NULL),
-(3, 3, 'Mustafa', 'K', 'a@c', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, NULL),
-(5, 5, 'Testing', 'lol', 'a@e', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '1234567890', NULL),
-(6, 123, '123', '123', '123@123', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, NULL),
-(9, 11, 'Register', 'Tester', 'q@w', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, NULL),
-(10, 907, 'utku', 'jjjj', 'gg@ggsdjsıg.vom', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, NULL);
+INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_hash`, `hescode`, `hescode_status`, `profile_picture`) VALUES
+(1, 1, 'Muhammed', 'lol', 'a@a', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', 'Hahaha', 1, NULL),
+(2, 2, 'Mustafa', 'K', 'a@b', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, 1, NULL),
+(3, 3, 'Mustafa', 'K', 'a@c', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, 1, NULL),
+(5, 5, 'Testing', 'lol', 'a@e', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '1234567890', 1, NULL),
+(6, 123, '123', '123', '123@123', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, 1, NULL),
+(9, 11, 'Register', 'Tester', 'q@w', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, 1, NULL),
+(10, 907, 'utku', 'jjjj', 'gg@ggsdjsıg.vom', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -461,8 +502,7 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 --
 -- Table structure for table `vaccine_administration`
 --
--- Creation: Dec 15, 2021 at 01:55 AM
--- Last update: Dec 16, 2021 at 09:08 PM
+-- Creation: Dec 17, 2021 at 12:42 AM
 --
 
 DROP TABLE IF EXISTS `vaccine_administration`;
@@ -488,10 +528,7 @@ CREATE TABLE `vaccine_administration` (
 INSERT INTO `vaccine_administration` (`id`, `vaccine_id`, `user_id`, `administration_date`) VALUES
 (1, 1, 1, '2021-12-13 01:04:00'),
 (2, 1, 1, '2021-12-14 23:55:56'),
-(3, 1, 1, '2021-12-15 12:16:05'),
-(13, 1, 1, '2021-12-15 22:30:12'),
-(14, 1, 1, '2021-12-16 19:07:10'),
-(15, 1, 1, '2021-12-16 19:08:10');
+(3, 1, 1, '2021-12-15 12:16:05');
 
 -- --------------------------------------------------------
 
@@ -556,6 +593,14 @@ CREATE VIEW `university_administration`  AS SELECT `user_university_administrati
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `contact`
+--
+ALTER TABLE `contact`
+  ADD UNIQUE KEY `main_user_id` (`main_user_id`,`contacted_user_id`,`event_id`),
+  ADD KEY `event_id` (`event_id`),
+  ADD KEY `contacted_user_id` (`contacted_user_id`);
 
 --
 -- Indexes for table `event`
@@ -666,11 +711,19 @@ ALTER TABLE `vaccine`
 -- AUTO_INCREMENT for table `vaccine_administration`
 --
 ALTER TABLE `vaccine_administration`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `contact`
+--
+ALTER TABLE `contact`
+  ADD CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`main_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`),
+  ADD CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contacted_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `event_control`
