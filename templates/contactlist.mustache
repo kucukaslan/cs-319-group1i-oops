@@ -13,7 +13,7 @@
                     <td><img src="{{imgsource}}" alt="Avatar" style="height: 50px; width: 50px;"></td>
                     <td>{{name}}</td>
                     <td>{{id}}</td>
-                    <td> <input type="submit" class="button" value="Remove"> </td>
+                    <td> <form method="POST"> <input type="submit" class="button" name="{{buttonname}}" value="Delete"/> </form> </td>
                 </tr>
             {{/person}}
         </table>

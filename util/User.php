@@ -221,6 +221,51 @@ class User
         $this->conn = $conn;
     }
 
+    /**
+     * @param int $id is user if to add the database
+     * @return bool if addition is successful.
+     */
+    public function addCloseContact(int $id): bool {
+        // TODO: write given id to the database
+        return TRUE;
+    }
+    public function deleteCloseContact(int $id): bool {
+        // TODO:
+        return TRUE;
+    }
+
+    /**
+     * @return int[] array of closed contact id's
+     */
+    public function getCloseContacts() {
+        // TODO:
+        return [1, 32323, 3];
+    }
+    public function getNoOfCloseContacts(): int {
+        // TODO:
+        return 3;
+    }
+
+    /**
+     * This function will be used for creating the contact list.
+     * @param int $id is the user id whose name will be fetched
+     * @return string name of the desired user
+     */
+    public function giveName(int $id): string {
+        // TODO:
+        if ($id == 1) {
+            return "Muhammed lol";
+        }
+        if ($id == 32323) {
+            return "hikmet simsir";
+        }
+
+        if ($id == 3) {
+            return "My id is 3";
+        }
+
+        return "????";
+    }
 
 
 
