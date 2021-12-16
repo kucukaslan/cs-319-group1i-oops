@@ -22,14 +22,14 @@ final class UserDatabaseTest extends TestCase
     */
     public function testCreateStudent(PDO $conn): Student
     {
-        $uf = new UserFactory(Student::TABLE_NAME);
-        $u1 = $uf->makeUserByLogin($conn, 1, 123);
+        $uf = new UserFactory();
+        $u1 = $uf->makeUserByLogin($conn,Student::TABLE_NAME, 1, 123);
 
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( Student::class, $u1);
 
         $id = random_int(10000,99999);
-        $u1 = $uf->makeUserByRegister($conn, $id, 123, "UNIT", "TEST", $id."@test.com");
+        $u1 = $uf->makeUserByRegister($conn, Student::TABLE_NAME, $id, 123, "UNIT", "TEST", $id."@test.com");
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( Student::class, $u1);
         $this->assertEquals($id, $u1->getId());
@@ -45,15 +45,15 @@ final class UserDatabaseTest extends TestCase
     */
     public function testCreateAcademicStaff(PDO $conn): AcademicStaff
     {
-        $uf = new UserFactory(AcademicStaff::TABLE_NAME);
-        $u1 = $uf->makeUserByLogin($conn, 1, 123);
+        $uf = new UserFactory();
+        $u1 = $uf->makeUserByLogin($conn,AcademicStaff::TABLE_NAME, 1, 123);
 
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( AcademicStaff::class, $u1);
 
         
         $id = random_int(10000,99999);
-        $u1 = $uf->makeUserByRegister($conn, $id, 123, "UNIT", "TEST", $id."@test.com");
+        $u1 = $uf->makeUserByRegister($conn, AcademicStaff::TABLE_NAME, $id, 123, "UNIT", "TEST", $id."@test.com");
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( AcademicStaff::class, $u1);
         $this->assertEquals($id, $u1->getId());
@@ -70,15 +70,15 @@ final class UserDatabaseTest extends TestCase
     */
     public function testCreateUniversityAdministration(PDO $conn): UniversityAdministration
     {
-        $uf = new UserFactory(UniversityAdministration::TABLE_NAME);
-        $u1 = $uf->makeUserByLogin($conn, 1, 123);
+        $uf = new UserFactory();
+        $u1 = $uf->makeUserByLogin($conn, UniversityAdministration::TABLE_NAME, 1, 123);
 
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( UniversityAdministration::class, $u1);
 
         
         $id = random_int(10000,99999);
-        $u1 = $uf->makeUserByRegister($conn, $id, 123, "UNIT", "TEST", $id."@test.com");
+        $u1 = $uf->makeUserByRegister($conn, UniversityAdministration::TABLE_NAME, $id, 123, "UNIT", "TEST", $id."@test.com");
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( UniversityAdministration::class, $u1);
         $this->assertEquals($id, $u1->getId());
@@ -94,15 +94,15 @@ final class UserDatabaseTest extends TestCase
     */
     public function testCreateSportsCenterStaff(PDO $conn): SportsCenterStaff
     {
-        $uf = new UserFactory(SportsCenterStaff::TABLE_NAME);
-        $u1 = $uf->makeUserByLogin($conn, 1, 123);
+        $uf = new UserFactory();
+        $u1 = $uf->makeUserByLogin($conn, SportsCenterStaff::TABLE_NAME, 1, 123);
 
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( SportsCenterStaff::class, $u1);
 
         
         $id = random_int(10000,99999);
-        $u1 = $uf->makeUserByRegister($conn, $id, 123, "UNIT", "TEST", $id."@test.com");
+        $u1 = $uf->makeUserByRegister($conn, SportsCenterStaff::TABLE_NAME, $id, 123, "UNIT", "TEST", $id."@test.com");
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( SportsCenterStaff::class, $u1);
         $this->assertEquals($id, $u1->getId());
@@ -112,7 +112,7 @@ final class UserDatabaseTest extends TestCase
         $this->assertEquals(123, $u1->getPassword());
 
 
-        $u1 = $uf->makeUserById($conn, 1);
+        $u1 = $uf->makeUserById($conn, SportsCenterStaff::TABLE_NAME, 1);
 
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( SportsCenterStaff::class, $u1);

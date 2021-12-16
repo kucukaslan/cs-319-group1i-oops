@@ -12,7 +12,7 @@ class UserFactory{
 
 
     //methods
-    public function __construct(string $usertype)  {
+    private function makeUser(string $usertype)  {
         if(strcmp($usertype, Student::TABLE_NAME) == 0)
             $this->user = new Student();
         else if(strcmp($usertype, AcademicStaff::TABLE_NAME) == 0)
@@ -28,8 +28,9 @@ class UserFactory{
     }
 
 
-    public function makeUserByRegister($db, $id, $password,$firstname,$lastname,$email) : User
+    public function makeUserByRegister(PDO $db, string $usertype, int $id, string|int $password, string $firstname, string $lastname,string $email) : User
     {
+        $this->makeUser($usertype);
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
         $this->user->setPassword($password);
@@ -38,12 +39,11 @@ class UserFactory{
         $this->user->setEmail($email);
 
         return $this->user;
-
-        // todo insert to database: muh ekle.
     }
 
     // id session arrayde var.
-    public function makeUserForHesCode($db,$id) : User{
+    public function makeUserForHesCode(PDO $db, string $usertype, int $id) : User{
+        $this->makeUser($usertype);
 
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
@@ -52,8 +52,10 @@ class UserFactory{
     }
 
 
-    public function makeUserByLogin($db, $id, $password) : User
+    public function makeUserByLogin(PDO $db, string $usertype, int $id, string|int $password) : User
     {
+        $this->makeUser($usertype);
+
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
         $this->user->setPassword($password);
@@ -66,12 +68,12 @@ class UserFactory{
         }
 
         return $this->user;
-
-        // todo insert to database: muh ekle.
     }
 
-    public function makeUserById(PDO $db, int $id) : User
+    public function makeUserById(PDO $db, string $usertype, int $id) : User
     {
+        $this->makeUser($usertype);
+
         $this->user->setId($id);
         $this->user->setDatabaseConnection($db);
         try {
@@ -88,9 +90,5 @@ class UserFactory{
 
         }
         return $this->user;
-
-        // todo insert to database: muh ekle.
     }
-
-
 }

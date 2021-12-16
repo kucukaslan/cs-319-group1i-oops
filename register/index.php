@@ -22,12 +22,11 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['UserName'];
     $usersurname = $_POST['UserSurname'];
 
-
-
+    $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
     try {
-        $uf = new UserFactory(Student::TABLE_NAME);
-        $std = $uf->makeUserByRegister($conn, $userid, $password,$username,$usersurname,$usermail);
+        $uf = new UserFactory();
+        $std = $uf->makeUserByRegister($conn, $usertype, $userid, $password,$username,$usersurname,$usermail);
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
         $_SESSION['id'] = $std->getId();

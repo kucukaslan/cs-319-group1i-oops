@@ -35,15 +35,14 @@
         echo "</div> </div>";
         exit();
     } else {
-        $uf = new UserFactory(Student::TABLE_NAME);
-        $user = $uf->makeUserById($conn, $_SESSION["id"]);
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $uf = new UserFactory();
+        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
 
-        // todo sessiondan al
-        $usertype = $_SESSION['usertype'];
         $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
 

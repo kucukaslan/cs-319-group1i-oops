@@ -47,8 +47,8 @@
             $id = $_SESSION['id'];
 
 
-            $uf = new UserFactory($usertype);
-            $std = $uf->makeUserById($conn, $_SESSION['id']);
+            $uf = new UserFactory();//$usertype);
+            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
 
             //----
             if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
@@ -56,7 +56,7 @@
 
                     $hescode = $_POST['HESCode'];
                     $std->updateHESCode($hescode);
-                    $std = $uf->makeUserById($conn, $_SESSION['id']);
+                    $std = $uf->makeUserById($conn,$usertype, $_SESSION['id']);
                 }
 
                 if(isset($_POST['vaccinecard'])) {

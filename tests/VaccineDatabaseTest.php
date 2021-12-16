@@ -30,8 +30,8 @@ final class VaccineDatabaseTest extends TestCase
     */
     public function testCreateStudent(PDO $conn): Student
     {
-        $uf = new UserFactory(Student::TABLE_NAME);
-        $u1 = $uf->makeUserByLogin($conn, 1, 123);
+        $uf = new UserFactory();
+        $u1 = $uf->makeUserByLogin($conn,Student::TABLE_NAME, 1, 123);
 
         $this->assertInstanceOf( User::class, $u1);
         $this->assertInstanceOf( Student::class, $u1);
