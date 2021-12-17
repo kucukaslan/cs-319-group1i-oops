@@ -12,19 +12,18 @@ class UserFactory{
 
 
     //methods
-    private function makeUser(string $usertype)  {
+    public function makeUser(string $usertype) : User{ 
         if(strcmp($usertype, Student::TABLE_NAME) == 0)
             $this->user = new Student();
         else if(strcmp($usertype, AcademicStaff::TABLE_NAME) == 0)
             $this->user = new AcademicStaff();
         else if(strcmp($usertype, UniversityAdministration::TABLE_NAME) == 0)
             $this->user = new UniversityAdministration();
-
         else if(strcmp($usertype, SportsCenterStaff::TABLE_NAME) == 0)
             $this->user = new SportsCenterStaff();
         else
             throw(new Exception("User type not found"));
-
+        return $this->user;
     }
 
 
@@ -60,7 +59,8 @@ class UserFactory{
         $this->user->setId($id);
         $this->user->setPassword($password);
 
-        echo "id : " . $id . "  $password ";
+        // the moment when you used Argon2i in database but publicly shared the passwords in plaintext!
+        // echo "id : " . $id . "  $password ";
 
         $pwVerified = $this->user->verifyPassword();
         if (!$pwVerified) {

@@ -4,6 +4,8 @@ class Event
 {
     // CONSTANTS
     const TABLE_NAME = "event";
+    const PARTICIPATION_TABLE_NAME = "event_participation";
+    const CONTROL_TABLE_NAME = "event_control";
 
     // database connection and table name
     protected ?PDO $conn;
@@ -32,7 +34,10 @@ class Event
      * @param User|null $participants
      * @param int|null $currentNumberOfParticipants
      */
-    public function __construct(?PDO $conn, ?int $eventID, ?string $title, ?DateTime $startDate, ?bool $canPeopleJoin, ?string $place, ?int $maxNoOfParticipant, $participants, ?int $currentNumberOfParticipants)
+    /*
+    * Temporarily placed default arguments however this constructor might be replaced with empty constructor in future! 
+    */
+    public function __construct(?PDO $conn = null, ?int $eventID = 0, ?string $title = "", ?DateTime $startDate = null, ?bool $canPeopleJoin = false, ?string $place= "", ?int $maxNoOfParticipant = 0, $participants = null, ?int $currentNumberOfParticipants = 0)
     {
         $this->conn = $conn;
         $this->eventID = $eventID;
@@ -44,6 +49,7 @@ class Event
         $this->participants = $participants;
         $this->currentNumberOfParticipants = $currentNumberOfParticipants;
     }
+
 
 
     public function addParticipant(User $user): void
@@ -71,19 +77,62 @@ class Event
 
     }
 
-
     /**
      * @return array|null
      */
-    public function getParticipants(): ?array
+    public function getControllers($usertype = AcademicStaff::TABLE_NAME): ?array
     {
+        if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
+            $sql = 'Select * from '.User::TABLE_NAME. " NATURAL JOIN  ".self::CONTROL_TABLE_NAME.' where event_id = :event_id';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['event_id' => $this->getEventID()]);
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $users = [];
+            foreach ($row as $user) {
+                $users[$user['user_id']] = (new UserFactory())->makeUser( $usertype);
+                $users[$user['user_id']]->setDatabaseConnection($this->conn);
+                $users[$user['user_id']]->setId($user['user_id']);
+                $users[$user['user_id']]->setFirstname($user['name']);
+                $users[$user['user_id']]->setLastName($user['lastname']);
+                $users[$user['user_id']]->setEmail($user['email']);
+                $users[$user['user_id']]->setHESCode($user['hes_code'] ?? "");
+            }           
+            $this->setParticipants( $users);
+        }
         return $this->participants;
     }
 
     /**
+     * @return array|null
+     */
+    public function getParticipants($usertype = Student::TABLE_NAME): ?array
+    {
+        if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
+            $sql = 'Select * from '.User::TABLE_NAME. " NATURAL JOIN  ".self::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['event_id' => $this->getEventID()]);
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $users = [];
+            foreach ($row as $user) {                
+                $users[$user['user_id']] = (new UserFactory())->makeUser( $usertype);
+                $users[$user['user_id']]->setDatabaseConnection($this->conn);
+                $users[$user['user_id']]->setId($user['user_id']);
+                $users[$user['user_id']]->setFirstname($user['name']);
+                $users[$user['user_id']]->setLastName($user['lastname']);
+                $users[$user['user_id']]->setEmail($user['email']);
+                $users[$user['user_id']]->setHESCode($user['hes_code'] ?? "");
+            }           
+            $this->setParticipants( $users);
+        }
+        return $this->participants;
+    }
+
+
+
+    /**
      * @param array|null $participants
      */
-    public function setParticipants($participants): void
+    public function setParticipants(array $participants): void
     {
         $this->participants = $participants;
     }
@@ -93,6 +142,13 @@ class Event
      */
     public function getCurrentNumberOfParticipants(): ?int
     {
+        if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
+            $sql = 'Select count(*) as count from event_participation where event_id = :event_id';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['event_id' => $this->getEventID()]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->setCurrentNumberOfParticipants($row['count']);
+        }
         return $this->currentNumberOfParticipants;
     }
 
