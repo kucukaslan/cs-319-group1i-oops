@@ -1,10 +1,10 @@
 <?php
-    require_once(__DIR__."/../config.php");
-    require_once(rootDirectory()."/util/NavBar.php");
-    require_once(rootDirectory() . "/util/UserFactory.php");
-    startDefaultSessionWith();
-    $pagename = '/closecontact';
-    ?>
+require_once(__DIR__ . "/../config.php");
+require_once(rootDirectory() . "/util/NavBar.php");
+require_once(rootDirectory() . "/util/UserFactory.php");
+startDefaultSessionWith();
+$pagename = '/closecontact';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +12,6 @@
     <meta charset="UTF-8">
     <title>Close Contacts</title>
 
-    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +21,7 @@
 <div class="container">
 
     <?php
-    require_once rootDirectory().'/vendor/autoload.php';
+    require_once rootDirectory() . '/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
 
@@ -35,18 +34,18 @@
         echo "</div> </div>";
         exit();
     } else {
-        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
-        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
 
         $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
 
         $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
 
-        $imgSource ="../srcs/default_profile_pic.jpg";
+        $imgSource = "../srcs/default_profile_pic.jpg";
 
         $buttonNames = [];
         $contact_list = [];
@@ -67,7 +66,7 @@
         echo $m->render('pasteventlist',
             ['event' => [
                 ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020'],
-                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']            ]
+                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']]
             ]);
         // close contact component
         echo $m->render("addclosecontact");
@@ -75,7 +74,7 @@
 
         // implementation of add close contact by id
         // if the input is numeric try to add this id
-        if(isset($_POST['closeContact'])) {
+        if (isset($_POST['closeContact'])) {
             if (is_numeric($_POST['closeContact'])) {
                 $contactIdToAdd = intval($_POST['closeContact']);
 
@@ -104,7 +103,7 @@ EOF;
         // check if a button is pressed for any user in the table
         for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
             $buttonName = "button" . ($i + 1);
-            if(isset($_POST[$buttonName])) {
+            if (isset($_POST[$buttonName])) {
                 // delete the user at the ($i + 1)th row in the contact list
                 $idToDeleteFromContactList = $contact_list[$i]["id"];
                 if ($user->deleteCloseContact($idToDeleteFromContactList)) {
@@ -116,7 +115,6 @@ EOF;
                 break;
             }
         }
-
 
 
     }
