@@ -1,9 +1,9 @@
 <?php
 require_once("Event.php");
 
-class SportsEvent extends Event {
+class CourseEvent extends Event {
 
-    const TABLE_NAME = "sport";
+    const TABLE_NAME = "course";
     const TABLE_PREFIX =  parent::TABLE_NAME . "_";
 
     // properties

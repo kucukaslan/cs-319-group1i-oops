@@ -1,5 +1,5 @@
 <?php
-    include rootDirectory().'/constants.php'; // all constants are defined here
+    require_once (rootDirectory().'/constants.php'); // all constants are defined here
 
     const SESSION_TIMEOUT_DURATION = 600; // in seconds
     const SESSION_REGENERATE_ID_DURATION = 300; // in seconds

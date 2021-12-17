@@ -60,7 +60,8 @@ class UserFactory{
         $this->user->setId($id);
         $this->user->setPassword($password);
 
-        echo "id : " . $id . "  $password ";
+        // the moment when you used Argon2i in database but publicly shared the passwords in plaintext!
+        // echo "id : " . $id . "  $password ";
 
         $pwVerified = $this->user->verifyPassword();
         if (!$pwVerified) {

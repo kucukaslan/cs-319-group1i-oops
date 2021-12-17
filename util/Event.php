@@ -32,7 +32,10 @@ class Event
      * @param User|null $participants
      * @param int|null $currentNumberOfParticipants
      */
-    public function __construct(?PDO $conn, ?int $eventID, ?string $title, ?DateTime $startDate, ?bool $canPeopleJoin, ?string $place, ?int $maxNoOfParticipant, $participants, ?int $currentNumberOfParticipants)
+    /*
+    * Temporarily placed default arguments however this constructor might be replaced with empty constructor in future! 
+    */
+    public function __construct(?PDO $conn = null, ?int $eventID = 0, ?string $title = "", ?DateTime $startDate = null, ?bool $canPeopleJoin = false, ?string $place= "", ?int $maxNoOfParticipant = 0, $participants = null, ?int $currentNumberOfParticipants = 0)
     {
         $this->conn = $conn;
         $this->eventID = $eventID;
@@ -44,6 +47,7 @@ class Event
         $this->participants = $participants;
         $this->currentNumberOfParticipants = $currentNumberOfParticipants;
     }
+
 
 
     public function addParticipant(User $user): void
@@ -93,6 +97,13 @@ class Event
      */
     public function getCurrentNumberOfParticipants(): ?int
     {
+        if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
+            $sql = 'Select count(*) as count from event_participation where event_id = :event_id';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['event_id' => $this->getEventID()]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->setCurrentNumberOfParticipants($row['count']);
+        }
         return $this->currentNumberOfParticipants;
     }
 

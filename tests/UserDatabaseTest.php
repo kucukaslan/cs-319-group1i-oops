@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-require_once("config.php");
-require_once("util/UserFactory.php");
+require_once(__DIR__."/../config.php");
+require_once(rootDirectory()."/util/UserFactory.php");
 
 use PHPUnit\Framework\TestCase;
 
