@@ -1,42 +1,35 @@
 <div class="container">
     <p class="title">Vaccine Info</p>
+
+    <label for="start">Current Vaccines :</label>
+
+    <table class="table is-bordered is-striped is-narrow is-hoverable">
+        <tr>
+            <th>Vaccination Date</th>
+            <th>Vaccination Type</th>
+        </tr>
+        {{#vaccine}}
+            <tr>
+                <td>{{vaccineDate}}</td>
+                <td>{{vaccineType}}</td>
+            </tr>
+        {{/vaccine}}
+    </table>
+
+
+    <br> </br>
     <div class="table">
 
-        <label for="start">Current Vaccines :</label>
 
-        <table>
-            <tr>
-                <th>Vaccination Date</th>
-                <th>Vaccination Type</th>
-            </tr>
-            {{#vaccine}}
-                <tr>
-                    <td>{{vaccineDate}}</td>
-                    <td>{{vaccineType}}</td>
-                </tr>
-            {{/vaccine}}
-        </table>
+        <form method="post" enctype="multipart/form-data">
+            Choose Your File
+            <input type="file" name="file"/>
+            <br>
+            <input type="submit" value="Read PDF" name="vaccinecard"/>
+        </form>
 
-
-        <br> </br>
-        <div class="table">
-
-
-
-            <form method="post" enctype="multipart/form-data">
-                Choose Your File
-                <input type="file" name="file" />
-                <br>
-                <input type="submit" value="Read PDF" name="vaccinecard" />
-            </form>
-
-
-
-
-        </div>
 
     </div>
-
 
 
 </div>
