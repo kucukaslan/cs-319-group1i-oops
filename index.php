@@ -144,6 +144,7 @@
                 echo $engine->render('vax',
                 ['vaccine' => $abc
                 ]);
+                // getConsoleLogger()->log("Main","Vaccine list: " . jsonencode($abc), false);
                 /*
                 echo $engine->render('vax',
                     ['vaccine' => [
