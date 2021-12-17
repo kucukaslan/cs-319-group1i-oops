@@ -12,7 +12,6 @@ $pagename = '/closecontact/see';
     <title>Event Details</title>
 
 
-    <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -59,11 +58,13 @@ $pagename = '/closecontact/see';
     ?>
     <div class="centerwrapper">
         <div class="centerdiv">
-            <form method='get' action="../">
-                <div class="form-group">
-                    <input type="submit" class="button button_submit" value="Return to Close Contact Page">
-                </div>
-            </form>
+            <div class="columns is-centered">
+                <form method='get' class="box" action="../">
+                    <div class="form-group">
+                        <input type="submit" class="button button_submit" value="Return to Close Contact Page">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
