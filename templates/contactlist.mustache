@@ -1,7 +1,7 @@
-<div class = "component">
-    <h2> Close Contact List </h2>
-    <div class="table">
-        <table>
+<div class="columns is-centered">
+    <div class="column is-narrow">
+        <h2><b>Close Contact List</b></h2>
+        <table class="table">
             <tr>
                 <th>Photo</th>
                 <th>Name</th>
@@ -10,12 +10,19 @@
             </tr>
             {{#person}}
                 <tr>
-                    <td><img src="{{imgsource}}" alt="Avatar" style="height: 50px; width: 50px;"></td>
+                    <td><img src="{{imgsource}}" class="image is-64x64" alt="Avatar">
+                    </td>
                     <td>{{name}}</td>
                     <td>{{id}}</td>
-                    <td> <form method="POST"> <input type="submit" class="button" name="{{buttonname}}" value="Delete"/> </form> </td>
+                    <td>
+                        <form method="POST"><input type="submit" class="button" name="{{buttonname}}"
+                                                   value="Delete"/>
+                        </form>
+                    </td>
                 </tr>
             {{/person}}
         </table>
     </div>
 </div>
+
+
