@@ -10,7 +10,7 @@ $conn = getDatabaseConnection();
 if (!isset($_SESSION['id']) || !isset($conn)) {
     header("location: ../login");
 }
-$usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+$usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 ?>
 
 <!DOCTYPE html>
@@ -28,32 +28,36 @@ $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 <div class="container">
 
     <?php
-        $title = <<<EOF
+    $title = <<<EOF
         <div class="centerwrapper">
         <div class="centerdiv">
             <p class="title">Events Page</p>
         </div>
     </div>
     EOF;
-        $navbar = new NavBar($usertype);
-        echo $navbar->draw();
+    $navbar = new NavBar($usertype);
+    echo $navbar->draw();
 
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
-        ));
-        
-        echo $title;
-        echo $m->render("eventslecture", ["event" => [["courseCode" => "cs123", "lectureDate" => "1.2.3444"]]]);
-        // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
-        ?>
-        <div class="block"></div>
-        <?php
-        echo $m->render('eventssports', [
-            'enrolledevent' => [
-                ['place' => 'place1', "dayslot" => "day1", "timeslot" => "13.30"]],
-            "notenrolledevent" => [
-                ['place' => 'place1', "dayslot" => "day2", "timeslot" => "13.30"]]
-        ]);
+    $m = new Mustache_Engine(array(
+        'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+    ));
+
+    echo $title;
+    echo $m->render("eventslecture", ["event" => [
+        ["courseCode" => "cs123", "lectureDate" => "1.2.3444"],
+        ["courseCode" => "cs319", "lectureDate" => "1.2.4445"]
+    ]]);
+    // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
+    ?>
+    <?php
+    echo $m->render('eventssports', [
+        'enrolledevent' => [
+            ['place' => 'place1', "dayslot" => "day1", "timeslot" => "13.30"],
+            ['place' => 'place2', "dayslot" => "day3", "timeslot" => "14.30"]
+        ],
+        "notenrolledevent" => [
+            ['place' => 'place1', "dayslot" => "day2", "timeslot" => "13.30"]]
+    ]);
     ?>
 </div>
 

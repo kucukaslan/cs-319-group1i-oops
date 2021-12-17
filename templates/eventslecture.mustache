@@ -1,31 +1,42 @@
-<div class="container">
-    <h2> Enrolled Courses </h2>
-    <div class="table">
-        <table>
-            <tr>
-                <th>Course Code</th>
-                <th>Lecture Date</th>
-                <th>Leave Course</th>
-            </tr>
-            {{#event}}
-                <tr>
-                    <td>{{courseCode}}</td>
-                    <td>{{lectureDate}}</td>
-                    <td><input type="submit" class="button is-warning" value="Leave"></td>
-                </tr>
-            {{/event}}
-        </table>
-    </div>
-    <div class="columns">
-        <div class="column is-two-fifths">
-            <form class="box" id="loginForm" action="" method="post">
-                <div class="field">
-                    <div class="control">
-                        <input type="submit" class="button is-success" value="Add Course (By Pin)">
-                        <input type="text" name="pin" class="input" id="pin">
-                    </div>
-                </div>
-            </form>
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2><b>Enrolled Courses</b></h2>
+                <table class="table is-striped">
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Lecture Date</th>
+                        <th>Leave Course</th>
+                    </tr>
+                    {{#event}}
+                        <tr>
+                            <td>{{courseCode}}</td>
+                            <td>{{lectureDate}}</td>
+                            <td><input type="submit" class="button is-warning" value="Leave"></td>
+                        </tr>
+                    {{/event}}
+                </table>
+            </div>
+
         </div>
     </div>
-</div>
+</section>
+<section class="hero is-success">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="columns">
+                <div class="column is-narrow">
+                    <form class="box" id="loginForm" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-success" value="Add Course (By Pin)">
+                                <input type="text" name="pin" class="input" id="pin">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

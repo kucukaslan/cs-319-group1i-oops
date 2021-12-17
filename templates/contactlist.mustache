@@ -1,28 +1,32 @@
-<div class="columns is-centered">
-    <div class="column is-narrow">
-        <h2><b>Close Contact List</b></h2>
-        <table class="table">
-            <tr>
-                <th>Photo</th>
-                <th>Name</th>
-                <th>ID</th>
-                <th>Remove</th>
-            </tr>
-            {{#person}}
-                <tr>
-                    <td><img src="{{imgsource}}" class="image is-64x64" alt="Avatar">
-                    </td>
-                    <td>{{name}}</td>
-                    <td>{{id}}</td>
-                    <td>
-                        <form method="POST"><input type="submit" class="button" name="{{buttonname}}"
-                                                   value="Delete"/>
-                        </form>
-                    </td>
-                </tr>
-            {{/person}}
-        </table>
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2><b>Close Contact List</b></h2>
+                <table class="table is-narrow">
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>ID</th>
+                        <th>Remove</th>
+                    </tr>
+                    {{#person}}
+                        <tr>
+                            <td><img src="{{imgsource}}" class="image is-64x64" alt="Avatar">
+                            </td>
+                            <td>{{name}}</td>
+                            <td>{{id}}</td>
+                            <td>
+                                <form method="POST"><input type="submit" class="button" name="{{buttonname}}"
+                                                           value="Delete"/>
+                                </form>
+                            </td>
+                        </tr>
+                    {{/person}}
+                </table>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 
