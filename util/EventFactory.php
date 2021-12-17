@@ -10,7 +10,6 @@ class EventFactory {
         $this->conn = $databaseConnection;
     }
 
-
     public function getEvents(string  $type) : array | null {
         if($type == SportsEvent::TABLE_NAME)
             $sql = "SELECT * FROM ". SportsEvent::TABLE_NAME;
@@ -25,26 +24,31 @@ class EventFactory {
         $events = array();
         foreach($result as $row)
         {
-
+            $id =$row["event_id"];
             $event = $this->makeEvent($type);
-            $event->setEventID($row["event_id"]);
+            $event->setConn($this->conn);
+            $event->setEventID($id);
             $event->setTitle($row["event_name"]);
             $event->setPlace($row["place"]);
             $event->setMaxNoOfParticipant($row['max_no_of_participant']);
 
             // todo table name 'event_participant' is hardcoded, to be fixed! 
             
-            
-            $sql = 'Select count(*) as count from event_participation where event_id = :event_id';
+            try {
+            $sql = 'Select count(*) as count from '.Event::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":event_id", $row["event_id"]);
+            $stmt->bindParam(":event_id",$id);
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $event->setCurrentNumberOfParticipants($row['count']);
-            
+            }
+            catch(Exception $e) {
+                //require_once(__DIR__."/../util/Logger.php");
+                error_log( strval($e));
+            }
 
-            $events[] = $event;
+            $events[$id] = $event;
         }
 
         //var_dump($events);
@@ -59,7 +63,5 @@ class EventFactory {
         else
             return null;
     }
-
-
 }
 ?>

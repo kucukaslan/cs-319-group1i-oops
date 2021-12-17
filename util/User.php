@@ -27,13 +27,8 @@ abstract class User
     }
 
 
-
-    // spesifik bir user için database'de olan tüm vaccineleri getiren bir metot yaz muh.
-
-
-    ///
-
-
+    // someone: spesifik bir user için database'de olan tüm vaccineleri getiren bir metot yaz muh.
+    // Muhammed: VaccineManager yapıyor onu. 2021.12.17
 
     public function getFirstName(): string
     {

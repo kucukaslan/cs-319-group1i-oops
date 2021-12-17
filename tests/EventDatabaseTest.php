@@ -39,6 +39,32 @@ final class EventDatabaseTest extends TestCase
         }
 
         //var_dump($cev);
-        return $sev;
+        return $cev;
     }
+
+    /**
+     * @depends testDatabaseConnection
+     * @depends testGetEvents
+     */
+    public function testGetControllerPartipant(PDO $conn,  array $events): array{
+        //var_dump($events);
+        $ev = $events[array_key_first($events)];
+        $this->assertInstanceOf(Event::class, $ev);
+
+        $ctrl = $ev->getControllers();
+        $ptcp = $ev->getParticipants();
+
+        foreach($ctrl as $c)
+        {
+            $this->assertInstanceOf(User::class, $c);
+        }
+        foreach($ptcp as $c)
+        {
+            $this->assertInstanceOf(User::class, $c);
+        }
+        // var_dump($ctrl);
+        // var_dump($ptcp);
+        return $ptcp;
+    }
+
 }
