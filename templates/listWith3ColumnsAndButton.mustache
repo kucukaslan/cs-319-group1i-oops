@@ -1,0 +1,23 @@
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2><b>{{title}}</b></h2>
+                <table class="table is-bordered is-striped is-narrow is-hoverable">
+                    <tr>
+                        <th>{{column1}}</th>
+                        <th>{{column2}}</th>
+                        <th>{{column3}}</th>
+                    </tr>
+                    {{#row}}
+                        <tr>
+                            <td>{{firstEl}}</td>
+                            <td>{{secondEl}}</td>
+                            <td> <a href="{{buttonLink}}" class="button"> {{buttonName}} </a> </td>
+                        </tr>
+                    {{/row}}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,6 +1,11 @@
 <?php 
     include_once("../../config.php");
+    require_once(rootDirectory()."/util/NavBar.php");
+    require_once(rootDirectory() . "/util/UserFactory.php");
     startDefaultSessionWith();
+
+    $courseCode = "Math-123";
+    $date = "1.2.3232";
     ?>
 
 <!DOCTYPE html>
@@ -30,7 +35,37 @@
         echo "</div> </div>";
         exit();
     } else {
-        $m = new Mustache_Engine(array(
+        // definitions
+        $engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
+        ));
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $courseCodeAndDate = <<<EOF
+<h4>Course Code: $courseCode  Date: $date </h4>
+EOF;
+
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+        echo "<h2> Manage Course </h2>";
+        echo $courseCodeAndDate;
+
+        $idOfTheParticipant = 1;
+        echo $engine->render("listWith3ColumnsAndForm", ["row" => [
+            ['firstEl' => "hikmet simsir", 'secondEl' => "allowed", "value"=>"Remove", "buttonName"=>"Manage"],
+            ['firstEl' => "hikmet simsir", 'secondEl' => "allowed", "value"=>"Remove", "buttonName"=>"Manage"]
+        ], "title"=>"Participants of the Event",
+            "column1"=>"Student Name", "column2"=>"Risk Status", "column3"=>"RemoveStudent"]);
+
+        echo $engine->render("listWith2ColumnsAndForm", ["row" => [
+            ['firstEl' => "hikmet simsir teacher", "value"=>"Remove", "buttonName"=>"name"],
+            ['firstEl' => "hikmet simsir teacher", "value"=>"Remove", "buttonName"=>"name"]
+        ], "title"=>"Coordinators",
+            "column1"=>"Coordinators", "column2"=>"Remove Coordinator"]);
+        $addCoordinatorButton = <<<EOF
+<form method="POST"> <input type="submit" class="button" name="" value="Add Coordinator"> </form>
+EOF;
+        echo $addCoordinatorButton;
+        /*$m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
         ));
         echo $m->render('navbar', ['links' => [
@@ -42,8 +77,9 @@
             ['href' => '../../closecontact', 'title' => 'Close Contact'],
             ['href' => '../../profile', 'title' => 'Profile'],
             ['href' => '../../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
-        );
+        );*/
 
+/*
         echo '<div class="centerwrapper">
                 <div class="centerdiv">
                     <br><br>
@@ -57,7 +93,8 @@
                     </div>
                 </form>
             </div>
-        </div>';
+        </div>';*/
+
     }
 
     ?>

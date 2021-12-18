@@ -16,9 +16,6 @@
 
     }
     $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
-
-
-
 ?>
 <!DOCTYPE html>
 

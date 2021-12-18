@@ -51,7 +51,10 @@ $pagename = '/closecontact/see';
             "nonAddedStudent" => [
                 ['name' => 'nonadded student name']],
             "courseCode" => "example Course Code",
-            "date" => "example datee"
+            "date" => "example datee",
+            "column1"=> "Course Code",
+            "column2"=> "Lecture Date",
+            "column3"=> "See Participants",
         ]);
     }
 
