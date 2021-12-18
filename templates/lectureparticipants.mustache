@@ -11,13 +11,21 @@
                     {{#addedStudent}}
                         <tr>
                             <td>{{name}}</td>
-                            <td><input type="submit" class="button" value="Remove"></td>
+                            <td>
+                                <form method="post">
+                                <input type="submit" class="button" value="Remove" name="remove-{{name}}">
+                                </form>
+                            </td>
                         </tr>
                     {{/addedStudent}}
                     {{#nonAddedStudent}}
                         <tr>
                             <td>{{name}}</td>
-                            <td><input type="submit" class="button" value="Add"></td>
+                            <td>
+                                <form method="post">
+                                <input type="submit" class="button" value="Add" name="add-{{name}}">
+                                </form>
+                            </td>
                         </tr>
                     {{/nonAddedStudent}}
                 </table>

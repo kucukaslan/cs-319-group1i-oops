@@ -13,7 +13,15 @@
                         <tr>
                             <td>{{courseCode}}</td>
                             <td>{{lectureDate}}</td>
-                            <td><input type="submit" class="button is-warning" value="Leave"></td>
+
+                            <td>
+
+                            <form method="post">
+                                <input type="submit" class="button is-warning" value="Leave" name="remove-{{courseCode}}">
+                            </form>
+
+
+                            </td>
                         </tr>
                     {{/event}}
                 </table>

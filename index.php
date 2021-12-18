@@ -6,7 +6,7 @@
     require_once(rootDirectory() . "/util/Vaccine.php");
     require_once(rootDirectory() . "/util/VaccineFactory.php");
     require_once(rootDirectory() . "/util/VaccineManager.php");
-    require_once(rootDirectory()."/util/NavBar.php");
+    require_once(rootDirectory() . "/util/NavBar.php");
     $conn = getDatabaseConnection();
     $pagename = '/';
     startDefaultSessionWith();
@@ -117,6 +117,12 @@
 
                 ?>
             </p>
+            <div class="block"></div>
+            <form method="post" action="/delete">
+                <div class="form-group">
+                    <input type="submit" href="/delete" class="button is-danger is-6" value="!!! DELETE ACCOUNT !!!">
+                </div>
+            </form>
         </div>
     </div>
     <div class="tile is-parent is-vertical">
@@ -150,7 +156,6 @@
                     ]
                     ]);
                     */
-
                 ?>
             </div>
         </div>
@@ -180,22 +185,11 @@
                     $pastTest, $pastTest
                 ]]);
 
-
                 ?>
             </p>
         </div>
     </div>
 </div>
-<div class="columns">
-    <div class="column is-offset-5 is-two-fifths is-warning">
-        <form method="post" action="/delete">
-            <div class="form-group">
-                <input type="submit" href="/delete" class="button is-danger is-6" value="!!! DELETE ACCOUNT !!!">
-            </div>
-        </form>
-    </div>
-</div>
-
 
 <?php
 

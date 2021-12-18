@@ -8,7 +8,11 @@
         {{#upcomingTest}}
             <tr>
                 <td>{{date}}</td>
-                <td><input type="submit" class="button" value="Cancel"></td>
+                <td>
+                    <form method="post">
+                        <input type="submit" class="button is-warning" value="Cancel" name="remove-{{date}}">
+                    </form>
+                </td>
             </tr>
         {{/upcomingTest}}
         {{#pastTest}}
@@ -22,19 +26,17 @@
 
     <div class="table">
 
-
-        <label for="start">Add new Vaccine Information:</label>
+<form method="post">
+        <label for="start">Schedule PCRTest:</label>
         <br> </br>
-        <b> Applied Day : </b>
-        <input type="date" id="start" name="trip-start"
-               value="2018-07-22"
-               min="2018-01-01" max="2018-12-31">
+        <b>Applied Day: </b>
+        <input type="datetime-local" id="start" name="trip-start"
+               value="2018-01-01T23:59:59"
+               min="2018-01-01T23:59:59" max="2018-12-31T23:59:59">
         <br> </br>
 
-        <input type="submit" class="button button_submit" value="Add Vaccine Card">
-
+        <input type="submit" class="button" value="Schedule PCR Test">
+</form>
     </div>
 
-
-    <input type="submit" class="button button_submit" value="Schedule PCR test">
 </div>
