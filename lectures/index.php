@@ -25,7 +25,7 @@ startDefaultSessionWith();
     if (!isset($_SESSION['id'])) {
         echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
             . "You haven't logged in";
-        echo "<form metho d='get' action=\"..\"><div class=\"form-group\">
+        echo "<form method='get' action=\"..\"><div class=\"form-group\">
                         <input type=\"submit\" class=\"button button_submit\" value=\"Go to Login Page\">
                     </div> </form>";
         echo "</div> </div>";
