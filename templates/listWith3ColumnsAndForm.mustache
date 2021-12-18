@@ -1,0 +1,15 @@
+<h2> {{title}} </h2>
+    <table class="table">
+        <tr>
+            <th>{{column1}}</th>
+            <th>{{column2}}</th>
+            <th>{{column3}}</th>
+        </tr>
+        {{#row}}
+            <tr>
+                <td>{{firstEl}}</td>
+                <td>{{secondEl}}</td>
+                <td> <form method="POST"> <input type="submit" class="button" name="{{buttonname}}" value={{value}}> </form> </td>
+            </tr>
+        {{/row}}
+    </table>

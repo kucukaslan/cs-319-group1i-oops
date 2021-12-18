@@ -63,12 +63,12 @@
         // render close contacts
         echo $m->render("contactlist", ["person" => $contact_list]);
 
-
-        echo $m->render('pasteventlist',
-            ['event' => [
-                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020'],
-                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020']            ]
-            ]);
+        // render past events
+        echo $m->render('listWith3ColumnsAndButton',
+            ['row' => [
+                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020', "buttonLink"=>"../../closecontact/see", "buttonName"=>"see"],
+                ['courseCode' => 'Math-123', 'lectureDate' => '1.1.2020', "buttonLink"=>"../../closecontact/see", "buttonName"=>"see"]]
+            , "title"=>"Past Events"]);
         // close contact component
         echo $m->render("addclosecontact");
 

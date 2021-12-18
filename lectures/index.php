@@ -1,5 +1,7 @@
 <?php
 include_once("../config.php");
+require_once(rootDirectory()."/util/NavBar.php");
+require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 ?>
 
@@ -23,39 +25,52 @@ startDefaultSessionWith();
     if (!isset($_SESSION['id'])) {
         echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
             . "You haven't logged in";
-        echo "<form method='get' action=\"..\"><div class=\"form-group\">
+        echo "<form metho d='get' action=\"..\"><div class=\"form-group\">
                         <input type=\"submit\" class=\"button button_submit\" value=\"Go to Login Page\">
                     </div> </form>";
         echo "</div> </div>";
         exit();
     } else {
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+        $engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        echo $m->render('navbar', ['links' => [
-            ['href' => '../', 'title' => 'Main Menu'],
-            ['href' => '../administration', 'title' => 'Administration'],
-            ['href' => '../lectures', 'title' => 'Lectures'],
-            ['href' => '../reservations', 'title' => 'Reservations'],
-            ['href' => '../events', 'title' => 'Events'],
-            ['href' => '../closecontact', 'title' => 'Close Contact'],
-            ['href' => '../profile', 'title' => 'Profile'],
-            ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']
-        ]
-        ]);
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $uf = new UserFactory();
+        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+
+        $counter = 0;
+        /*$buttonNames = [];
+        for ($i = 0; $i < 2; $i++) { // $user->get no of participants of the event $i++) {
+            // set button names
+            $buttonNames[] = "button" . ($i + 1);
+        }*/
+        // render upcoming lectures
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => [
+        ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+            ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+        ], "title"=>"Upcoming Lectures",
+        "column1"=>"Course Code", "column2"=>"Lecture Date", "column3"=>"Manage Lecture"]);
+
+        // render past lectures
+        echo $engine->render("pastlectures", ["event" => [["courseCode"=>"code1", "lectureDate"=>"1.2.344"], ["courseCode"=>"code1", "lectureDate"=>"1.2.344"]]]);
+
+        // create lecture
+        $createLectureButton = <<<EOF
+<form method="POST"> <input type="submit" class="button" name="" value="Create Lecture"> </form>
+EOF;
+        echo $createLectureButton;
 
     }
-
     ?>
+
+    <!--
     <div class="centerwrapper">
         <div class="centerdiv">
             <br><br>
             <h2>Lectures Page</h2>
-            <?php
-            echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-            echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-            ?>
             <br>
             <form action="manage">
                 <div class="form-group">
@@ -65,10 +80,7 @@ startDefaultSessionWith();
             </form>
         </div>
     </div>
-
-
+    !-->
 </div>
-
-
 </body>
 </html>
