@@ -88,6 +88,8 @@ EOF;
     </div>
 </section>
 EOF;
+
+        
         echo $addCoordinatorButton;
         /*$m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
