@@ -1,23 +1,14 @@
-<section class="hero is-info">
-    <div class="hero-body">
-        <div class="columns is-centered">
-            <div class="column is-narrow">
-                <h2> Past Lectures </h2>
-                <table class="table is-hoverable is-striped is-narrow">
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Lecture Date</th>
-                    </tr>
-                    {{#event}}
-                        <tr>
-                            <td>{{courseCode}}</td>
-                            <td>{{lectureDate}}</td>
-                        </tr>
-                    {{/event}}
-                </table>
-            </div>
-        </div>
-    </div>
-</section>
-
+<h2> Past Lectures </h2>
+    <table class="table">
+        <tr>
+            <th>Course Code</th>
+            <th>Lecture Date</th>
+        </tr>
+        {{#event}}
+            <tr>
+                <td>{{courseCode}}</td>
+                <td>{{lectureDate}}</td>
+            </tr>
+        {{/event}}
+    </table>
 
