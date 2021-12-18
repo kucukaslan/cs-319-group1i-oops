@@ -1,14 +1,25 @@
-<h2> {{title}} </h2>
-    <table class="table">
-        <tr>
-            <th>{{column1}}</th>
-            <th>{{column2}}</th>
-        </tr>
-        {{#row}}
-            <tr>
-                <td>{{firstEl}}</td>
-                <td> <form method="POST"> <input type="submit" class="button" name="{{buttonname}}" value={{value}}> </form> </td>
-            </tr>
-        {{/row}}
-    </table>
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2> {{title}} </h2>
+                <table class="table is-narrow is-striped is-hoverable">
+                    <tr>
+                        <th>{{column1}}</th>
+                        <th>{{column2}}</th>
+                    </tr>
+                    {{#row}}
+                        <tr>
+                            <td>{{firstEl}}</td>
+                            <td>
+                                <form method="POST"><input type="submit" class="button" name="{{buttonname}}"
+                                                           value={{value}}></form>
+                            </td>
+                        </tr>
+                    {{/row}}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 
