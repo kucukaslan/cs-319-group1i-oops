@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <title>Reservation Management System</title>
 
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -31,34 +31,29 @@
         echo "</div> </div>";
         exit();
     } else {
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+        $engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../administration', 'title' => 'Administration'],
-                ['href' => '../lectures', 'title' => 'Lectures'],
-                ['href' => '../reservations', 'title' => 'Reservations', 'id' => 'selected'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
-        );
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $uf = new UserFactory();
+        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+        echo "<div class=\"centerwrapper\">
+            <h2>See Event Page</h2>
+    </div>";
+
+        echo $engine->render("list5ColButton", ["row" => [
+            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
+            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
+            "title"=>"Upcoming Events",
+            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time SLot", "column4"=>"Quota", "column5"=>"See Participants"]);
+
 
     }
 
     ?>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Reservations Page</h2>
-            <br>
-        </div>
-    </div>
-
 
 </div>
 
