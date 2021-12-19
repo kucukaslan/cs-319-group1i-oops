@@ -48,13 +48,13 @@
             ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
             ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
             "title"=>"Upcoming Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time SLot", "column4"=>"Quota", "column5"=>"See Participants"]);
+            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
 
         echo $engine->render("list5ColButton", ["row" => [
             ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
             ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
-            "title"=>"Upcoming Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time SLot", "column4"=>"Quota", "column5"=>"Past Participants"]);
+            "title"=>"Past Events",
+            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"Past Participants"]);
 
     }
 
