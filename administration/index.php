@@ -31,9 +31,13 @@
         echo "</div> </div>";
         exit();
     } else {
-        $engine = new Mustache_Engine(array(
+        $my_engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/administration/templates'),
         ));
+        $engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
+        ));
+
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
         $uf = new UserFactory();
@@ -42,22 +46,38 @@
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
 
-        echo $engine->render("searchByIdHES");
+        $titleHTML = <<<EOF
+        <h2>Admin Page</h2>
+EOF;
+        echo $titleHTML;
 
+        echo $my_engine->render("searchByIdHES");
 
+        // render sports events
+        echo $engine->render("list5ColButton", ["row" => [
+            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
+            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
+            "title"=>"Sports Events",
+            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
+
+        // render courses
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => [
+            ['firstEl' => 'Math123', 'secondEl' => 'SBZ-18', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+            ['firstEl' => 'Math123', 'secondEl' => 'SBZ-18', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"]],
+            "title"=>"Lectures",
+            "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Manage Lecture"]);
+
+        // render search by course form
+        echo $my_engine->render("searchLectureByCode", ["courseCodes"=>[
+                ["courseCode"=>"Math123"], ["courseCode"=>"cs319"]]]);
+
+        if (isset($_POST["lectureCodes"])) {
+            echo $_POST["lectureCodes"];
+        }
 
     }
 
     ?>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Administration Page</h2>
-            <br>
-        </div>
-    </div>
-
-
 </div>
 
 
