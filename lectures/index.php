@@ -1,6 +1,6 @@
 <?php
 include_once("../config.php");
-require_once(rootDirectory() . "/util/NavBar.php");
+require_once(rootDirectory()."/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 ?>
@@ -11,7 +11,7 @@ startDefaultSessionWith();
     <meta charset="UTF-8">
     <title>Lectures <?php echo isset($_SESSION['firstname']) ? " of " . $_SESSION['firstname'] : "" ?></title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -34,9 +34,9 @@ startDefaultSessionWith();
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
-        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
@@ -48,36 +48,21 @@ startDefaultSessionWith();
             $buttonNames[] = "button" . ($i + 1);
         }*/
         // render upcoming lectures
-        echo $engine->render("listWith3ColumnsAndButton",
-            ["row" => [
-                ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName" => "Manage", "buttonLink" => "../../lectures/manage"],
-                ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName" => "Manage", "buttonLink" => "../../lectures/manage"],
-            ], "title" => "Upcoming Lectures",
-                "column1" => "Course Code", "column2" => "Lecture Date", "column3" => "Manage Lecture"]);
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => [
+        ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+            ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+        ], "title"=>"Upcoming Lectures",
+        "column1"=>"Course Code", "column2"=>"Lecture Date", "column3"=>"Manage Lecture"]);
 
         // render past lectures
-        echo $engine->render("pastlectures", ["event" => [["courseCode" => "code1", "lectureDate" => "1.2.344"], ["courseCode" => "code1", "lectureDate" => "1.2.344"]]]);
+        echo $engine->render("listWith2Column", ["row" => [
+            ["firstEl"=>"code1", "secondEl"=>"1.2.344"],
+            ["firstEl"=>"code1", "secondEl"=>"1.2.344"]],
+            "title"=>"Past Lectures", "column1"=>"Course Code", "column2"=>"Lecture Date"]);
 
         // create lecture
         $createLectureButton = <<<EOF
-
-<section class="hero is-success">
-    <div class="hero-body">
-        <div class="columns is-centered">
-            <div class="columns">
-                <div class="column is-narrow">
-                    <form class="box" id="loginForm" action="" method="post">
-                        <div class="field">
-                            <div class="control">
-                                <input type="submit" class="button is-info" name="" value="Create Lecture">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<form method="POST"> <input type="submit" class="button" name="" value="Create Lecture"> </form>
 EOF;
         echo $createLectureButton;
 
@@ -102,4 +87,3 @@ EOF;
 </div>
 </body>
 </html>
-
