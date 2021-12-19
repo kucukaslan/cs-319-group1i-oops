@@ -1,9 +1,9 @@
 <?php
-    include_once("../config.php");
+    include_once("../../config.php");
     require_once(rootDirectory()."/util/NavBar.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
     startDefaultSessionWith();
-?>
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <title>Reservation Management System</title>
 
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../../styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -41,26 +41,18 @@
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
         echo "<div class=\"centerwrapper\">
-            <h2>Reservations Page</h2>
+            <h2>See Event Page</h2>
     </div>";
 
-        echo $engine->render("list5ColButton", ["row" => [
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
-            "title"=>"Upcoming Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
+        echo $engine->render("listWith2Column", ["row" => [
+            ["firstEl"=>"hikmet", "secondEl"=>"allowed"],
+            ["firstEl"=>"hikmet", "secondEl"=>"allowed"]],
+            "title"=>"Sports Event Details", "column1"=>"Name", "column2"=>"Allowance Status"]);
 
-        echo $engine->render("list5ColButton", ["row" => [
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
-            "title"=>"Past Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"Past Participants"]);
 
     }
 
     ?>
-
-
 
 </div>
 

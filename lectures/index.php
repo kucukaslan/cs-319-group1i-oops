@@ -56,7 +56,10 @@ startDefaultSessionWith();
                 "column1" => "Course Code", "column2" => "Lecture Date", "column3" => "Manage Lecture"]);
 
         // render past lectures
-        echo $engine->render("pastlectures", ["event" => [["courseCode" => "code1", "lectureDate" => "1.2.344"], ["courseCode" => "code1", "lectureDate" => "1.2.344"]]]);
+        echo $engine->render("listWith2Column", ["row" => [
+            ["firstEl"=>"code1", "secondEl"=>"1.2.344"],
+            ["firstEl"=>"code1", "secondEl"=>"1.2.344"]],
+            "title"=>"Past Lectures", "column1"=>"Course Code", "column2"=>"Lecture Date"]);
 
         // create lecture
         $createLectureButton = <<<EOF
