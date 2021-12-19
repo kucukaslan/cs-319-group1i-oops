@@ -1,6 +1,8 @@
 <?php
-include_once("../config.php");
-startDefaultSessionWith();
+    include_once("../config.php");
+    require_once(rootDirectory() . "/util/NavBar.php");
+    require_once(rootDirectory() . "/util/UserFactory.php");
+    startDefaultSessionWith();
 ?>
 
 <!DOCTYPE html>
@@ -29,24 +31,20 @@ startDefaultSessionWith();
         echo "</div> </div>";
         exit();
     } else {
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+        $engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/administration/templates'),
         ));
-        echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../administration', 'title' => 'Administration', 'id' => 'selected'],
-                ['href' => '../lectures', 'title' => 'Lectures'],
-                //['href' => '../reservations', 'title' => 'Reservations'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']
-            ]
-            ]
-        );
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+        $uf = new UserFactory();
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+
+        echo $engine->render("searchByIdHES");
+
+
 
     }
 
