@@ -1,6 +1,8 @@
 <?php
-include_once("../config.php");
-startDefaultSessionWith();
+    include_once("../config.php");
+    require_once(rootDirectory() . "/util/NavBar.php");
+    require_once(rootDirectory() . "/util/UserFactory.php");
+    startDefaultSessionWith();
 ?>
 
 <!DOCTYPE html>
@@ -29,37 +31,53 @@ startDefaultSessionWith();
         echo "</div> </div>";
         exit();
     } else {
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+        $my_engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/administration/templates'),
         ));
-        echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../administration', 'title' => 'Administration', 'id' => 'selected'],
-                ['href' => '../lectures', 'title' => 'Lectures'],
-                //['href' => '../reservations', 'title' => 'Reservations'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']
-            ]
-            ]
-        );
+        $engine = new Mustache_Engine(array(
+            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
+        ));
 
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+
+        $uf = new UserFactory();
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+
+        $titleHTML = <<<EOF
+        <h2>Admin Page</h2>
+EOF;
+        echo $titleHTML;
+
+        echo $my_engine->render("searchByIdHES");
+
+        // render sports events
+        echo $engine->render("list5ColButton", ["row" => [
+            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
+            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
+            "title"=>"Sports Events",
+            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
+
+        // render courses
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => [
+            ['firstEl' => 'Math123', 'secondEl' => 'SBZ-18', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+            ['firstEl' => 'Math123', 'secondEl' => 'SBZ-18', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"]],
+            "title"=>"Lectures",
+            "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Manage Lecture"]);
+
+        // render search by course form
+        echo $my_engine->render("searchLectureByCode", ["courseCodes"=>[
+                ["courseCode"=>"Math123"], ["courseCode"=>"cs319"]]]);
+
+        if (isset($_POST["lectureCodes"])) {
+            echo $_POST["lectureCodes"];
+        }
 
     }
 
     ?>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Administration Page</h2>
-            <br>
-        </div>
-    </div>
-
-
 </div>
 
 

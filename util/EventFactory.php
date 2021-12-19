@@ -55,7 +55,7 @@ class EventFactory {
         return $events;
     }
 
-    private function makeEvent(String $type) : Event {
+    private function makeEvent(String $type) : ?Event {
         if($type == SportsEvent::TABLE_NAME)
             return new SportsEvent();
         else if ($type == CourseEvent::TABLE_NAME)

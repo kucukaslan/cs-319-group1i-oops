@@ -1,0 +1,13 @@
+Search a Lecture by Lecture Code
+<form method="post">
+    <select name="lectureCodes" id="lectureCodes">
+        <optgroup label="Course Codes">
+            <option value="showAll">Show All</option>
+            {{#courseCodes}}
+                <option value="{{courseCode}}">{{courseCode}}</option>
+            {{/courseCodes}}
+        </optgroup>
+    </select>
+   <input type="submit" class="button" name="submit"
+                               value="Search">
+</form>
