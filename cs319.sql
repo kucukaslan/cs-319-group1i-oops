@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2021 at 05:30 PM
+-- Generation Time: Dec 20, 2021 at 11:17 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -97,8 +97,8 @@ CREATE TABLE `course` (
 --
 -- Table structure for table `covid_test`
 --
--- Creation: Dec 20, 2021 at 07:25 PM
--- Last update: Dec 20, 2021 at 07:26 PM
+-- Creation: Dec 21, 2021 at 12:28 AM
+-- Last update: Dec 21, 2021 at 12:28 AM
 --
 
 DROP TABLE IF EXISTS `covid_test`;
@@ -106,7 +106,8 @@ CREATE TABLE `covid_test` (
   `test_id` int(11) NOT NULL,
   `test_date` datetime NOT NULL,
   `result` enum('POSITIVE','NEGATIVE','UNKNOWN','PENDING') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` int(11) NOT NULL
+  `user_id` int(11) NOT NULL,
+  `document` mediumblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
@@ -119,12 +120,12 @@ CREATE TABLE `covid_test` (
 -- Dumping data for table `covid_test`
 --
 
-INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`) VALUES
-(1, '2021-12-18 13:36:42', 'NEGATIVE', 1),
-(2, '2021-12-18 13:37:57', 'POSITIVE', 1),
-(3, '2021-12-18 13:38:38', 'NEGATIVE', 1),
-(7, '2021-12-18 13:38:55', 'PENDING', 2),
-(8, '2021-12-18 13:39:28', 'NEGATIVE', 2);
+INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`, `document`) VALUES
+(1, '2021-12-18 13:36:42', 'NEGATIVE', 1, NULL),
+(2, '2021-12-18 13:37:57', 'POSITIVE', 1, NULL),
+(3, '2021-12-18 13:38:38', 'NEGATIVE', 1, NULL),
+(7, '2021-12-18 13:38:55', 'PENDING', 2, NULL),
+(8, '2021-12-18 13:39:28', 'NEGATIVE', 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -276,6 +277,55 @@ CREATE TABLE `event_sport` (
 INSERT INTO `event_sport` (`event_id`, `start_date`, `end_date`) VALUES
 (2, '2021-12-16 08:40:00', '2021-12-16 09:40:00'),
 (4, '2021-12-17 08:40:00', '2021-12-17 09:40:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event_test_appointment`
+--
+-- Creation: Dec 21, 2021 at 12:41 AM
+-- Last update: Dec 21, 2021 at 12:41 AM
+--
+
+DROP TABLE IF EXISTS `event_test_appointment`;
+CREATE TABLE `event_test_appointment` (
+  `event_id` int(11) NOT NULL,
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `event_test_appointment`:
+--
+
+--
+-- Dumping data for table `event_test_appointment`
+--
+
+INSERT INTO `event_test_appointment` (`event_id`, `start_date`, `end_date`) VALUES
+(2, '2021-12-16 08:40:00', '2021-12-16 09:40:00'),
+(4, '2021-12-17 08:40:00', '2021-12-17 09:40:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback`
+--
+-- Creation: Dec 21, 2021 at 12:37 AM
+--
+
+DROP TABLE IF EXISTS `feedback`;
+CREATE TABLE `feedback` (
+  `feedback_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL COMMENT 'user may prefer to be anonymous',
+  `type` enum('UNIVERSITY_REGULATIONS','UNIVERSITY_FEEDBACK','WEB_APP_SUGGESTION','WEB_APP_PROBLEMS') COLLATE utf8mb4_turkish_ci NOT NULL,
+  `comment` text COLLATE utf8mb4_turkish_ci NOT NULL,
+  `document` mediumblob DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `feedback`:
+--
 
 -- --------------------------------------------------------
 
@@ -536,16 +586,17 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 --
 -- Table structure for table `vaccine_administration`
 --
--- Creation: Dec 20, 2021 at 07:29 PM
--- Last update: Dec 20, 2021 at 07:29 PM
+-- Creation: Dec 21, 2021 at 01:16 AM
+-- Last update: Dec 21, 2021 at 01:16 AM
 --
 
 DROP TABLE IF EXISTS `vaccine_administration`;
 CREATE TABLE `vaccine_administration` (
-  `id` int(11) NOT NULL,
+  `vaccination_id` int(11) NOT NULL,
   `vaccine_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `administration_date` datetime NOT NULL
+  `administration_date` datetime NOT NULL,
+  `document` mediumblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
@@ -560,11 +611,12 @@ CREATE TABLE `vaccine_administration` (
 -- Dumping data for table `vaccine_administration`
 --
 
-INSERT INTO `vaccine_administration` (`id`, `vaccine_id`, `user_id`, `administration_date`) VALUES
-(1, 1, 1, '2021-12-13 01:04:00'),
-(2, 1, 1, '2021-12-14 23:55:56'),
-(3, 1, 1, '2021-12-15 12:16:05'),
-(4, 1, 1, '2021-12-19 12:10:34');
+INSERT INTO `vaccine_administration` (`vaccination_id`, `vaccine_id`, `user_id`, `administration_date`, `document`) VALUES
+(1, 1, 1, '2021-12-13 01:04:00', NULL),
+(2, 1, 1, '2021-12-14 23:55:56', NULL),
+(3, 1, 1, '2021-12-15 12:16:05', NULL),
+(4, 1, 1, '2021-12-19 12:10:34', NULL),
+(7, 1, 1, '2021-12-20 23:12:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -679,6 +731,18 @@ ALTER TABLE `event_sport`
   ADD PRIMARY KEY (`event_id`);
 
 --
+-- Indexes for table `event_test_appointment`
+--
+ALTER TABLE `event_test_appointment`
+  ADD PRIMARY KEY (`event_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -724,7 +788,7 @@ ALTER TABLE `vaccine`
 -- Indexes for table `vaccine_administration`
 --
 ALTER TABLE `vaccine_administration`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`vaccination_id`),
   ADD KEY `fk_va_user` (`user_id`),
   ADD KEY `fk_va_vaccine` (`vaccine_id`);
 
@@ -745,6 +809,12 @@ ALTER TABLE `event`
   MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
@@ -760,7 +830,7 @@ ALTER TABLE `vaccine`
 -- AUTO_INCREMENT for table `vaccine_administration`
 --
 ALTER TABLE `vaccine_administration`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `vaccination_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
