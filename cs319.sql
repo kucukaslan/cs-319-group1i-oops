@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 16, 2021 at 11:28 PM
+-- Generation Time: Dec 20, 2021 at 05:30 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -91,6 +91,40 @@ CREATE TABLE `course` (
 ,`max_no_of_participant` int(11)
 ,`can_people_join` tinyint(1)
 );
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `covid_test`
+--
+-- Creation: Dec 20, 2021 at 07:25 PM
+-- Last update: Dec 20, 2021 at 07:26 PM
+--
+
+DROP TABLE IF EXISTS `covid_test`;
+CREATE TABLE `covid_test` (
+  `test_id` int(11) NOT NULL,
+  `test_date` datetime NOT NULL,
+  `result` enum('POSITIVE','NEGATIVE','UNKNOWN','PENDING') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `covid_test`:
+--   `user_id`
+--       `user` -> `id`
+--
+
+--
+-- Dumping data for table `covid_test`
+--
+
+INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`) VALUES
+(1, '2021-12-18 13:36:42', 'NEGATIVE', 1),
+(2, '2021-12-18 13:37:57', 'POSITIVE', 1),
+(3, '2021-12-18 13:38:38', 'NEGATIVE', 1),
+(7, '2021-12-18 13:38:55', 'PENDING', 2),
+(8, '2021-12-18 13:39:28', 'NEGATIVE', 2);
 
 -- --------------------------------------------------------
 
@@ -346,12 +380,12 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_hash`, `hescode`, `hescode_status`, `profile_picture`) VALUES
 (1, 1, 'Muhammed', 'lol', 'a@a', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', 'Hahaha', 1, NULL),
-(2, 2, 'Mustafa', 'K', 'a@b', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, 1, NULL),
-(3, 3, 'Mustafa', 'K', 'a@c', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', NULL, 1, NULL),
+(2, 2, 'Mustafa', 'K', 'a@b', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', 'random', 1, NULL),
+(3, 3, 'Mustafa', 'K', 'a@c', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '122', 1, NULL),
 (5, 5, 'Testing', 'lol', 'a@e', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '1234567890', 1, NULL),
-(6, 123, '123', '123', '123@123', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, 1, NULL),
-(9, 11, 'Register', 'Tester', 'q@w', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, 1, NULL),
-(10, 907, 'utku', 'jjjj', 'gg@ggsdjsıg.vom', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', NULL, 1, NULL);
+(6, 123, '123', '123', '123@123', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', 'feqfqf13', 1, NULL),
+(9, 11, 'Register', 'Tester', 'q@w', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', '1f31ff', 1, NULL),
+(10, 907, 'utku', 'jjjj', 'gg@ggsdjsıg.vom', '$argon2i$v=19$m=65536,t=4,p=1$T0FxL05xcGlac2p0cnNEYQ$i3nCwT70kdtT4wlZJCLfU06fBu0rK8m78Yzj3cAxTO8', '1f31f31f1', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -502,7 +536,8 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 --
 -- Table structure for table `vaccine_administration`
 --
--- Creation: Dec 17, 2021 at 12:42 AM
+-- Creation: Dec 20, 2021 at 07:29 PM
+-- Last update: Dec 20, 2021 at 07:29 PM
 --
 
 DROP TABLE IF EXISTS `vaccine_administration`;
@@ -528,7 +563,8 @@ CREATE TABLE `vaccine_administration` (
 INSERT INTO `vaccine_administration` (`id`, `vaccine_id`, `user_id`, `administration_date`) VALUES
 (1, 1, 1, '2021-12-13 01:04:00'),
 (2, 1, 1, '2021-12-14 23:55:56'),
-(3, 1, 1, '2021-12-15 12:16:05');
+(3, 1, 1, '2021-12-15 12:16:05'),
+(4, 1, 1, '2021-12-19 12:10:34');
 
 -- --------------------------------------------------------
 
@@ -601,6 +637,13 @@ ALTER TABLE `contact`
   ADD UNIQUE KEY `main_user_id` (`main_user_id`,`contacted_user_id`,`event_id`),
   ADD KEY `event_id` (`event_id`),
   ADD KEY `contacted_user_id` (`contacted_user_id`);
+
+--
+-- Indexes for table `covid_test`
+--
+ALTER TABLE `covid_test`
+  ADD PRIMARY KEY (`test_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `event`
@@ -690,6 +733,12 @@ ALTER TABLE `vaccine_administration`
 --
 
 --
+-- AUTO_INCREMENT for table `covid_test`
+--
+ALTER TABLE `covid_test`
+  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
@@ -711,7 +760,7 @@ ALTER TABLE `vaccine`
 -- AUTO_INCREMENT for table `vaccine_administration`
 --
 ALTER TABLE `vaccine_administration`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -724,6 +773,12 @@ ALTER TABLE `contact`
   ADD CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`main_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`),
   ADD CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contacted_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `covid_test`
+--
+ALTER TABLE `covid_test`
+  ADD CONSTRAINT `covid_test_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `event_control`
