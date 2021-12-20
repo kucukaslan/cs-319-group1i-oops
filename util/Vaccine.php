@@ -6,6 +6,7 @@ class Vaccine
     const TABLE_NAME = "vaccine";
 
     // object properties
+    private int $vaccination_id;
     private int $id;
     protected ?string $vaccineName;
     protected int $cvx_code;
@@ -95,5 +96,22 @@ class Vaccine
     {
         $this->id = $id;
     }
+
+    /**
+     * @return int
+     */
+    public function getVaccinationid(): int
+    {
+        return $this->vaccinationid;
+    }
+
+    /**
+     * @param int $vaccination_id
+     */
+    public function setVaccinationId(int $vaccination_id): void
+    {
+        $this->vaccinationid = $vaccination_id;
+    }
+
 
 }
