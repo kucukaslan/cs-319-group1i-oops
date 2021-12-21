@@ -1,4 +1,5 @@
 <?php
+require_once("Event.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
 abstract class User
@@ -300,10 +301,11 @@ abstract class User
                 // todo User'ın type'ının bir önemi yok
                 // User class'ı da abstract şimdilik Student olarak oluşturuyorum.
                 $u = new Student();
+                $u->setId($row['id']);
                 $u->setFirstname($row['name']);
                 $u->setLastname($row['lastname']);
                 $u->setEmail($row['email']);
-                $contacts[] = $u;
+                $contacts[$row['id']] = $u;
             }
             return $contacts;
         } catch (PDOException $e) {

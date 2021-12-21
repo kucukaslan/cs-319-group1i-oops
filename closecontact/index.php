@@ -49,14 +49,18 @@ $pagename = '/closecontact';
 
         $buttonNames = [];
         $contact_list = [];
-        $contactIds = $user->getCloseContacts();
+        $contacts = $user->getCloseContacts();
 
         for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
             // set button names
             $buttonNames[] = "button" . ($i + 1);
 
             // add close contact to contact list
-            $contact_list[] = ["imgsource" => $imgSource, "buttonname" => $buttonNames[$i], "name" => $user->giveName($contactIds[$i]), "id" => $contactIds[$i]];
+            foreach($contacts as $contact) {
+                if ($contact->getId() == $i + 1) {
+                    $contact_list[] = ["imgsource" => $imgSource, "buttonname" => $buttonNames[$i], "name" => $contact->getFirstName(), "id" => $contact->getId()];
+                }
+            }
         }
 
         // render close contacts
@@ -80,7 +84,7 @@ $pagename = '/closecontact';
             if (is_numeric($_POST['closeContact'])) {
                 $contactIdToAdd = intval($_POST['closeContact']);
 
-                if ($user->addCloseContact($contactIdToAdd)) {
+                if ($user->addCloseContact($contactIdToAdd,1)) {
                     $successMass = <<<EOF
 <h2> SUCESS added: </h2>
 EOF;
