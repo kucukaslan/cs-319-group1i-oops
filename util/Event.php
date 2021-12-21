@@ -7,6 +7,8 @@ class Event
     const PARTICIPATION_TABLE_NAME = "event_participation";
     const CONTROL_TABLE_NAME = "event_control";
     const CONTACT_TABLE_NAME = "contact";
+    const CONTACT_MAIN_USER_ID_COLUMN = "main_user_id";
+    const CONTACT_CONTACTED_USER_ID_COLUMN = "contacted_user_id";
 
     // database connection and table name
     protected ?PDO $conn;
@@ -274,8 +276,4 @@ class Event
     {
         $this->maxNoOfParticipant = $maxNoOfParticipant;
     }
-
-
-
-
 }
