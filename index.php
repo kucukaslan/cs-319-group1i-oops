@@ -6,6 +6,7 @@
     require_once(rootDirectory() . "/util/Vaccine.php");
     require_once(rootDirectory() . "/util/VaccineFactory.php");
     require_once(rootDirectory() . "/util/VaccineManager.php");
+    require_once(rootDirectory() . "/util/Test.php");
     require_once(rootDirectory()."/util/NavBar.php");
     $conn = getDatabaseConnection();
     $pagename = '/';
@@ -157,11 +158,14 @@
         <div class="tile is-child box">
             <p>
                 <?php
+                
+                
                 echo $engine->render("diagnosis",
                     ["diagnosis" => [
                         ["date" => "date 1"],
                         ["date" => "date 2"]
                     ]]);
+                    
                 ?>
             </p>
         </div>
@@ -172,14 +176,22 @@
                 <?php
                 $pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                 $upcomingTest = ["date" => "2023"];
+                $myArr = Test::getTestsOfUser($_SESSION['id'],$conn);
+                
 
+                echo $engine->render("PCRtest",
+                    ["pastTest" => $myArr,
+                        "upcomingTest" => $myArr]);
+
+                
+                /*
                 // upcoming test are loaded first so that they appear on the top of the table.
                 echo $engine->render("PCRtest", ["upcomingTest" => [
                     $upcomingTest, $upcomingTest
                 ], "pastTest" => [
                     $pastTest, $pastTest
                 ]]);
-
+                    */
 
                 ?>
             </p>
