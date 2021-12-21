@@ -15,6 +15,8 @@ abstract class User
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
+    protected ?string $HESCodeStatus;
+    
 
     public function __construct() {
         $this->conn = null;
@@ -227,9 +229,20 @@ abstract class User
      * @param int $id is user if to add the database
      * @return bool if addition is successful.
      */
-    public function addCloseContact(int $id): bool {
+    public function addCloseContact(int $contacted_user_id, int $event_id): bool {
         // TODO: write given id to the database
-        return TRUE;
+       try{ 
+           $query = "INSERT INTO ".Event::CONTACT_TABLE_NAME." (main_user_id , contacted_user_id , event_id) 
+            VALUES (:id, :contacted_user_id, :event_id)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute(array('id'=>$this->id,
+            'contacted_user_id'=>$contacted_user_id,
+            'event_id'=>$event_id));
+            return true;
+       } catch(PDOException $e) {
+            getConsoleLogger()->log("User Contact", "Cannot add contact");
+            return false;
+       }
     }
     public function deleteCloseContact(int $id): bool {
         // TODO:

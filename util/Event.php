@@ -6,6 +6,7 @@ class Event
     const TABLE_NAME = "event";
     const PARTICIPATION_TABLE_NAME = "event_participation";
     const CONTROL_TABLE_NAME = "event_control";
+    const CONTACT_TABLE_NAME = "contact";
 
     // database connection and table name
     protected ?PDO $conn;
@@ -159,7 +160,6 @@ class Event
     {
         $this->currentNumberOfParticipants = $currentNumberOfParticipants;
     }
-
 
 
 

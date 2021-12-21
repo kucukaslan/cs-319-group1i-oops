@@ -5,6 +5,8 @@ require_once(rootDirectory()."/util/UserFactory.php");
 
 use PHPUnit\Framework\TestCase;
 
+use function PHPUnit\Framework\assertTrue;
+
 // the terminal command is (for windows):
 // .\vendor\bin\phpunit tests
 final class UserDatabaseTest extends TestCase
@@ -118,4 +120,15 @@ final class UserDatabaseTest extends TestCase
         $this->assertInstanceOf( SportsCenterStaff::class, $u1);
         return $u1;
     }
+
+    /**
+     * @depends testDatabaseConnection
+     * @depends testCreateStudent
+     */
+    public function testContact(PDO $conn, Student $student) {
+        assertTrue( $student->addCloseContact(2,2));
+
+    }
+
+
 }
