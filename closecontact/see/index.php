@@ -33,13 +33,18 @@ $pagename = '/closecontact/see';
         echo "</div> </div>";
         exit();
     } else {
+        $lectureToDisplay = $_SESSION["lectureIdToDisplay"];
+        echo $lectureToDisplay;
+
+
+
+
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         echo '<header>';
         $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
         echo "<h2>Event Details Page</h2>";
         echo '</header>';
-
 
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),

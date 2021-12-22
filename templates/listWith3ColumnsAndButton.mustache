@@ -13,7 +13,13 @@
                         <tr>
                             <td>{{firstEl}}</td>
                             <td>{{secondEl}}</td>
-                            <td> <a href="{{buttonLink}}" class="button"> {{buttonName}} </a> </td>
+                            <td>
+                            <form method="POST">
+                                <input type="hidden" name="goEvent" value="{{eventId}}">
+                                <input type="submit" value="See Event">
+                            </form>
+                            </td>
+
                         </tr>
                     {{/row}}
                 </table>

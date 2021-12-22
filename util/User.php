@@ -1,9 +1,9 @@
 <?php
+require_once ("EventParticipant.php");
 require_once("Event.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
-abstract class User implements EventParticipant
-{
+abstract class User implements EventParticipant {
     // CONSTANTS
     const TABLE_NAME = "user";
 
@@ -316,6 +316,13 @@ abstract class User implements EventParticipant
 
     public function getEventsIParticipate(): array {
         // TODO:
+        return [];
+    }
+
+    public function getEventsControlledByMe(): array {
+        return [];
+    }
+    public function getParticipants(int $eventId): array{
         return [];
     }
 }
