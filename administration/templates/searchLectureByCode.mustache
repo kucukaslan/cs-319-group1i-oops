@@ -1,13 +1,23 @@
-Search a Lecture by Lecture Code
-<form method="post">
-    <select name="lectureCodes" id="lectureCodes">
-        <optgroup label="Course Codes">
-            <option value="showAll">Show All</option>
-            {{#courseCodes}}
-                <option value="{{courseCode}}">{{courseCode}}</option>
-            {{/courseCodes}}
-        </optgroup>
-    </select>
-   <input type="submit" class="button" name="submit"
-                               value="Search">
-</form>
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <form method="post">
+                    <div class="control"><label for="lectureCodes">Search a Lecture by Lecture Code</label>
+                    </div>
+                    <div class="select">
+                        <select name="lectureCodes" id="lectureCodes" class="select">
+                            <optgroup label="Course Codes">
+                                <option value="showAll">Show All</option>
+                                {{#courseCodes}}
+                                    <option value="{{courseCode}}">{{courseCode}}</option>
+                                {{/courseCodes}}
+                            </optgroup>
+                        </select>
+                    </div>
+                    <input type="submit" class="button" name="submit" value="Search">
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

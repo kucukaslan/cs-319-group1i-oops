@@ -1,19 +1,33 @@
-<h2> {{title}} </h2>
-    <table class="table">
-        <tr>
-            <th>{{column1}}</th>
-            <th>{{column2}}</th>
-            <th>{{column3}}</th>
-            <th>{{column4}}</th>
-            <th>{{column5}}</th>
-        </tr>
-        {{#row}}
-            <tr>
-                <td>{{firstEl}}</td>
-                <td>{{secondEl}}</td>
-                <td>{{thirdEl}}</td>
-                <td>{{fourthEl}}</td>
-                <td> <a href="{{buttonLink}}" class="button"> {{buttonName}} </a> </td>
-            </tr>
-        {{/row}}
-    </table>
+<section class="hero is-success">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <table class="table is-narrow is-bordered is-hoverable is-striped">
+                    <tr>
+                        <th>{{column1}}</th>
+                        <th>{{column2}}</th>
+                        <th>{{column3}}</th>
+                        <th>{{column4}}</th>
+                        <th>{{column5}}</th>
+                    </tr>
+                    {{#row}}
+                        <tr>
+                            <td>{{firstEl}}</td>
+                            <td>{{secondEl}}</td>
+                            <td>{{thirdEl}}</td>
+                            <td>{{fourthEl}}</td>
+                            <td>
+                                <form method="post">
+                                    <input href="{{buttonLink}}" type="submit" class="button" value="See">
+                                </form>
+
+
+                                <!-- <a href="{{buttonLink}}" class="button">{{buttonName}}</a> -->
+                            </td>
+                        </tr>
+                    {{/row}}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
