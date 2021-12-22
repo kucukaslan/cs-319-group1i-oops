@@ -14,8 +14,8 @@
 
         } catch(PDOException $e) {
 
-            error_log( servername ." ". username);
-            error_log( "Connection failed: " . $e->getMessage());
+            getConsoleLogger().log("DB conn:", servername ." ". username);
+            getConsoleLogger().log("DB conn:","Connection failed: " . $e->getMessage());
             // todo we might want to redirect to a proper error page from here
             exit(); // stop the script
         }
