@@ -45,11 +45,9 @@
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
-
-        $titleHTML = <<<EOF
+?>
         <h2>Admin Page</h2>
-EOF;
-        echo $titleHTML;
+        <?php
 
         echo $my_engine->render("searchByIdHES");
 
