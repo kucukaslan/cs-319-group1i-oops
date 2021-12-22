@@ -176,49 +176,38 @@
                 <?php
                 //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                 //$upcomingTest = ["date" => "2023"];
-                /*
                 $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
                 $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
 
-                echo $engine->render("PCRtest",
-                    ["date" => $pastTests[0]->getTestDate(),"result" => "negative";
-                        "upcomingTest" => $futureTests[0]->getTest()]);
-                        */
+                $pastArr = array();
+                $futureArr = array();
+                foreach( $pastTests as $p) {
+                    $pastArr[] = array( "date" => $p->getTestDate() , "result" =>$p->getResult());
+                }
+                foreach( $futureTests as $p) {
+                    $futureArr[] = array( "date" => $p->getTestDate());
+                }
 
-                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
-                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
+                echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
+                    'pastTest' => $pastArr
+                ]);
 
-                    $pastArr = array();
-                    $futureArr = array();
-                    foreach( $pastTests as $p) {
-                        $pastArr[] = array( "date" => $p->getTestDate() , "result" =>$p->getResult());           
-                     }
-                     foreach( $futureTests as $p) {
-                        $futureArr[] = array( "date" => $p->getTestDate());           
-                     }    
-                echo $pastArr[0]["date"];
-                echo $pastArr[0]["result"];
-                echo $pastArr[1]["date"];
-                echo $pastArr[1]["result"];
-                echo $pastArr[2]["date"];
-                echo $pastArr[2]["result"];
-                // upcoming test are loaded first so that they appear on the top of the table.
-                echo $engine->render("PCRtest", ["upcomingTest" => [
-                    $pastArr
-                ], "pastTest" => [
-                    $futureArr
-                ]]);
 
-                
+
+
+
+
                 
                 /*
                 // upcoming test are loaded first so that they appear on the top of the table.
+                $upcomingTest =['date'=>12];
                 echo $engine->render("PCRtest", ["upcomingTest" => [
-                    $upcomingTest, $upcomingTest
+                    'date'=>123,'result'=>23
                 ], "pastTest" => [
                     $pastTest, $pastTest
                 ]]);
-                    */
+                */
+
 
                 ?>
             </p>
