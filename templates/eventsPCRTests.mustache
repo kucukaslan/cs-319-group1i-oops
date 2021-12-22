@@ -1,0 +1,41 @@
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2><b>Reserve PCR Test Reservation</b></h2>
+                <table class="table is-bordered is-striped is-narrow is-hoverable">
+                    <tr>
+                        <th>Place</th>
+                        <th>Day Slot</th>
+                        <th>Time Slot</th>
+                        <th>Reserve</th>
+                    </tr>
+                    {{#enrolledevent}}
+                        <tr>
+                            <td>{{place}}</td>
+                            <td>{{dayslot}}</td>
+                            <td>{{timeslot}}</td>
+                            <td>
+                                <form method="post">
+                                <input type="submit" class="button is-warning" name="leave-{{place}}-{{dayslot}}-{{timeslot}}" value="Leave">
+                                </form>
+                            </td>
+                        </tr>
+                    {{/enrolledevent}}
+                    {{#notenrolledevent}}
+                        <tr>
+                            <td>{{place}}</td>
+                            <td>{{dayslot}}</td>
+                            <td>{{timeslot}}</td>
+                            <td>
+                                <form method="post">
+                                <input type="submit" class="button is-success" name="enroll-{{place}}-{{dayslot}}-{{timeslot}}" value="Enroll">
+                                </form>
+                            </td>
+                        </tr>
+                    {{/notenrolledevent}}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
