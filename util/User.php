@@ -1,6 +1,7 @@
 <?php
 require_once ("EventParticipant.php");
 require_once("Event.php");
+require_once("EventParticipant.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
 abstract class User implements EventParticipant {
@@ -315,8 +316,63 @@ abstract class User implements EventParticipant {
     }
 
     public function getEventsIParticipate(): array {
-        // TODO:
-        return [];
+        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        $events = array();
+        foreach ($result as $row) {
+            $e = new Event();
+            $e->setEventId($row['event_id']);
+            $e->setTitle($row['event_name']);
+            $e->setPlace($row['place']);
+            $e->setMaxNoOfParticipant($row['max_no_of_participant']);
+            $e->setCanPeopleJoin($row['can_people_join']);
+
+            $events[$row['event_id']] = $e;
+        }
+        return $events;    
+    }
+
+    public function getEventsControlledByMe() : array {
+        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        $events = array();
+        foreach ($result as $row) {
+            $e = new Event();
+            $e->setEventId($row['event_id']);
+            $e->setTitle($row['event_name']);
+            $e->setPlace($row['place']);
+            $e->setMaxNoOfParticipant($row['max_no_of_participant']);
+            $e->setCanPeopleJoin($row['can_people_join']);
+            $events[$row['event_id']] = $e;
+        }
+        return $events;
+    }
+
+    /*
+    * Return the participants of the specified event
+    * users are Student objects whose "name", "lastname" and "email" are set,
+    * as well as their ids.
+    */
+    public function getParticipants(int $eventId): array {
+        $sql = "SELECT * FROM ".User::TABLE_NAME. " INNER JOIN " . Event::PARTICIPATION_TABLE_NAME." ON user_id = id WHERE event_id = :event_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':event_id', $eventId);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        $users = array();
+        $uf = new UserFactory();
+        foreach ($result as $row) {
+            $u = $uf->makeUserByInformation($this->conn, Student::TABLE_NAME,
+                $row['user_id'], $row['name'], $row['lastname'], $row['email']);
+            $users[$row['user_id']] = $u;
+        }
+        return $users;
     }
 
     public function getEventsControlledByMe(): array {

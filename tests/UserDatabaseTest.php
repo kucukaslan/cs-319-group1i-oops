@@ -142,4 +142,30 @@ final class UserDatabaseTest extends TestCase
             $student->addCloseContact(2, 2);
         }
     }
+
+
+    /**
+     * @depends testDatabaseConnection
+     * @depends testCreateStudent
+     */
+    public function testStudentEventOperation(PDO $conn, Student $student)
+    {
+        $events = $student->getEventsIParticipate();
+        foreach ($events as $event) {
+            $this->assertInstanceOf(Event::class, $event);
+        }
+        $controlledevents = $student->getEventsControlledByMe();
+        foreach ($controlledevents as $event) {
+            $this->assertInstanceOf(Event::class, $event);
+        }
+        $coparticipants = $student->getParticipants($events[array_key_first($events)]->getEventId());
+        foreach ($coparticipants as $participant) {
+            $this->assertInstanceOf(User::class, $participant);
+        }
+        /* 
+        var_dump( $events);
+        var_dump( $controlledevents);
+        var_dump( $coparticipants);
+        */
+    }
 }
