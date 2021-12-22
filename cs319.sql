@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2021 at 11:17 PM
+-- Generation Time: Dec 22, 2021 at 06:11 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -46,6 +46,7 @@ CREATE TABLE `academic_staff` (
 -- Table structure for table `contact`
 --
 -- Creation: Dec 17, 2021 at 12:30 AM
+-- Last update: Dec 22, 2021 at 06:06 PM
 --
 
 DROP TABLE IF EXISTS `contact`;
@@ -71,6 +72,7 @@ CREATE TABLE `contact` (
 
 INSERT INTO `contact` (`main_user_id`, `contacted_user_id`, `event_id`) VALUES
 (1, 2, 1),
+(1, 2, 2),
 (1, 3, 2),
 (2, 1, 1),
 (2, 3, 4);
@@ -98,7 +100,6 @@ CREATE TABLE `course` (
 -- Table structure for table `covid_test`
 --
 -- Creation: Dec 21, 2021 at 12:28 AM
--- Last update: Dec 21, 2021 at 12:28 AM
 --
 
 DROP TABLE IF EXISTS `covid_test`;
@@ -133,6 +134,7 @@ INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`, `document
 -- Table structure for table `event`
 --
 -- Creation: Dec 16, 2021 at 11:02 PM
+-- Last update: Dec 22, 2021 at 08:07 PM
 --
 
 DROP TABLE IF EXISTS `event`;
@@ -156,7 +158,9 @@ INSERT INTO `event` (`event_id`, `event_name`, `place`, `max_no_of_participant`,
 (1, 'CS101', 'Bilkent University', 75, 1),
 (2, 'Fitness', 'Dormitory Sports Hall', 40, 1),
 (3, 'CS319', 'B204', 60, 1),
-(4, 'Fitness', 'Dormitory Sports Hall', 60, 1);
+(4, 'Fitness', 'Dormitory Sports Hall', 60, 1),
+(5, 'PCR Test', 'Bilkent University', 2, 1),
+(6, 'Diagnovir Test', 'Bilkent University', 4, 1);
 
 -- --------------------------------------------------------
 
@@ -283,8 +287,8 @@ INSERT INTO `event_sport` (`event_id`, `start_date`, `end_date`) VALUES
 --
 -- Table structure for table `event_test_appointment`
 --
--- Creation: Dec 21, 2021 at 12:41 AM
--- Last update: Dec 21, 2021 at 12:41 AM
+-- Creation: Dec 22, 2021 at 08:06 PM
+-- Last update: Dec 22, 2021 at 08:08 PM
 --
 
 DROP TABLE IF EXISTS `event_test_appointment`;
@@ -296,6 +300,8 @@ CREATE TABLE `event_test_appointment` (
 
 --
 -- RELATIONSHIPS FOR TABLE `event_test_appointment`:
+--   `event_id`
+--       `event` -> `event_id`
 --
 
 --
@@ -303,8 +309,8 @@ CREATE TABLE `event_test_appointment` (
 --
 
 INSERT INTO `event_test_appointment` (`event_id`, `start_date`, `end_date`) VALUES
-(2, '2021-12-16 08:40:00', '2021-12-16 09:40:00'),
-(4, '2021-12-17 08:40:00', '2021-12-17 09:40:00');
+(5, '2021-12-16 08:40:00', '2021-12-16 09:40:00'),
+(6, '2021-12-17 08:40:00', '2021-12-17 09:40:00');
 
 -- --------------------------------------------------------
 
@@ -587,7 +593,7 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 -- Table structure for table `vaccine_administration`
 --
 -- Creation: Dec 21, 2021 at 01:16 AM
--- Last update: Dec 21, 2021 at 01:16 AM
+-- Last update: Dec 22, 2021 at 06:06 PM
 --
 
 DROP TABLE IF EXISTS `vaccine_administration`;
@@ -806,7 +812,7 @@ ALTER TABLE `covid_test`
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -830,7 +836,7 @@ ALTER TABLE `vaccine`
 -- AUTO_INCREMENT for table `vaccine_administration`
 --
 ALTER TABLE `vaccine_administration`
-  MODIFY `vaccination_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `vaccination_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
@@ -875,6 +881,12 @@ ALTER TABLE `event_participation`
 --
 ALTER TABLE `event_sport`
   ADD CONSTRAINT `event_sport_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `event_test_appointment`
+--
+ALTER TABLE `event_test_appointment`
+  ADD CONSTRAINT `event_test_appointment_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_academic_staff`
