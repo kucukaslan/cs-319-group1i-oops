@@ -31,7 +31,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     $title = <<<EOF
         <div class="centerwrapper">
         <div class="centerdiv">
-            <p class="title">Events Page</p>
+            <p class="title">PCR Test Page</p>
         </div>
     </div>
     EOF;
@@ -42,17 +42,12 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
     ));
 
-    echo $title;
-    echo $m->render("listWith3ColumnsAndForm", ["row" => [
-            ["firstEl" => "cs123", "secondEl" => "SAZ-12", "buttonname"=>"cs123", "value"=>"Leave"],
-            ["firstEl" => "cs123", "secondEl" => "SAZ-12", "buttonname"=>"cs123", "value"=>"Leave"]],
-            "title"=>"Enrolled Courses", "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Leave Course"]
-    );
+
 
     // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
     ?>
     <?php
-    echo $m->render('eventssports', [
+    echo $m->render('eventsPCRTests', [
         'enrolledevent' => [
             ['place' => 'place1', "dayslot" => "day1", "timeslot" => "13.30"],
             ['place' => 'place2', "dayslot" => "day3", "timeslot" => "14.30"]

@@ -28,7 +28,7 @@
     //  Refer to discussion https://stackoverflow.com/a/1270960/13555389
     function startDefaultSessionWith(array $options = array() ): bool {
         header('Cache-Control: no cache'); //no cache
-        session_cache_limiter('nocache'); // back page fix
+        session_cache_limiter('private_no_expire'); // back page fix
         $result = session_start($options);
 
 
