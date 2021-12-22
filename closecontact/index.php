@@ -27,6 +27,7 @@ ob_start();
     $conn = getDatabaseConnection();
 
     if (!isset($_SESSION['id'])) {
+        // echo "dasdsad";
         echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
             . "You haven't logged in";
         echo "<form method='get' action=\"..\"><div class=\"form-group\">
@@ -50,11 +51,11 @@ ob_start();
 
         $buttonNames = [];
         $contact_list = [];
-        $events = [];
+        $events = $user->getEventsIParticipate();
 
         // mock data
-        $events[] = new Event($conn, 10, "example title", new DateTime("now"), true,
-            "example place", 12);
+        /*$events[] = new Event($conn, 10, "example title", new DateTime("now"), true,
+            "example place", 12);*/
 
         // contacts is array of user objects
         $contacts = $user->getCloseContacts();
@@ -147,7 +148,7 @@ EOF;
 
         // go to the see event page if see is pressed
         if(isset($_POST["goEvent"])) {
-            $_SESSION["lectureIdToDisplay"] = $_POST["goEvent"];
+            $_SESSION["eventToDisplay"] = $_POST["goEvent"];
             echo $_POST["goEvent"];
             header("Location: ../../closecontact/see");
         }

@@ -1,6 +1,8 @@
 <?php
 require_once(__DIR__ . "/../../config.php");
 require_once(rootDirectory() . "/util/NavBar.php");
+require_once(rootDirectory() . "/util/EventFactory.php");
+require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 $pagename = '/closecontact/see';
 ?>
@@ -33,13 +35,17 @@ $pagename = '/closecontact/see';
         echo "</div> </div>";
         exit();
     } else {
-        $lectureToDisplay = $_SESSION["lectureIdToDisplay"];
-        echo $lectureToDisplay;
-
-
-
-
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $uf = new UserFactory();
+        $ef = new EventFactory($conn);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+        $lectureToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
+        print_r($lectureToDisplay);
+
+        // $participantsOfTheEvent =
+        $addedStudents = [];
+        $nonAddedStudents = [];
+
         echo '<header>';
         $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
@@ -49,6 +55,8 @@ $pagename = '/closecontact/see';
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
+
+
         // render participants
         echo $m->render('lectureparticipants', [
             'addedStudent' => [
@@ -56,10 +64,7 @@ $pagename = '/closecontact/see';
             "nonAddedStudent" => [
                 ['name' => 'nonadded student name']],
             "courseCode" => "example Course Code",
-            "date" => "example datee",
-            "column1"=> "Course Code",
-            "column2"=> "Lecture Date",
-            "column3"=> "See Participants",
+            "date" => "example datee", "column1"=> "Course Code", "column2"=> "Lecture Date", "column3"=> "See Participants",
         ]);
     }
 

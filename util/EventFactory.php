@@ -55,6 +55,14 @@ class EventFactory {
         return $events;
     }
 
+    public function getEvent(int $eventId): ?Event {
+        // TODO:
+        // mock data
+        $e = new Event($this->conn, 10, "example title", new DateTime("now"), true,
+            "example place",12);
+        return $e;
+    }
+
     private function makeEvent(String $type) : ?Event {
         if($type == SportsEvent::TABLE_NAME)
             return new SportsEvent();

@@ -374,11 +374,4 @@ abstract class User implements EventParticipant {
         }
         return $users;
     }
-
-    public function getEventsControlledByMe(): array {
-        return [];
-    }
-    public function getParticipants(int $eventId): array{
-        return [];
-    }
 }
