@@ -49,20 +49,26 @@ $pagename = '/closecontact';
 
         $buttonNames = [];
         $contact_list = [];
-        $contacts = $user->getCloseContacts();
 
-        for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
+        // contacts is array of user objects
+        $contacts = $user->getCloseContacts();
+        print_r($contacts);
+
+        // set button names
+        for ($i = 0; $i < sizeof($contacts); $i++) {
             // set button names
             $buttonNames[] = "button" . ($i + 1);
-
-            // add close contact to contact list
-            foreach($contacts as $contact) {
-                if ($contact->getId() == $i + 1) {
-                    $contact_list[] = ["imgsource" => $imgSource, "buttonname" => $buttonNames[$i], "name" => $contact->getFirstName(), "id" => $contact->getId()];
-                }
-            }
         }
 
+        // add close contacts to contact list
+        $i = 0;
+        foreach($contacts as $contact) {
+            $contact_list[] = ["imgsource" => $imgSource, "buttonname" => $buttonNames[$i], "name" => $contact->getFirstName() . " " . $contact->getLastName(), "id" => $contact->getId()];
+            $i++;
+        }
+
+
+        // RENEDERING HTMLS
         // render close contacts
         echo $m->render("contactlist", ["person" => $contact_list]);
 
@@ -76,55 +82,53 @@ $pagename = '/closecontact';
 
         // add close contact component
         echo $m->render("addclosecontact");
+    }
 
 
-        // implementation of add close contact by id
-        // if the input is numeric try to add this id
-        if (isset($_POST['closeContact'])) {
-            if (is_numeric($_POST['closeContact'])) {
-                $contactIdToAdd = intval($_POST['closeContact']);
+    // implementation of add close contact by id
+    // if the input is numeric try to add this id
+    if (!empty($_POST['closeContact'])) {
+        if (is_numeric($_POST['closeContact'])) {
+            $contactIdToAdd = intval($_POST['closeContact']);
 
-                if ($user->addCloseContact($contactIdToAdd,1)) {
-                    $successMass = <<<EOF
-<h2> SUCESS added: </h2>
+            if ($user->addCloseContact($contactIdToAdd,1)) {
+                $successMass = <<<EOF
+<script> alert("SUCESS added") </script>
 EOF;
-                    echo $successMass;
-                    echo $contactIdToAdd;
-                } else {
-                    $alertScript = <<<EOF
-<script> alert("Cannot add given ID") </script>
-EOF;
-                    echo $alertScript;
-                }
+                echo $successMass;
+                echo $contactIdToAdd;
+                // echo "<script> "
             } else {
                 $alertScript = <<<EOF
-<script> alert("Given id is not valid") </script>
+<script> alert("Cannot add given ID") </script>
 EOF;
                 echo $alertScript;
             }
-
+        } else {
+            $alertScript = <<<EOF
+<script> alert("Given id is not valid") </script>
+EOF;
+            echo $alertScript;
         }
-
-        // implementation of deleting user from the close contact list
-        // check if a button is pressed for any user in the table
-        for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
-            $buttonName = "button" . ($i + 1);
-            if (isset($_POST[$buttonName])) {
-                // delete the user at the ($i + 1)th row in the contact list
-                $idToDeleteFromContactList = $contact_list[$i]["id"];
-                if ($user->deleteCloseContact($idToDeleteFromContactList)) {
-                    echo "DELETED USER WITH ID: " . $idToDeleteFromContactList;
-                } else {
-                    echo "DID NOT MANAGE TO DELETE " . $idToDeleteFromContactList;
-                }
-
-                break;
-            }
-        }
-
 
     }
 
+    // implementation of deleting user from the close contact list
+    // check if a button is pressed for any user in the table
+    for ($i = 0; $i < sizeof($contacts); $i++) {
+        $buttonName = "button" . ($i + 1);
+        if (isset($_POST[$buttonName])) {
+            // delete the user at the ($i + 1)th row in the contact list
+            $idToDeleteFromContactList = $contact_list[$i]["id"];
+            if ($user->deleteCloseContact($idToDeleteFromContactList)) {
+                echo "DELETED USER WITH ID: " . $idToDeleteFromContactList;
+            } else {
+                echo "DID NOT MANAGE TO DELETE " . $idToDeleteFromContactList;
+            }
+
+            break;
+        }
+    }
 
     ?>
     <!--

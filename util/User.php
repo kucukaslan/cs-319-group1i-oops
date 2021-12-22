@@ -2,7 +2,7 @@
 require_once("Event.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
-abstract class User
+abstract class User implements EventParticipant
 {
     // CONSTANTS
     const TABLE_NAME = "user";
@@ -314,32 +314,8 @@ abstract class User
         }
     }
 
-
-    public function getNoOfCloseContacts(): int
-    {
+    public function getEventsIParticipate(): array {
         // TODO:
-        return 3;
-    }
-
-
-    /**
-     * @DEPRECATED use getCloseContacts, which brings all users more efficiently, instead
-     * This function will be used for creating the contact list.
-     * @param int $id is the user id whose name will be fetched
-     * @return string name of the desired user
-     */
-    public function giveName(int $id): string
-    {
-        try {
-            $query = "SELECT name FROM " . User::TABLE_NAME . " WHERE id = :id";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-            $result = $stmt->fetch();
-            return $result['name'];
-        } catch (PDOException $e) {
-            getConsoleLogger()->log("Give Name",   "User with the id cannot be found.\n<br> " . $e->getMessage());
-            return "ANONYMOUS";
-        }
+        return [];
     }
 }
