@@ -1,4 +1,3 @@
-
 <div class="container">
     <p class="title">Vaccine Info</p>
 
@@ -22,8 +21,13 @@
 
         <form method="post" enctype="multipart/form-data">
             Choose Your File
-            <input class="button is-info" type="file" name="file"/>
-            <input type="submit" class="button is-primary" value="Add Vaccine Card" name="vaccinecard"/>
+            <div class="file">
+                <label class="file-label"> <input class="input" type="file" name="file"/> <input type="submit"
+                                                                                                 class="button is-primary"
+                                                                                                 value="Add Vaccine Card"
+                                                                                                 name="vaccinecard"/>
+                </label>
+            </div>
         </form>
 
     </div>
