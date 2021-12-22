@@ -142,7 +142,7 @@ class Test
 
     public static function getTestsOfUserFuture(int $id, PDO $conn) : array
     {
-
+        $DateAndTime = date('Y-m-d h:i:s a', time());
         
 
         $sql = "SELECT * FROM ".Test::TABLE_NAME ." JOIN ".User::TABLE_NAME .
@@ -159,7 +159,10 @@ class Test
             $test->setTestDate($row["test_date"]);
             $test->setResult($row["result"]);
             $test->setDocument($row["document"]);
-            $tests[] = $test;
+            if ( $row["test_date"] >= $DateAndTime)
+            {
+                $tests[] = $test;
+            }
         }
         return $tests;
 
@@ -167,7 +170,8 @@ class Test
 
     public static function getTestsOfUserPast(int $id, PDO $conn) : array
     {
-        $DateAndTime = date('m-d-Y h:i:s a', time());
+        $DateAndTime = date('Y-m-d h:i:s a', time());
+
 
         
 
@@ -180,14 +184,21 @@ class Test
         $tests = array();
         foreach($result as $row)
         {
-            $test = new Test();
+            
+                $test = new Test();
             $test->settestId($row["test_id"]);
             $test->setTestDate($row["test_date"]);
             $test->setResult($row["result"]);
             $test->setDocument($row["document"]);
-            $tests[] = $test;
+            if ( $row["test_date"] < $DateAndTime)
+            {
+                $tests[] = $test;
+            }
+            
         }
         return $tests;
 
     }
+
+    
 }

@@ -174,15 +174,42 @@
         <div class="tile is-child box">
             <p>
                 <?php
-                $pastTest = ["date" => "1.2.4.5", "result" => "negative"];
-                $upcomingTest = ["date" => "2023"];
-                $myArr = Test::getTestsOfUser($_SESSION['id'],$conn);
-                
+                //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
+                //$upcomingTest = ["date" => "2023"];
+                /*
+                $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
+                $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
 
                 echo $engine->render("PCRtest",
-                    ["pastTest" => $myArr,
-                        "upcomingTest" => $myArr]);
+                    ["date" => $pastTests[0]->getTestDate(),"result" => "negative";
+                        "upcomingTest" => $futureTests[0]->getTest()]);
+                        */
 
+                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
+                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
+
+                    $pastArr = array();
+                    $futureArr = array();
+                    foreach( $pastTests as $p) {
+                        $pastArr[] = array( "date" => $p->getTestDate() , "result" =>$p->getResult());           
+                     }
+                     foreach( $futureTests as $p) {
+                        $futureArr[] = array( "date" => $p->getTestDate());           
+                     }    
+                echo $pastArr[0]["date"];
+                echo $pastArr[0]["result"];
+                echo $pastArr[1]["date"];
+                echo $pastArr[1]["result"];
+                echo $pastArr[2]["date"];
+                echo $pastArr[2]["result"];
+                // upcoming test are loaded first so that they appear on the top of the table.
+                echo $engine->render("PCRtest", ["upcomingTest" => [
+                    $pastArr
+                ], "pastTest" => [
+                    $futureArr
+                ]]);
+
+                
                 
                 /*
                 // upcoming test are loaded first so that they appear on the top of the table.
