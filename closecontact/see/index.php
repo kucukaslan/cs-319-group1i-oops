@@ -36,15 +36,27 @@ $pagename = '/closecontact/see';
         exit();
     } else {
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $userId = $_SESSION["id"];
+
         $uf = new UserFactory();
         $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
         $lectureToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
         print_r($lectureToDisplay);
 
-        // $participantsOfTheEvent =
-        $addedStudents = [];
-        $nonAddedStudents = [];
+        $participantsOfTheEvent = $lectureToDisplay->getParticipants();
+
+        $added_name_list = [];
+        $non_added_name_list = [];
+
+        foreach ($participantsOfTheEvent as $participant) {
+            if ($participant->isContacted($userId)) {
+                $added_name_list[] = ["name"=>$participant->getName()];
+            } else {
+                $non_added_name_list[] = ["name"=>$participant->getName()];
+            }
+        }
+
 
         echo '<header>';
         $navbar = new NavBar($usertype, $pagename);
@@ -57,14 +69,11 @@ $pagename = '/closecontact/see';
         ));
 
 
-        // render participants
+        // render participant
         echo $m->render('lectureparticipants', [
-            'addedStudent' => [
-                ['name' => 'added student name'], ["name" => "added name 2"]],
-            "nonAddedStudent" => [
-                ['name' => 'nonadded student name']],
-            "courseCode" => "example Course Code",
-            "date" => "example datee", "column1"=> "Course Code", "column2"=> "Lecture Date", "column3"=> "See Participants",
+            'added' => $added_name_list,
+            "nonAdded" => $non_added_name_list,
+            "eventName" => $lectureToDisplay->getTitle(),
         ]);
     }
 

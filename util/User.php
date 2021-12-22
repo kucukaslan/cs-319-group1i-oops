@@ -19,6 +19,8 @@ abstract class User implements EventParticipant {
     protected ?string $email;
     protected ?string $HESCode;
     protected ?string $HESCodeStatus;
+    protected ?array $closeContacts;
+    protected ?array $eventsIParticipate;
 
 
     public function __construct()
@@ -30,6 +32,8 @@ abstract class User implements EventParticipant {
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
+        $this->closeContacts = null;
+        $this->eventsIParticipate = null;
     }
 
 
@@ -297,7 +301,7 @@ abstract class User implements EventParticipant {
             }
             $stmt->execute();
             $result = $stmt->fetchAll();
-            $contacts = array();
+            $this->closeContacts = array();
             foreach ($result as $row) {
                 // todo User'ın type'ının bir önemi yok
                 // User class'ı da abstract şimdilik Student olarak oluşturuyorum.
@@ -306,14 +310,16 @@ abstract class User implements EventParticipant {
                 $u->setFirstname($row['name']);
                 $u->setLastname($row['lastname']);
                 $u->setEmail($row['email']);
-                $contacts[$row['id']] = $u;
+                $this->closeContacts[$row['id']] = $u;
             }
-            return $contacts;
+            return $this->closeContacts;
         } catch (PDOException $e) {
             getConsoleLogger()->log("User Contact", $e->getMessage());
             throw $e;
         }
     }
+
+
 
     public function getEventsIParticipate(): array {
         $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
@@ -321,7 +327,7 @@ abstract class User implements EventParticipant {
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
         $result = $stmt->fetchAll();
-        $events = array();
+        $this->eventsIParticipate = array();
         foreach ($result as $row) {
             $e = new Event();
             $e->setEventId($row['event_id']);
@@ -330,9 +336,18 @@ abstract class User implements EventParticipant {
             $e->setMaxNoOfParticipant($row['max_no_of_participant']);
             $e->setCanPeopleJoin($row['can_people_join']);
 
-            $events[$row['event_id']] = $e;
+            $this->eventsIParticipate[$row['event_id']] = $e;
         }
-        return $events;    
+        return $this->eventsIParticipate;
+    }
+
+    public function doIParticipate(int $eventId): bool {
+        foreach ($this->eventsIParticipate as $event) {
+            if ($eventId == $event->getEventId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getEventsControlledByMe() : array {
@@ -373,5 +388,30 @@ abstract class User implements EventParticipant {
             $users[$row['user_id']] = $u;
         }
         return $users;
+    }
+
+
+    /**
+     * @param int $userId to search in close contacts
+     * @return bool is user contacted with the parameter
+     */
+    public function isContacted(int $userId): bool {
+        foreach ($this->closeContacts as $contact) {
+            if ($userId == $contact->getId()) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public function joinSportsActivity(int $activityId): bool {
+        // TODO:
+        return true;
+    }
+
+    public function cancelSportsAppointment(int $activityId): bool {
+        // TODO:
+        return true;
     }
 }

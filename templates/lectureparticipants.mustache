@@ -2,13 +2,13 @@
     <div class="hero-body">
         <div class="columns is-centered">
             <div class="column is-narrow">
-                <h2><b>Course Code: {{courseCode}}<br>Date: {{date}}</b></h2>
+                <h2><b>Event Name: {{eventName}}<br> <!-- Date: {{date}}</b></h2> !-->
                 <table class="table is-bordered is-striped is-narrow is-hoverable">
                     <tr>
-                        <th>Student Name</th>
+                        <th>Name</th>
                         <th>Add/Remove as Closed Contact</th>
                     </tr>
-                    {{#addedStudent}}
+                    {{#added}}
                         <tr>
                             <td>{{name}}</td>
                             <td>
@@ -17,8 +17,8 @@
                                 </form>
                             </td>
                         </tr>
-                    {{/addedStudent}}
-                    {{#nonAddedStudent}}
+                    {{/added}}
+                    {{#nonAdded}}
                         <tr>
                             <td>{{name}}</td>
                             <td>
@@ -27,7 +27,7 @@
                                 </form>
                             </td>
                         </tr>
-                    {{/nonAddedStudent}}
+                    {{/nonAdded}}
                 </table>
             </div>
         </div>

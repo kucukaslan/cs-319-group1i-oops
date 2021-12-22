@@ -1,16 +1,10 @@
 <?php
 include_once("../config.php");
+require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 startDefaultSessionWith();
-
-require_once rootDirectory() . '/vendor/autoload.php';
-
-$conn = getDatabaseConnection();
-
-if (!isset($_SESSION['id']) || !isset($conn)) {
-    header("location: ../login");
-}
-$usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+$pagename = "/events";
+// ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -28,38 +22,84 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 <div class="container">
 
     <?php
+    require_once rootDirectory() . '/vendor/autoload.php';
+
+    $conn = getDatabaseConnection();
+    echo "id is" . $_SESSION["id"];
+
+    if (!isset($_SESSION['id']) || !isset($conn)) {
+        header("location: ../login");
+    }
+
+    $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     $title = <<<EOF
-        <div class="centerwrapper">
-        <div class="centerdiv">
-            <p class="title">Events Page</p>
-        </div>
+    <div class="centerwrapper">
+    <div class="centerdiv">
+        <p class="title">Events Page</p>
     </div>
-    EOF;
+</div>
+EOF;
+    $uf = new UserFactory();
+    $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+
     $navbar = new NavBar($usertype);
     echo $navbar->draw();
 
     $m = new Mustache_Engine(array(
-        'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
+        'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
     ));
 
+    $lectures = $user->getEventsIParticipate();
+    $sports = $user->getEventsIParticipate();
+
+    // print_r($lectures);
+
+    $lecture_data = [];
+    foreach ($lectures as $lecture) {
+        $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
+        "value"=>"Leave", "hiddenValue"=>$lecture->getEventId()];
+    }
+
+    $sports_data_enrolled = [];
+    $sports_data_not_enrolled = [];
+
+    foreach ($sports as $sport) {
+        if ($user->doIParticipate($sport->getEventId())) {
+            $sports_data_enrolled[] = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate(), "timeslot"=>$sport->getStartDate(), "eventId"=>$sport->getEventId(),
+                "value"=>"Leave"];
+        } else {
+            $sports_data_not_enrolled[] = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate(), "timeslot"=>$sport->getStartDate(), "eventId"=>$sport->getEventId(),
+                "value"=>"Leave"];
+        }
+    }
+
+    print_r($sports_data_enrolled);
+
+
+    // RENDER RALATED PARTS
     echo $title;
-    echo $m->render("listWith3ColumnsAndForm", ["row" => [
-        ["firstEl" => "cs123", "secondEl" => "SAZ-12", "buttonname"=>"cs123", "value"=>"Leave"],
-        ["firstEl" => "cs123", "secondEl" => "SAZ-12", "buttonname"=>"cs123", "value"=>"Leave"]],
-        "title"=>"Enrolled Courses", "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Leave Course"]
+    echo $m->render("listWith3ColumnsAndForm", ["row" => $lecture_data,
+            "title" => "Enrolled Courses", "column1" => "Course Code", "column2" => "Place", "column3" => "Leave Course"]
     );
 
-    // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
-    ?>
-    <?php
+
     echo $m->render('eventssports', [
-        'enrolledevent' => [
-            ['place' => 'place1', "dayslot" => "day1", "timeslot" => "13.30"],
-            ['place' => 'place2', "dayslot" => "day3", "timeslot" => "14.30"]
-        ],
-        "notenrolledevent" => [
-            ['place' => 'place1', "dayslot" => "day2", "timeslot" => "13.30"]]
+        'enrolledevent' => $sports_data_enrolled,
+        "notenrolledevent" => $sports_data_not_enrolled
     ]);
+
+
+    // implementation of leaving an sports event
+    if (isset($_POST["action"])) {
+
+        $activityId = $_POST["action"];
+
+        if ($user->cancelSportsAppointment($activityId)) {
+            echo "LEAVED ACTIVITY WITH ID " . $activityId;
+        } else {
+            echo "Did not manage to leave the sports activity";
+        }
+    }
     ?>
 </div>
 
