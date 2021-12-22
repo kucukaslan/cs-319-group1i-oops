@@ -2,6 +2,7 @@
     include_once("../config.php");
     require_once(rootDirectory()."/util/NavBar.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
+    require_once(rootDirectory() . "/util/SportsEvent.php");
     startDefaultSessionWith();
 ?>
 
@@ -38,13 +39,15 @@
         $uf = new UserFactory();
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
-        $eventsOfUser = $user->getEventsIParticipate("sports");
+        $eventsOfUser = $user->getEventsIParticipate(SportsEvent::TABLE_NAME);
 
         // add sportsevents  to events  list
         $i = 0;
         foreach($eventsOfUser as $sportsEvent) {
-            $events_list[] = ["firstEl" => $sportsEvent->getPlace(), "secondEl" => $sportsEvent->getStartDate(), "Quota" => $sportsEvent->getCurrentNumberOfParticipants . " /" . $sportsEvent->getMaxNoOfParticipant,
-                "id" => $sportsEvent->getId()];
+            // mustafa "datetime"ı string'e çevirmerk için "format" metodunu kullanabilirsin
+            $events_list[] = ["firstEl" => $sportsEvent->getPlace(), "secondEl" => $sportsEvent->getStartDate()->format("Y-m-d H:i:s")/* ->format(DateTimeInterface::RFC3339)*/, 
+                "Quota" => $sportsEvent->getCurrentNumberOfParticipants() . " /" . $sportsEvent->getMaxNoOfParticipant(),
+                "id" => $sportsEvent->getEventId()];
             // get all participants in a specific event
             $participantsList = $sportsEvent->getParticipants();
 

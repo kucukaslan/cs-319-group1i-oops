@@ -1,7 +1,7 @@
 <?php
 require_once ("EventParticipant.php");
 require_once("Event.php");
-require_once("EventParticipant.php");
+require_once("EventFactory.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
 abstract class User implements EventParticipant {
@@ -230,7 +230,6 @@ abstract class User implements EventParticipant {
 
     public function setDatabaseConnection(PDO $conn)
     {
-
         $this->conn = $conn;
     }
 
@@ -319,22 +318,16 @@ abstract class User implements EventParticipant {
         }
     }
 
-
-
-    public function getEventsIParticipate(): array {
-        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
+    public function getEventsIParticipate( $event_type =Event::TABLE_NAME ): array {
+        $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
         $result = $stmt->fetchAll();
         $this->eventsIParticipate = array();
+        $ef = new EventFactory($this->conn);
         foreach ($result as $row) {
-            $e = new Event();
-            $e->setEventId($row['event_id']);
-            $e->setTitle($row['event_name']);
-            $e->setPlace($row['place']);
-            $e->setMaxNoOfParticipant($row['max_no_of_participant']);
-            $e->setCanPeopleJoin($row['can_people_join']);
+            $e = $ef->makeEventFromDBRow($event_type, $row);
 
             $this->eventsIParticipate[$row['event_id']] = $e;
         }
@@ -406,12 +399,38 @@ abstract class User implements EventParticipant {
     }
 
     public function joinSportsActivity(int $activityId): bool {
-        // TODO:
-        return true;
+        return $this->joinEvent($activityId);
     }
 
     public function cancelSportsAppointment(int $activityId): bool {
-        // TODO:
-        return true;
+        return $this->cancelEvent($activityId);
+    }
+
+    public function joinEvent(int $event_id): bool {
+        try {
+            $sql = "INSERT INTO " . Event::PARTICIPATION_TABLE_NAME . " (user_id, event_id) VALUES (:user_id, :event_id)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':user_id', $this->id);
+            $stmt->bindParam(':event_id', $event_id);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Join Event", $e->getMessage());
+            //throw $e;
+        }
+    }
+
+    public function leaveEvent(int $event_id): bool {
+        try {
+            $sql = "DELETE FROM " . Event::PARTICIPATION_TABLE_NAME . " WHERE user_id = :user_id AND event_id = :event_id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':user_id', $this->id);
+            $stmt->bindParam(':event_id', $event_id);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Leave Event", $e->getMessage());
+            //throw $e;
+        }
     }
 }
