@@ -34,9 +34,25 @@
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype  = $_SESSION['usertype'] ?? SportsCenterStaff::TABLE_NAME;
         $uf = new UserFactory();
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
+
+        $eventsOfUser = $user->getEventsIParticipate("sports");
+
+        // add sportsevents  to events  list
+        $i = 0;
+        foreach($eventsOfUser as $sportsEvent) {
+            $events_list[] = ["firstEl" => $sportsEvent->getPlace(), "secondEl" => $sportsEvent->getStartDate(), "Quota" => $sportsEvent->getCurrentNumberOfParticipants . " /" . $sportsEvent->getMaxNoOfParticipant,
+                "id" => $sportsEvent->getId()];
+            // get all participants in a specific event
+            $participantsList = $sportsEvent->getParticipants();
+
+            $i++;
+        }
+
+
+
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
@@ -44,15 +60,14 @@
             <h2>Reservations Page</h2>
     </div>";
 
-        echo $engine->render("list5ColButton", ["row" => [
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
+
+        echo $engine->render("list5ColButton", ["row" => $events_list,
             "title"=>"Upcoming Events",
             "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
 
         echo $engine->render("list5ColButton", ["row" => [
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
+            ['firstEl' => 'Main Sports Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
+            ['firstEl' => 'Main Sports Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
             "title"=>"Past Events",
             "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"Past Participants"]);
 

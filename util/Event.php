@@ -16,7 +16,6 @@ class Event
     // object properties
     protected ?int $eventID;
     protected ?string $title;
-    protected ?DateTime $startDate;
     protected ?bool $canPeopleJoin;
     protected ?string $place;
     protected ?int $maxNoOfParticipant;
@@ -40,12 +39,12 @@ class Event
     /*
     * Temporarily placed default arguments however this constructor might be replaced with empty constructor in future! 
     */
-    public function __construct(?PDO $conn = null, ?int $eventID = 0, ?string $title = "", ?DateTime $startDate = null, ?bool $canPeopleJoin = false, ?string $place= "", ?int $maxNoOfParticipant = 0, $participants = null, ?int $currentNumberOfParticipants = 0)
+    public function __construct(?PDO $conn = null, ?int $eventID = 0, ?string $title = "", /*?DateTime $startDate = null,*/ ?bool $canPeopleJoin = false, ?string $place= "", ?int $maxNoOfParticipant = 0, $participants = null, ?int $currentNumberOfParticipants = 0)
     {
         $this->conn = $conn;
         $this->eventID = $eventID;
         $this->title = $title;
-        $this->startDate = $startDate;
+       // $this->startDate = $startDate;
         $this->canPeopleJoin = $canPeopleJoin;
         $this->place = $place;
         $this->maxNoOfParticipant = $maxNoOfParticipant;
@@ -213,21 +212,7 @@ class Event
         $this->title = $title;
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getStartDate(): ?DateTime
-    {
-        return $this->startDate;
-    }
 
-    /**
-     * @param DateTime|null $startDate
-     */
-    public function setStartDate(?DateTime $startDate): void
-    {
-        $this->startDate = $startDate;
-    }
 
     /**
      * @return bool|null
