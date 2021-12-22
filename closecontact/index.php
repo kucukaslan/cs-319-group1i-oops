@@ -135,7 +135,7 @@ EOF;
             echo "inside post if " . $_POST["closeContact"];
             unset($_POST);
             // echo "<script> document.location.reload() </script>";
-            header("Location: ");
+            header("Refresh:0");
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["closeContact"])){
             $userIdToAdd = $_SESSION["closeContact"];
             unset($_SESSION["closeContact"]);
@@ -145,8 +145,8 @@ EOF;
             } else {
                 echo "DID NOT MANAGE TO add " . $userIdToAdd;
             }
-            echo "<script> document.location.reload() </script>";
-            // header("Location: ");
+            // echo "<script> document.location.reload() </script>";
+            header("Refresh:0");
         }
 
 
@@ -157,7 +157,7 @@ EOF;
             $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
             echo "inside post if remove" . $_POST["removeCloseContact"];
             unset($_POST);
-            header("Location: ");
+            header("Refresh:0");
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["removeCloseContact"])) {
             $userIdToDelete = $_SESSION["removeCloseContact"];
             unset($_SESSION["removeCloseContact"]);
@@ -168,9 +168,9 @@ EOF;
                 echo "DID NOT MANAGE TO DELETE " . $userIdToDelete;
             }
 
-            unset($_POST);
-            echo "<script> document.location.reload() </script>";
-            // header("Location: ");
+            // unset($_POST);
+            // echo "<script> document.location.reload() </script>";
+            header("Refresh:0");
         }
 
 
