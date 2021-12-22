@@ -12,6 +12,25 @@
             {{/diagnosis}}
         </table>
     </div>
-    <input type="submit" class="button" value="Add New Diagnosis">
-    <input type="submit" class="button" value="Update Diagnosis">
+    <div class="table">
+
+
+        <form method="post" enctype="multipart/form-data">
+            Choose Your File
+            <input class="button is-info" type="file" name="file"/>
+
+
+            <div class="block"></div>
+
+        <label for="start">Add new Diagnosis Information (Applied Date):</label>
+        <input type="date" id="start" name="trip-start"
+               value="2018-07-22"
+               min="2018-01-01" max="2018-12-31" class="button">
+            <div class="block"></div>
+            <input type="submit" class="button is-success" name="add-diag" value="Add New Diagnosis">
+            <!--<input type="submit" class="button" name="upd-diag" value="Update Diagnosis">-->
+
+        </form>
+
+    </div>
 </div>

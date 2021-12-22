@@ -15,7 +15,11 @@
                             <td>{{place}}</td>
                             <td>{{dayslot}}</td>
                             <td>{{timeslot}}</td>
-                            <td><input type="submit" class="button is-warning" value="Leave"></td>
+                            <td>
+                                <form method="post">
+                                <input type="submit" class="button is-warning" name="leave-{{place}}-{{dayslot}}-{{timeslot}}" value="Leave">
+                                </form>
+                            </td>
                         </tr>
                     {{/enrolledevent}}
                     {{#notenrolledevent}}
@@ -23,7 +27,11 @@
                             <td>{{place}}</td>
                             <td>{{dayslot}}</td>
                             <td>{{timeslot}}</td>
-                            <td><input type="submit" class="button is-success" value="Enroll"></td>
+                            <td>
+                                <form method="post">
+                                <input type="submit" class="button is-success" name="enroll-{{place}}-{{dayslot}}-{{timeslot}}" value="Enroll">
+                                </form>
+                            </td>
                         </tr>
                     {{/notenrolledevent}}
                 </table>

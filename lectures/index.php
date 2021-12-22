@@ -49,13 +49,16 @@ startDefaultSessionWith();
         }*/
         // render upcoming lectures
         echo $engine->render("listWith3ColumnsAndButton", ["row" => [
-        ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
-            ['firstEl' => 'Math123', 'secondEl' => '1.1.2100', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+        ['firstEl' => 'Math123', 'secondEl' => 'Sa122', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
+            ['firstEl' => 'Math123', 'secondEl' => 'Sa122', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
         ], "title"=>"Upcoming Lectures",
-        "column1"=>"Course Code", "column2"=>"Lecture Date", "column3"=>"Manage Lecture"]);
+        "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Manage Lecture"]);
 
         // render past lectures
-        echo $engine->render("pastlectures", ["event" => [["courseCode"=>"code1", "lectureDate"=>"1.2.344"], ["courseCode"=>"code1", "lectureDate"=>"1.2.344"]]]);
+        echo $engine->render("listWith2Column", ["row" => [
+            ["firstEl"=>"code1", "secondEl"=>"Sa122"],
+            ["firstEl"=>"code1", "secondEl"=>"Sa122"]],
+            "title"=>"Past Lectures", "column1"=>"Place", "column2"=>"Lecture Date"]);
 
         // create lecture
         $createLectureButton = <<<EOF

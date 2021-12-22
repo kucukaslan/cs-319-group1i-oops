@@ -67,16 +67,17 @@ final class VaccineDatabaseTest extends TestCase
         assertTrue(is_array($vaccines));
         assertTrue(count($vaccines) > 0);
         assertInstanceOf( Vaccine::class, $vaccines[0] );
-
         $now = new DateTime();
         $vid = $vaccines[0]->getId();
         $vax = (new VaccineFactory())->makeVaccineById($conn, $vid);
-        $vm->addVaccine($vax, $now);
+        $vm->insertVaccination($vax, $now);
         $newvaccines = $vm->getUserVaccines();
-        assertTrue(count($newvaccines) == count($vaccines) + 1);
+        $cnt = count($newvaccines);
+        assertTrue($cnt == 1 + count($vaccines)); // it really added
+        $vm->deleteVaccination( end($newvaccines));
+        $deletedVaccines = $vm->getUserVaccines();
+        assertTrue( $cnt == 1 + count($deletedVaccines)); // it really deleted
 
     }
-    
-
 }
 ?>

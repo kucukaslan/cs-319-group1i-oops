@@ -6,7 +6,7 @@ class VaccineManager
 
     // attributes
     private $conn;
-    private $userId;   
+    private $userId;
 
     // constructor with user id
     public function __construct(PDO $conn, int $userId)
@@ -16,17 +16,17 @@ class VaccineManager
     }
 
     // select user's vaccines from the database
-    public function getUserVaccines() : array
+    public function getUserVaccines(): array
     {
-        $sql = "SELECT * FROM ".self::RELATION_TABLE_NAME." NATURAL JOIN ".Vaccine::TABLE_NAME ."   WHERE user_id = :user_id";
+        $sql = "SELECT * FROM " . self::RELATION_TABLE_NAME . " NATURAL JOIN " . Vaccine::TABLE_NAME . "   WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(":user_id", $this->userId);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $vaccines = array();
-        foreach($result as $row)
-        {
+        foreach ($result as $row) {
             $vaccine = new Vaccine();
+            $vaccine->setVaccinationid($row["vaccination_id"]);
             $vaccine->setId($row["vaccine_id"]);
             $vaccine->setCvxCode($row["cvx_code"]);
             $vaccine->setVaccineName($row["vaccine_name"]);
@@ -37,31 +37,43 @@ class VaccineManager
         return $vaccines;
     }
 
-    // solves hanoi tower problem
-    public function solveHanoiTower(int $n, string $source, string $destination, string $aux) : void
+    // add a vaccine with administration date to the database
+    public function insertVaccination(Vaccine $vaccine, DateTime $administrationDate) : bool
     {
-        if($n == 1)
-        {
-            echo "Move disk 1 from ".$source." to ".$destination."\n";
-        }
-        else
-        {
-            $this->solveHanoiTower($n-1, $source, $aux, $destination);
-            echo "Move disk ".$n." from ".$source." to ".$destination."\n";
-            $this->solveHanoiTower($n-1, $aux, $destination, $source);
-        }
+        try {
+                $sql = "INSERT INTO " . self::RELATION_TABLE_NAME . " (user_id, vaccine_id, administration_date) VALUES (:user_id, :vaccine_id, :administration_date)";
+                $stmt = $this->conn->prepare($sql);
+                $vid = $vaccine->getId();
+                $date = $administrationDate->format(DateTimeInterface::RFC3339);
+                $stmt->bindParam(":user_id", $this->userId);
+                $stmt->bindParam(":vaccine_id", $vid);
+                $stmt->bindParam(":administration_date", $date);
+                $stmt->execute();
+            } catch (PDOException $e) {
+                throw $e;
+                return false;
+            }
+            return true;
     }
 
-    // add a vaccine with administration date to the database
-    public function addVaccine(Vaccine $vaccine, DateTime $administrationDate)
+    // delete vaccination
+    public function deleteVaccination(Vaccine $vaccine) : bool
     {
-        $sql = "INSERT INTO ".self::RELATION_TABLE_NAME." (user_id, vaccine_id, administration_date) VALUES (:user_id, :vaccine_id, :administration_date)";
-        $stmt = $this->conn->prepare($sql);
-        $vid = $vaccine->getId();
-        $date = $administrationDate->format(DateTimeInterface::RFC3339);
-        $stmt->bindParam(":user_id", $this->userId);
-        $stmt->bindParam(":vaccine_id", $vid);
-        $stmt->bindParam(":administration_date",$date );
-        $stmt->execute();
+        try {
+            $sql = "DELETE FROM " . self::RELATION_TABLE_NAME . " WHERE vaccination_id = :vaccination_id";
+            $stmt = $this->conn->prepare($sql);
+            $vid = $vaccine->getVaccinationId();
+            $stmt->bindParam(":vaccination_id", $vid);
+            // todo delete
+            echo $vid;
+            var_dump($stmt);
+            $stmt->execute();
+            var_dump($stmt);
+        } catch (PDOException $e) {
+            throw $e;
+            return false;
+        }
+        return true;
     }
+
 }

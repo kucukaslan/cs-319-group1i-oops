@@ -1,0 +1,19 @@
+<h2> {{title}} </h2>
+    <table class="table">
+        <tr>
+            <th>{{column1}}</th>
+            <th>{{column2}}</th>
+            <th>{{column3}}</th>
+            <th>{{column4}}</th>
+            <th>{{column5}}</th>
+        </tr>
+        {{#row}}
+            <tr>
+                <td>{{firstEl}}</td>
+                <td>{{secondEl}}</td>
+                <td>{{thirdEl}}</td>
+                <td>{{fourthEl}}</td>
+                <td> <a href="{{buttonLink}}" class="button"> {{buttonName}} </a> </td>
+            </tr>
+        {{/row}}
+    </table>

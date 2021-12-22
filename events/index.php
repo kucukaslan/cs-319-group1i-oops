@@ -43,10 +43,12 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     ));
 
     echo $title;
-    echo $m->render("eventslecture", ["event" => [
-        ["courseCode" => "cs123", "lectureDate" => "1.2.3444"],
-        ["courseCode" => "cs319", "lectureDate" => "1.2.4445"]
-    ]]);
+    echo $m->render("listWith3ColumnsAndForm", ["row" => [
+        ["firstEl" => "cs123", "secondEl" => "SAZ-12", "buttonname"=>"cs123", "value"=>"Leave"],
+        ["firstEl" => "cs123", "secondEl" => "SAZ-12", "buttonname"=>"cs123", "value"=>"Leave"]],
+        "title"=>"Enrolled Courses", "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Leave Course"]
+    );
+
     // echo $m->render("eventssports", ["event" => [["courseCode"=>"cs123", "lectureDate"=>"1.2.3444"]]]);
     ?>
     <?php
