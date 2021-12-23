@@ -85,7 +85,7 @@ class UserFactory{
         $this->user->setId($id);
         $this->user->setDatabaseConnection($db);
         try {
-            $query = "SELECT * FROM ".$this->user->getTableName()." WHERE id = :id "; // . $this->id;
+            $query = "SELECT * FROM ". User::TABLE_NAME /* $this->user->getTableName() */ ." WHERE id = :id "; // . $this->id;
             $stmt = $db->prepare($query);
             $stmt->execute(array('id'=>$this->user->getId()));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
