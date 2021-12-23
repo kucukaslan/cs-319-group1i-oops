@@ -1,8 +1,12 @@
 <?php
 require_once(__DIR__ . "/../../config.php");
 require_once(rootDirectory() . "/util/NavBar.php");
+require_once(rootDirectory() . "/util/EventFactory.php");
+require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 $pagename = '/closecontact/see';
+ob_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -34,28 +38,103 @@ $pagename = '/closecontact/see';
         exit();
     } else {
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $userId = $_SESSION["id"];
+
+        $uf = new UserFactory();
+        $ef = new EventFactory($conn);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+
+        echo "event Id is " . $_SESSION["eventToDisplay"] . "<br>";
+        $eventToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
+
+        print_r($eventToDisplay);
+        // echo get_class($eventToDisplay);
+
+        // echo gettype($eventToDisplay);
+        // echo "<br>";
+        $participantsOfTheEvent = $user->getParticipants($eventToDisplay->getEventID());
+        // print_r($participantsOfTheEvent);
+
+        $contact_data = [];
+        $non_contact_data = [];
+
+
+        $user->getCloseContacts();
+        foreach ($participantsOfTheEvent as $participant) {
+            if ($participant->getId() != $user->getId()) {
+                if ($user->isContacted($participant->getId())) {
+                    $contact_data[] = ["name"=>$participant->getFirstName() . " " . $participant->getLastName(), "id"=>$participant->getId()];
+                } else {
+                    $non_contact_data[] = ["name"=>$participant->getFirstName() . " " . $participant->getLastName(), "id"=>$participant->getId()];
+                }
+            }
+        }
+
+
+        // print_r($non_contact_data);
+        // echo "<br>";
+        // print_r($non_added_data);
+
         echo '<header>';
         $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
         echo "<h2>Event Details Page</h2>";
         echo '</header>';
 
-
         $m = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        // render participants
-        echo $m->render('lectureparticipants', [
-            'addedStudent' => [
-                ['name' => 'added student name'], ["name" => "added name 2"]],
-            "nonAddedStudent" => [
-                ['name' => 'nonadded student name']],
-            "courseCode" => "example Course Code",
-            "date" => "example datee",
-            "column1"=> "Course Code",
-            "column2"=> "Lecture Date",
-            "column3"=> "See Participants",
+
+
+        // render participant
+        echo $m->render('eventparticipants', [
+            'added' => $contact_data,
+            "nonAdded" => $non_contact_data,
+            "eventName" => $eventToDisplay->getTitle(),
         ]);
+
+        // add a participants as close contact
+        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["add"])) {
+
+            $_SESSION["add"] = $_POST["add"];
+            echo "inside post if " . $_POST["add"];
+            unset($_POST);
+
+            header("Refresh:0");
+
+        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["add"])){
+            $userIdToAdd = $_SESSION["add"];
+            unset($_SESSION["add"]);
+
+            echo "added USER WITH ID: " . $userIdToAdd;
+
+            // TODO: add some boundary conditions
+            $user->addCloseContact($userIdToAdd, 1);
+
+            header("Refresh:0");
+        }
+
+        // remove a participants from the close contact
+        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["remove"])) {
+
+            $_SESSION["remove"] = $_POST["remove"];
+            echo "inside post if " . $_POST["remove"];
+            unset($_POST);
+            // echo "<script> document.location.reload() </script>";
+            header("Refresh:0");
+
+        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["remove"])){
+            $userIdToRemove = $_SESSION["remove"];
+            unset($_SESSION["remove"]);
+
+            echo "removed USER WITH ID: " . $userIdToRemove;
+
+            // TODO: add some boundary conditions
+            $user->deleteCloseContact($userIdToRemove);
+
+            header("Refresh:0");
+        }
+
     }
 
     ?>

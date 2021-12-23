@@ -2,32 +2,34 @@
     <div class="hero-body">
         <div class="columns is-centered">
             <div class="column is-narrow">
-                <h2><b>Course Code: {{courseCode}}<br>Date: {{date}}</b></h2>
+                <h2><b>Event Name: {{eventName}} {{date}}</b></h2>
                 <table class="table is-bordered is-striped is-narrow is-hoverable">
                     <tr>
-                        <th>Student Name</th>
+                        <th>Name</th>
                         <th>Add/Remove as Closed Contact</th>
                     </tr>
-                    {{#addedStudent}}
+                    {{#added}}
                         <tr>
                             <td>{{name}}</td>
                             <td>
                                 <form method="post">
-                                <input type="submit" class="button" value="Remove" name="remove-{{name}}">
+                                <input type="hidden" name="remove" value="{{id}}">
+                                <input type="submit" class="button" value="Remove">
                                 </form>
                             </td>
                         </tr>
-                    {{/addedStudent}}
-                    {{#nonAddedStudent}}
+                    {{/added}}
+                    {{#nonAdded}}
                         <tr>
                             <td>{{name}}</td>
                             <td>
                                 <form method="post">
-                                <input type="submit" class="button" value="Add" name="add-{{name}}">
+                                <input type="hidden" name="add" value="{{id}}">
+                                <input type="submit" class="button" value="Add">
                                 </form>
                             </td>
                         </tr>
-                    {{/nonAddedStudent}}
+                    {{/nonAdded}}
                 </table>
             </div>
         </div>

@@ -1,7 +1,10 @@
 <?php
-
-abstract class User
-{
+require_once ("EventParticipant.php");
+require_once("Event.php");
+require_once("EventFactory.php");
+// Sometimes we just don't care the type of the user,
+// so why not allow an instance of User? 
+abstract class User implements EventParticipant {
     // CONSTANTS
     const TABLE_NAME = "user";
 
@@ -15,8 +18,13 @@ abstract class User
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
+    protected ?string $HESCodeStatus;
+    protected ?array $closeContacts;
+    protected ?array $eventsIParticipate;
 
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->conn = null;
         $this->id = null;
         $this->password = null;
@@ -24,6 +32,8 @@ abstract class User
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
+        $this->closeContacts = null;
+        $this->eventsIParticipate = null;
     }
 
 
@@ -62,16 +72,16 @@ abstract class User
     {
         return $this->password;
     }
-    
 
-    public function verifyPassword() : bool
+
+    public function verifyPassword(): bool
     {
         // verify password from database 
-        $query = "SELECT * FROM ".$this->getTableName()." WHERE id = :id "; // . $this->id;
+        $query = "SELECT * FROM " . $this->getTableName() . " WHERE id = :id "; // . $this->id;
         $stmt = $this->conn->prepare($query);
         // var_dump($query);
         // echo '<br>';
-        $stmt->execute(array('id'=>$this->id));
+        $stmt->execute(array('id' => $this->id));
         // var_dump($stmt);
         // echo '<br>';
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -95,25 +105,25 @@ abstract class User
     /*
         This might be an example of template method pattern.
     */
-    
-    public function insertToDatabase() : bool
-    { 
+
+    public function insertToDatabase(): bool
+    {
         try {
-            $query = "INSERT INTO ".User::TABLE_NAME." (id, password_hash, name, lastname, email, hescode) VALUES (:id, :password_hash, :name, :lastname, :email, :hescode)";
+            $query = "INSERT INTO " . User::TABLE_NAME . " (id, password_hash, name, lastname, email, hescode) VALUES (:id, :password_hash, :name, :lastname, :email, :hescode)";
             $stmt = $this->conn->prepare($query);
-            $stmt->execute(array('id'=>$this->id, 'password_hash'=>password_hash( $this->password, PASSWORD_ARGON2I), 'name'=>$this->firstname, 'lastname'=>$this->lastname, 'email'=>$this->email, 'hescode'=>$this->HESCode));
-    
+            $stmt->execute(array('id' => $this->id, 'password_hash' => password_hash($this->password, PASSWORD_ARGON2I), 'name' => $this->firstname, 'lastname' => $this->lastname, 'email' => $this->email, 'hescode' => $this->HESCode));
+
             return insertToSpecializedTable();
         } catch (Exception $e) {
             echo $e->getMessage();
-            throw new Exception("Error inserting to database.".$this->getTableName());
+            throw new Exception("Error inserting to database." . $this->getTableName());
             return false;
         }
     }
 
-    protected abstract function insertToSpecializedTable() : bool;
+    protected abstract function insertToSpecializedTable(): bool;
 
-    public function updateToDatabase() 
+    public function updateToDatabase()
     {
         $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -124,7 +134,8 @@ abstract class User
         $stmt->execute();
     }
 
-    public function updateHESCode(string $HESCode) : bool {
+    public function updateHESCode(string $HESCode): bool
+    {
         try {
             $query = "UPDATE " . $this->getTableName() . " SET hescode = :hescode WHERE id = :id";
             $stmt = $this->conn->prepare($query);
@@ -132,20 +143,19 @@ abstract class User
             $stmt->bindParam(':id', $this->id);
             $stmt->execute();
             return true;
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             return false;
         }
     }
-    public function deleteHESCode() : bool {
+    public function deleteHESCode(): bool
+    {
         try {
             $query = "UPDATE " . $this->getTableName() . " SET hescode = NULL WHERE id = :id";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':id', $this->id);
             $stmt->execute();
             return true;
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             return false;
         }
     }
@@ -157,7 +167,8 @@ abstract class User
         $stmt->bindParam(':password_hash', $hash);
     }
 
-    public function getTableName(): string {
+    public function getTableName(): string
+    {
         return get_called_class()::TABLE_NAME;
     }
 
@@ -217,9 +228,8 @@ abstract class User
         return $this->HESCode;
     }
 
-    public function setDatabaseConnection( PDO $conn)
+    public function setDatabaseConnection(PDO $conn)
     {
-
         $this->conn = $conn;
     }
 
@@ -227,45 +237,202 @@ abstract class User
      * @param int $id is user if to add the database
      * @return bool if addition is successful.
      */
-    public function addCloseContact(int $id): bool {
+    public function addCloseContact(int $contacted_user_id, int $event_id): bool
+    {
         // TODO: write given id to the database
-        return TRUE;
+        try {
+            $query = "INSERT INTO " . Event::CONTACT_TABLE_NAME . " (main_user_id , contacted_user_id , event_id) 
+            VALUES (:id, :contacted_user_id, :event_id)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute(array(
+                'id' => $this->id,
+                'contacted_user_id' => $contacted_user_id,
+                'event_id' => $event_id
+            ));
+            return true;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Contact", "Cannot add contact");
+            return false;
+        }
     }
-    public function deleteCloseContact(int $id): bool {
-        // TODO:
-        return TRUE;
+
+    /*
+    * if the event_id is not given then all the contact relations with that user will be deleted
+    * if the event_id is given then only the relations on that event will be deleted
+    */
+    public function deleteCloseContact(int $contacted_user_id, int $event_id = -1): bool
+    {
+        try {
+            $sql = "DELETE FROM " . Event::CONTACT_TABLE_NAME . " WHERE " . Event::CONTACT_MAIN_USER_ID_COLUMN . " = :id AND " .
+                Event::CONTACT_CONTACTED_USER_ID_COLUMN . " = :contacted_user_id " . ($event_id == -1 ? "" : " AND event_id = :event_id");
+            $stmt = $this->conn->prepare($sql);
+            $id = $this->id;
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':contacted_user_id', $contacted_user_id);
+            if ($event_id != -1) {
+                $stmt->bindParam(':event_id', $event_id);
+            }
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Contact", "Cannot delete contact");
+            return false;
+        }
     }
 
     /**
-     * @return int[] array of closed contact id's
+     * @return array of closed contacts
+     * each are Student objects whose "name", "lastname" and "email" are set.
+     * if the event_id is given then only the contacts of that event will be returned.
+     * else all the contacts will be returned, though it may contain repeating entries as of 2021.12.22 00:44.
      */
-    public function getCloseContacts() {
-        // TODO:
-        return [1, 32323, 3];
+    public function getCloseContacts(int $event_id = -1): array
+    {
+        try {
+            $sql = "SELECT * FROM " . Event::CONTACT_TABLE_NAME . " JOIN " . User::TABLE_NAME . ' ON '
+                . Event::CONTACT_TABLE_NAME . '.' . Event::CONTACT_CONTACTED_USER_ID_COLUMN . ' = ' . User::TABLE_NAME . ".id  WHERE main_user_id = :id"
+                . ($event_id == -1 ? "" : " AND event_id = :event_id");
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $this->id);
+            if ($event_id != -1) {
+                $stmt->bindParam(':event_id', $event_id);
+            }
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            $this->closeContacts = array();
+            foreach ($result as $row) {
+                // todo User'ın type'ının bir önemi yok
+                // User class'ı da abstract şimdilik Student olarak oluşturuyorum.
+                $u = new Student();
+                $u->setId($row['id']);
+                $u->setFirstname($row['name']);
+                $u->setLastname($row['lastname']);
+                $u->setEmail($row['email']);
+                $this->closeContacts[$row['id']] = $u;
+            }
+            return $this->closeContacts;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Contact", $e->getMessage());
+            throw $e;
+        }
     }
-    public function getNoOfCloseContacts(): int {
-        // TODO:
-        return 3;
+
+    public function getEventsIParticipate( $event_type =Event::TABLE_NAME ): array {
+        $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        $this->eventsIParticipate = array();
+        $ef = new EventFactory($this->conn);
+        foreach ($result as $row) {
+            $e = $ef->makeEventFromDBRow($event_type, $row);
+
+            $this->eventsIParticipate[$row['event_id']] = $e;
+        }
+        return $this->eventsIParticipate;
     }
+
+    public function doIParticipate(int $eventId): bool {
+        foreach ($this->eventsIParticipate as $event) {
+            if ($eventId == $event->getEventId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getEventsControlledByMe() : array {
+        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        $events = array();
+        foreach ($result as $row) {
+            $e = new Event();
+            $e->setEventId($row['event_id']);
+            $e->setTitle($row['event_name']);
+            $e->setPlace($row['place']);
+            $e->setMaxNoOfParticipant($row['max_no_of_participant']);
+            $e->setCanPeopleJoin($row['can_people_join']);
+            $events[$row['event_id']] = $e;
+        }
+        return $events;
+    }
+
+    /*
+    * Return the participants of the specified event
+    * users are Student objects whose "name", "lastname" and "email" are set,
+    * as well as their ids.
+    */
+    public function getParticipants(int $eventId): array {
+        $sql = "SELECT * FROM ".User::TABLE_NAME. " INNER JOIN " . Event::PARTICIPATION_TABLE_NAME." ON user_id = id WHERE event_id = :event_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':event_id', $eventId);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        $users = array();
+        $uf = new UserFactory();
+        foreach ($result as $row) {
+            $u = $uf->makeUserByInformation($this->conn, Student::TABLE_NAME,
+                $row['user_id'], $row['name'], $row['lastname'], $row['email']);
+            $users[$row['user_id']] = $u;
+        }
+        return $users;
+    }
+
 
     /**
-     * This function will be used for creating the contact list.
-     * @param int $id is the user id whose name will be fetched
-     * @return string name of the desired user
+     * @param int $userId to search in close contacts
+     * @return bool if user is contacted with user specified with id
      */
-    public function giveName(int $id): string {
-        // TODO:
-        if ($id == 1) {
-            return "Muhammed lol";
+    public function isContacted(int $userId): bool {
+        if ($this->closeContacts == null)
+            return false;
+        foreach ($this->closeContacts as $contact) {
+            if ($userId == $contact->getId()) {
+                return true;
+            }
         }
-        if ($id == 32323) {
-            return "hikmet simsir";
-        }
+        return false;
+    }
 
-        if ($id == 3) {
-            return "My id is 3";
-        }
+    public function joinSportsActivity(int $activityId): bool {
+        return $this->joinEvent($activityId);
+    }
 
-        return "????";
+    public function cancelSportsAppointment(int $activityId): bool {
+        return $this->leaveEvent($activityId);
+    }
+
+    public function joinEvent(int $event_id): bool {
+        try {
+            $sql = "INSERT INTO " . Event::PARTICIPATION_TABLE_NAME . " (user_id, event_id) VALUES (:user_id, :event_id)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':user_id', $this->id);
+            $stmt->bindParam(':event_id', $event_id);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Join Event", $e->getMessage());
+            //throw $e;
+            return false;
+        }
+    }
+
+    public function leaveEvent(int $event_id): bool {
+        try {
+            $sql = "DELETE FROM " . Event::PARTICIPATION_TABLE_NAME . " WHERE user_id = :user_id AND event_id = :event_id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':user_id', $this->id);
+            $stmt->bindParam(':event_id', $event_id);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            getConsoleLogger()->log("User Leave Event", $e->getMessage());
+            //throw $e;
+        }
     }
 }

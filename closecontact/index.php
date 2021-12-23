@@ -4,6 +4,7 @@ require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 $pagename = '/closecontact';
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +27,7 @@ $pagename = '/closecontact';
     $conn = getDatabaseConnection();
 
     if (!isset($_SESSION['id'])) {
+        // echo "dasdsad";
         echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
             . "You haven't logged in";
         echo "<form method='get' action=\"..\"><div class=\"form-group\">
@@ -34,6 +36,8 @@ $pagename = '/closecontact';
         echo "</div> </div>";
         exit();
     } else {
+        echo $_SESSION["id"];
+
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
@@ -49,79 +53,106 @@ $pagename = '/closecontact';
 
         $buttonNames = [];
         $contact_list = [];
-        $contactIds = $user->getCloseContacts();
+        $events = $user->getEventsIParticipate();
 
-        for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
-            // set button names
-            $buttonNames[] = "button" . ($i + 1);
+        // mock data
+        /*$events[] = new Event($conn, 10, "example title", new DateTime("now"), true,
+            "example place", 12);*/
 
-            // add close contact to contact list
-            $contact_list[] = ["imgsource" => $imgSource, "buttonname" => $buttonNames[$i], "name" => $user->giveName($contactIds[$i]), "id" => $contactIds[$i]];
+        // contacts is array of user objects
+        $contacts = $user->getCloseContacts();
+        // print_r($events);
+        // print_r($contacts);
+
+        // add close contacts to contact list
+        $i = 0;
+        foreach($contacts as $contact) {
+            $contact_list[] = ["imgsource" => $imgSource, "name" => $contact->getFirstName() . " " . $contact->getLastName(),
+            "id" => $contact->getId()];
+
+            $i++;
+        }
+        print_r($contact_list);
+
+
+        // get contents of the events I participate
+        $i = 0;
+        $event_list = [];
+        foreach ($events as $event) {
+            $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(),
+                "eventId"=>$event->getEventID()];
+            $i++;
         }
 
+        // RENDERING HTMLs
         // render close contacts
         echo $m->render("contactlist", ["person" => $contact_list]);
 
-        // render past events
+        // render lectures
         echo $m->render('listWith3ColumnsAndButton',
-            ['row' => [
-                ['firstEl' => 'Math-123', 'secondEl' => 'SAZ12', "buttonLink"=>"../../closecontact/see", "buttonName"=>"see"],
-                ['firstEl' => 'Math-123', 'secondEl' => 'SAZ12', "buttonLink"=>"../../closecontact/see", "buttonName"=>"see"]]
-            , "title"=>"My Courses", "column1"=>"Course Code", "column2"=>"Place", "column3"=>"See Participants"]);
+            ['row' => $event_list
+            , "title"=>"Your Events", "column1"=>"Name", "column2"=>"Place", "column3"=>"Participants"]);
 
 
         // add close contact component
         echo $m->render("addclosecontact");
 
 
-        // implementation of add close contact by id
-        // if the input is numeric try to add this id
-        if (isset($_POST['closeContact'])) {
+        // add to close contact
+        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
             if (is_numeric($_POST['closeContact'])) {
-                $contactIdToAdd = intval($_POST['closeContact']);
+                $_SESSION["closeContact"] = $_POST["closeContact"];
+                echo "inside post if " . $_POST["closeContact"];
+                unset($_POST);
 
-                if ($user->addCloseContact($contactIdToAdd)) {
-                    $successMass = <<<EOF
-<h2> SUCESS added: </h2>
-EOF;
-                    echo $successMass;
-                    echo $contactIdToAdd;
-                } else {
-                    $alertScript = <<<EOF
-<script> alert("Cannot add given ID") </script>
-EOF;
-                    echo $alertScript;
-                }
+                header("Refresh:0");
             } else {
-                $alertScript = <<<EOF
-<script> alert("Given id is not valid") </script>
-EOF;
-                echo $alertScript;
+                echo "Not valid HES CODE";
+            }
+        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["closeContact"])){
+            $userIdToAdd = $_SESSION["closeContact"];
+            unset($_SESSION["closeContact"]);
+
+            if ($user->addCloseContact($userIdToAdd, 1)) {
+                echo "added USER WITH ID: " . $userIdToAdd;
+            } else {
+                echo "DID NOT MANAGE TO add " . $userIdToAdd;
             }
 
+            header("Refresh:0");
         }
+
 
         // implementation of deleting user from the close contact list
         // check if a button is pressed for any user in the table
-        for ($i = 0; $i < $user->getNoOfCloseContacts(); $i++) {
-            $buttonName = "button" . ($i + 1);
-            if (isset($_POST[$buttonName])) {
-                // delete the user at the ($i + 1)th row in the contact list
-                $idToDeleteFromContactList = $contact_list[$i]["id"];
-                if ($user->deleteCloseContact($idToDeleteFromContactList)) {
-                    echo "DELETED USER WITH ID: " . $idToDeleteFromContactList;
-                } else {
-                    echo "DID NOT MANAGE TO DELETE " . $idToDeleteFromContactList;
-                }
+        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
+            $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
+            echo "inside post if remove" . $_POST["removeCloseContact"];
+            unset($_POST);
 
-                break;
+            header("Refresh:0");
+        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["removeCloseContact"])) {
+            $userIdToDelete = $_SESSION["removeCloseContact"];
+            unset($_SESSION["removeCloseContact"]);
+
+            if ($user->deleteCloseContact($userIdToDelete)) {
+                echo "DELETED USER WITH ID: " . $userIdToDelete;
+            } else {
+                echo "DID NOT MANAGE TO DELETE " . $userIdToDelete;
             }
+
+            header("Refresh:0");
         }
 
 
+        // go to the see event page if see button is pressed
+        if(isset($_POST["goEvent"])) {
+            $_SESSION["eventToDisplay"] = $_POST["goEvent"];
+            echo $_POST["goEvent"];
+            header("Location: ../../closecontact/see");
+        }
+
     }
-
-
     ?>
     <!--
     <div class = "component">

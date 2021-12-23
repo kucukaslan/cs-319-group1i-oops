@@ -27,12 +27,20 @@ class UserFactory{
     }
 
 
+    // ! does not inserts the user into the database 
     public function makeUserByRegister(PDO $db, string $usertype, int $id, string|int $password, string $firstname, string $lastname,string $email) : User
+    {
+        $this->makeUserByInformation($db, $usertype, $id, $firstname, $lastname, $email);
+        $this->user->setPassword($password);
+        return $this->user;
+    }
+
+    // make user from information
+    public function makeUserByInformation(PDO $db, string $usertype, int $id, string $firstname, string $lastname,string $email) : User
     {
         $this->makeUser($usertype);
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
-        $this->user->setPassword($password);
         $this->user->setFirstname($firstname);
         $this->user->setLastName($lastname);
         $this->user->setEmail($email);

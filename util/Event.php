@@ -6,6 +6,9 @@ class Event
     const TABLE_NAME = "event";
     const PARTICIPATION_TABLE_NAME = "event_participation";
     const CONTROL_TABLE_NAME = "event_control";
+    const CONTACT_TABLE_NAME = "contact";
+    const CONTACT_MAIN_USER_ID_COLUMN = "main_user_id";
+    const CONTACT_CONTACTED_USER_ID_COLUMN = "contacted_user_id";
 
     // database connection and table name
     protected ?PDO $conn;
@@ -13,7 +16,6 @@ class Event
     // object properties
     protected ?int $eventID;
     protected ?string $title;
-    protected ?DateTime $startDate;
     protected ?bool $canPeopleJoin;
     protected ?string $place;
     protected ?int $maxNoOfParticipant;
@@ -37,12 +39,12 @@ class Event
     /*
     * Temporarily placed default arguments however this constructor might be replaced with empty constructor in future! 
     */
-    public function __construct(?PDO $conn = null, ?int $eventID = 0, ?string $title = "", ?DateTime $startDate = null, ?bool $canPeopleJoin = false, ?string $place= "", ?int $maxNoOfParticipant = 0, $participants = null, ?int $currentNumberOfParticipants = 0)
+    public function __construct(?PDO $conn = null, ?int $eventID = 0, ?string $title = "", /*?DateTime $startDate = null,*/ ?bool $canPeopleJoin = false, ?string $place= "", ?int $maxNoOfParticipant = 0, $participants = null, ?int $currentNumberOfParticipants = 0)
     {
         $this->conn = $conn;
         $this->eventID = $eventID;
         $this->title = $title;
-        $this->startDate = $startDate;
+       // $this->startDate = $startDate;
         $this->canPeopleJoin = $canPeopleJoin;
         $this->place = $place;
         $this->maxNoOfParticipant = $maxNoOfParticipant;
@@ -105,15 +107,14 @@ class Event
     /**
      * @return array|null
      */
-    public function getParticipants($usertype = Student::TABLE_NAME): ?array
-    {
+    public function getParticipants($usertype = Student::TABLE_NAME): ?array {
         if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
             $sql = 'Select * from '.User::TABLE_NAME. " NATURAL JOIN  ".self::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute(['event_id' => $this->getEventID()]);
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $users = [];
-            foreach ($row as $user) {                
+            foreach ($row as $user) {
                 $users[$user['user_id']] = (new UserFactory())->makeUser( $usertype);
                 $users[$user['user_id']]->setDatabaseConnection($this->conn);
                 $users[$user['user_id']]->setId($user['user_id']);
@@ -159,7 +160,6 @@ class Event
     {
         $this->currentNumberOfParticipants = $currentNumberOfParticipants;
     }
-
 
 
 
@@ -211,21 +211,7 @@ class Event
         $this->title = $title;
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getStartDate(): ?DateTime
-    {
-        return $this->startDate;
-    }
 
-    /**
-     * @param DateTime|null $startDate
-     */
-    public function setStartDate(?DateTime $startDate): void
-    {
-        $this->startDate = $startDate;
-    }
 
     /**
      * @return bool|null
@@ -274,8 +260,4 @@ class Event
     {
         $this->maxNoOfParticipant = $maxNoOfParticipant;
     }
-
-
-
-
 }

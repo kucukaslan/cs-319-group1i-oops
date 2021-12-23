@@ -65,10 +65,10 @@ class VaccineManager
             $vid = $vaccine->getVaccinationId();
             $stmt->bindParam(":vaccination_id", $vid);
             // todo delete
-            echo $vid;
-            var_dump($stmt);
+            // echo $vid;
+            // var_dump($stmt);
             $stmt->execute();
-            var_dump($stmt);
+            // var_dump($stmt);
         } catch (PDOException $e) {
             throw $e;
             return false;

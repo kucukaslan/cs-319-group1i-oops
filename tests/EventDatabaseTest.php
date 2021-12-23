@@ -29,7 +29,8 @@ final class EventDatabaseTest extends TestCase
             $this->assertInstanceOf(Event::class, $e);
             $this->assertInstanceOf(SportsEvent::class, $e);
         }
-        //var_dump($sev);
+        // echo "-----------------------------------------------------\n";
+        // var_dump($sev);
 
         $cev = $ef->getEvents( CourseEvent::TABLE_NAME);
         foreach($cev as $e)
@@ -37,8 +38,18 @@ final class EventDatabaseTest extends TestCase
             $this->assertInstanceOf(Event::class, $e);
             $this->assertInstanceOf(CourseEvent::class, $e);
         }
+        // echo "-----------------------------------------------------\n";
+        // var_dump($cev);
 
-        //var_dump($cev);
+        $tev = $ef->getEvents( TestAppointmentEvent::TABLE_NAME);
+        foreach($tev as $e)
+        {
+            $this->assertInstanceOf(Event::class, $e);
+            $this->assertInstanceOf(TestAppointmentEvent::class, $e);
+        }
+        // echo "-----------------------------------------------------\n";
+        // var_dump($tev);
+
         return $cev;
     }
 
@@ -67,4 +78,22 @@ final class EventDatabaseTest extends TestCase
         return $ptcp;
     }
 
+    /**
+     * @depends testDatabaseConnection
+     * @depends testGetControllerPartipant
+     */
+    /*
+    public function testGetParticipant(PDO $conn, array $ptcp): array{
+
+        foreach($ptcp as $c)
+        {
+            $c->setDatabaseConnection($conn);
+            $this->assertInstanceOf(User::class, $c);
+            $c->joinEvent(3);
+        }
+        // var_dump($ctrl);
+        // var_dump($ptcp);
+        return $ptcp;
+    }
+    */
 }
