@@ -5,6 +5,8 @@ require_once(rootDirectory() . "/util/EventFactory.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 $pagename = '/closecontact/see';
+ob_start();
+
 ?>
 
 <!DOCTYPE html>
