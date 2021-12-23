@@ -6,7 +6,9 @@
     require_once(rootDirectory() . "/util/Vaccine.php");
     require_once(rootDirectory() . "/util/VaccineFactory.php");
     require_once(rootDirectory() . "/util/VaccineManager.php");
-    require_once(rootDirectory() . "/util/NavBar.php");
+    require_once(rootDirectory() . "/util/Test.php");
+    require_once(rootDirectory()."/util/NavBar.php");
+
     $conn = getDatabaseConnection();
     $pagename = '/';
     startDefaultSessionWith();
@@ -162,11 +164,14 @@
         <div class="tile is-child box">
             <p>
                 <?php
+                
+                
                 echo $engine->render("diagnosis",
                     ["diagnosis" => [
                         ["date" => "date 1"],
                         ["date" => "date 2"]
                     ]]);
+                    
                 ?>
             </p>
         </div>
@@ -175,15 +180,39 @@
         <div class="tile is-child box">
             <p>
                 <?php
-                $pastTest = ["date" => "1.2.4.5", "result" => "negative"];
-                $upcomingTest = ["date" => "2023"];
+                //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
+                //$upcomingTest = ["date" => "2023"];
+                $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
+                $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
 
+                $pastArr = array();
+                $futureArr = array();
+                foreach( $pastTests as $p) {
+                    $pastArr[] = array( "date" => $p->getTestDate() , "result" =>$p->getResult());
+                }
+                foreach( $futureTests as $p) {
+                    $futureArr[] = array( "date" => $p->getTestDate());
+                }
+
+                echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
+                    'pastTest' => $pastArr
+                ]);
+
+
+
+
+
+
+                
+                /*
                 // upcoming test are loaded first so that they appear on the top of the table.
+                $upcomingTest =['date'=>12];
                 echo $engine->render("PCRtest", ["upcomingTest" => [
-                    $upcomingTest, $upcomingTest
+                    'date'=>123,'result'=>23
                 ], "pastTest" => [
                     $pastTest, $pastTest
                 ]]);
+                */
 
                 ?>
             </p>
