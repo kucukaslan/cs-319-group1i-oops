@@ -114,7 +114,7 @@ class Event
             $stmt->execute(['event_id' => $this->getEventID()]);
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $users = [];
-            foreach ($row as $user) {                
+            foreach ($row as $user) {
                 $users[$user['user_id']] = (new UserFactory())->makeUser( $usertype);
                 $users[$user['user_id']]->setDatabaseConnection($this->conn);
                 $users[$user['user_id']]->setId($user['user_id']);

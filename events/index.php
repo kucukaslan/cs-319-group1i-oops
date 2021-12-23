@@ -61,7 +61,7 @@ EOF;
     $lecture_data = [];
     foreach ($lectures as $lecture) {
         $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
-        "value"=>"Leave", "hiddenValue"=>$lecture->getEventId()];
+        "hiddenValue"=>$lecture->getEventId()];
     }
 
     $sports_data_enrolled = [];
@@ -116,17 +116,15 @@ EOF;
         echo "ENROLLING " . $eventIdToEnroll;
 
         $eventToEnroll = $ef->getEvent($eventIdToEnroll);
-        if ($eventToEnroll->getCanPeopleJoin() && $eventToEnroll->getCurrentNumberOfParticipants() < $eventToEnroll->getMaxNoOfParticipant()) {
-            $user->joinSportsActivity($eventIdToEnroll);
-            echo "ENROLLED ACTIVITY WITH ID " . $eventIdToEnroll;
-        } else {
-            echo "Did not manage to leave the sports activity";
-        }
+
+        $user->joinSportsActivity($eventIdToEnroll);
+        echo "ENROLLED ACTIVITY WITH ID " . $eventIdToEnroll;
+
 
         header("Refresh:0");
     }
 
-    // cancel sports event
+    // cancel sports event or leave the course
     if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
         $_SESSION["cancel"] = $_POST["cancel"];
         echo "inside post if remove" . $_POST["cancel"];
@@ -139,7 +137,7 @@ EOF;
         unset($_SESSION["cancel"]);
         echo "canceling  " . $eventIdToCancel;
 
-        $user->cancelSportsAppointment($eventIdToCancel);
+        $user->leaveEvent($eventIdToCancel);
 
         header("Refresh:0");
     }

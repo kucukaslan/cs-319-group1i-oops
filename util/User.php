@@ -386,7 +386,7 @@ abstract class User implements EventParticipant {
 
     /**
      * @param int $userId to search in close contacts
-     * @return bool is user contacted with the parameter
+     * @return bool if user is contacted with user specified with id
      */
     public function isContacted(int $userId): bool {
         if ($this->closeContacts == null)
@@ -397,7 +397,6 @@ abstract class User implements EventParticipant {
             }
         }
         return false;
-
     }
 
     public function joinSportsActivity(int $activityId): bool {
@@ -405,7 +404,7 @@ abstract class User implements EventParticipant {
     }
 
     public function cancelSportsAppointment(int $activityId): bool {
-        return $this->cancelEvent($activityId);
+        return $this->leaveEvent($activityId);
     }
 
     public function joinEvent(int $event_id): bool {

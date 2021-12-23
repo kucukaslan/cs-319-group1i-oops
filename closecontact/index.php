@@ -36,7 +36,6 @@ ob_start();
         echo "</div> </div>";
         exit();
     } else {
-        echo "ASDSADasdasdsa0";
         echo $_SESSION["id"];
 
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
@@ -64,7 +63,6 @@ ob_start();
         $contacts = $user->getCloseContacts();
         // print_r($events);
         // print_r($contacts);
-        // get the contents of close contacts
 
         // add close contacts to contact list
         $i = 0;
@@ -86,56 +84,27 @@ ob_start();
             $i++;
         }
 
-        // RENEDERING HTMLS
+        // RENDERING HTMLs
         // render close contacts
         echo $m->render("contactlist", ["person" => $contact_list]);
 
         // render lectures
         echo $m->render('listWith3ColumnsAndButton',
             ['row' => $event_list
-            , "title"=>"My Courses", "column1"=>"Course Code", "column2"=>"Place", "column3"=>"See Participants"]);
+            , "title"=>"Your Events", "column1"=>"Name", "column2"=>"Place", "column3"=>"Participants"]);
 
 
         // add close contact component
         echo $m->render("addclosecontact");
 
 
-
-        // implementation of add close contact by id
-        // if the input is numeric try to add this id
-    /*    if (!empty($_POST['closeContact'])) {
-            if (is_numeric($_POST['closeContact'])) {
-                $contactIdToAdd = intval($_POST['closeContact']);
-
-                if ($user->addCloseContact($contactIdToAdd,1)) {
-                    $successMass = <<<EOF
-<script> alert("SUCESS added") </script>
-EOF;
-                    echo $successMass;
-                    echo $contactIdToAdd;
-                    // echo "<script> "
-                } else {
-                    $alertScript = <<<EOF
-<script> alert("Cannot add given ID") </script>
-EOF;
-                    echo $alertScript;
-                }
-            } else {
-                $alertScript = <<<EOF
-<script> alert("Given id is not valid") </script>
-EOF;
-                echo $alertScript;
-            }
-
-        }*/
         // add to close contact
-
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
             if (is_numeric($_POST['closeContact'])) {
                 $_SESSION["closeContact"] = $_POST["closeContact"];
                 echo "inside post if " . $_POST["closeContact"];
                 unset($_POST);
-                // echo "<script> document.location.reload() </script>";
+
                 header("Refresh:0");
             } else {
                 echo "Not valid HES CODE";
@@ -149,20 +118,19 @@ EOF;
             } else {
                 echo "DID NOT MANAGE TO add " . $userIdToAdd;
             }
-            // echo "<script> document.location.reload() </script>";
+
             header("Refresh:0");
         }
-
 
 
         // implementation of deleting user from the close contact list
         // check if a button is pressed for any user in the table
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
-                $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
-                echo "inside post if remove" . $_POST["removeCloseContact"];
-                unset($_POST);
-                header("Refresh:0");
+            $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
+            echo "inside post if remove" . $_POST["removeCloseContact"];
+            unset($_POST);
 
+            header("Refresh:0");
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["removeCloseContact"])) {
             $userIdToDelete = $_SESSION["removeCloseContact"];
             unset($_SESSION["removeCloseContact"]);
@@ -173,32 +141,9 @@ EOF;
                 echo "DID NOT MANAGE TO DELETE " . $userIdToDelete;
             }
 
-            // unset($_POST);
-            // echo "<script> document.location.reload() </script>";
             header("Refresh:0");
         }
 
-
-        /*} else if ($_SERVER['REQUEST_METHOD'] == "GET") {
-            if (isset($_SESSION["closeContact"])) {
-
-            }
-        }*/
-        /*for ($i = 0; $i < sizeof($contacts); $i++) {
-            $buttonName = "button" . ($i + 1);
-            if (isset($_POST[$buttonName])) {
-                // delete the user at the ($i + 1)th row in the contact list
-                $idToDeleteFromContactList = $contact_list[$i]["id"];
-                if ($user->deleteCloseContact($idToDeleteFromContactList)) {
-                    echo "DELETED USER WITH ID: " . $idToDeleteFromContactList;
-                } else {
-                    echo "DID NOT MANAGE TO DELETE " . $idToDeleteFromContactList;
-                }
-
-                break;
-            }
-
-        }*/
 
         // go to the see event page if see button is pressed
         if(isset($_POST["goEvent"])) {
@@ -206,33 +151,6 @@ EOF;
             echo $_POST["goEvent"];
             header("Location: ../../closecontact/see");
         }
-
-        /*if($_SERVER['REQUEST_METHOD'] == "POST") {
-            $_SESSION['op'] = $_POST['op'];
-            $_SESSION['ts_id'] = $_POST['ts_id'];
-            // clear the request
-            unset($_POST);
-            header("Location: ");
-        }
-        else if ($_SERVER['REQUEST_METHOD'] == "GET") {
-            if (isset($_SESSION['op'])) {
-                $op = $_SESSION['op'];
-                unset($_SESSION['op']);
-
-                if ($op == "details") {
-                    header("location: ../details", true, 301);
-                }
-                else if ($op == "accept") {
-                    updateTourSectionStatus($db,"approved");
-                    header("location: ", true, 301);
-                }
-                else if ($op == "reject") {
-                    updateTourSectionStatus($db, "rejected");
-
-                    header("location: ", true, 301);
-                }
-            }
-        }*/
 
     }
     ?>
