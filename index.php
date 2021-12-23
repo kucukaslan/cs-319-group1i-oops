@@ -188,19 +188,15 @@
                 $pastArr = array();
                 $futureArr = array();
                 foreach( $pastTests as $p) {
-                    $pastArr[] = array( "date" => $p->getTestDate() , "result" =>$p->getResult());
+                    $pastArr[] = array( "date" => $p->getTestDate()->format('r') , "result" =>$p->getResult());
                 }
                 foreach( $futureTests as $p) {
-                    $futureArr[] = array( "date" => $p->getTestDate());
+                    $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
                 }
 
                 echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
                     'pastTest' => $pastArr
                 ]);
-
-
-
-
 
 
                 

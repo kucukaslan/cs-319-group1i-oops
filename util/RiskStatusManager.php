@@ -8,21 +8,18 @@ class RiskStatusManager {
     protected ?PDO $conn;
     protected ?string $HESCode;
     protected ?bool $HESCodeStatus;
-    protected ?UserFactory $uf;
     protected ?User $user;
-    protected ?bool $isAllowed;
-    protected ?bool $userType;
+    protected ?string $userType;
 
     // constructor with user id
-    public function __construct(PDO $conn, int $userId, string $userType) {
+    public function __construct(PDO $conn, string $userType, int $userId) {
         $this->conn = $conn;
         $this->userId = $userId;
-        $this->isAllowed = false;
         $this->userType = $userType;
-        $this->HESCode =
 
         $uf = new UserFactory();
         $this->user = $uf->makeUserById($conn, $userType, $this->userId);
+        $this->HESCode = $this->user->getHESCode();
     }
     /**
      * @return int|null
@@ -60,7 +57,7 @@ class RiskStatusManager {
      * @return bool|null
      */
     public function getHESCodeStatus(): ?bool {
-        checkHESCode();
+        $this->checkHESCode();
         return $this->HESCodeStatus;
     }
 
@@ -70,22 +67,6 @@ class RiskStatusManager {
     public function setHESCodeStatus(?bool $HESCodeStatus): void
     {
         $this->HESCodeStatus = $HESCodeStatus;
-    }
-
-    /**
-     * @return UserFactory|null
-     */
-    public function getUf(): ?UserFactory
-    {
-        return $this->uf;
-    }
-
-    /**
-     * @param UserFactory|null $uf
-     */
-    public function setUf(?UserFactory $uf): void
-    {
-        $this->uf = $uf;
     }
 
     /**
@@ -104,28 +85,13 @@ class RiskStatusManager {
         $this->user = $user;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getIsAllowed(): ?bool
-    {
-        return $this->isAllowed;
-    }
-
-    /**
-     * @param bool|null $isAllowed
-     */
-    public function setIsAllowed(?bool $isAllowed): void
-    {
-        $this->isAllowed = $isAllowed;
-    }
 
     /**
      * We imitate as if we are able to get the HES Code status
      * from an external system.
      */
-    public function checkHESCode() {
-        return ord($this->HESCode) % 2 == 0;
+    public function checkHESCode(): void {
+        $this->HESCodeStatus = ord($this->HESCode) % 2 == 0;
     }
 
 

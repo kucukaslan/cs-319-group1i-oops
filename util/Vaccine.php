@@ -11,7 +11,7 @@ class Vaccine
     protected ?string $vaccineName;
     protected int $cvx_code;
     protected ?string $vaccineType;
-    protected ?string $vaccineDate;
+    protected ?DateTime $vaccineDate;
     /**
      * @return string|null
      */
@@ -20,12 +20,12 @@ class Vaccine
         return $this->vaccineType;
     }
 
-    public function getVaccineDate(): ?string
+    public function getVaccineDate(): ?DateTime
     {
         return $this->vaccineDate;
     }
 
-    public function setVaccineDate(?string $date ) : void
+    public function setVaccineDate(?DateTime $date ) : void
     {
         $this->vaccineDate = $date;
     }

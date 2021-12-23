@@ -3,6 +3,7 @@ include_once("../../config.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/EventFactory.php");
+require_once(rootDirectory() . "/util/AllowanceFacade.php");
 startDefaultSessionWith();
 ?>
 
@@ -48,10 +49,11 @@ startDefaultSessionWith();
         // create event object whose participants will be displayed
         $thisLecture = $ef->getEvent($lectureId, CourseEvent::TABLE_NAME);
 
+        print_r($thisLecture);
+        $participants = $user->getParticipants($lectureId);
 
-        $participants = $thisLecture->getParticipants();
-
-        print_r($participants);
+        // print_r($participants);
+        echo "No of participants is " . sizeof($participants);
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
@@ -74,30 +76,41 @@ EOF;
         // create participants data to display
         $participants_data = [];
 
-        /*foreach ($participants as $participant) {
-            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName, "secondEl"=>$participant->getId(),
-            "thirdEl"=>$participant->]
+        print_r($participants);
+
+         foreach ($participants as $participant) {
+            if ($participant->getId() == 22104260) {
+                echo " cont ";
+                break;
+            }
+
+
+            $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
+
+
+            if ($af->getIsAllowed()) {
+                $allowance = "Allowed";
+            } else {
+                $allowance = "Not Allowed";
+            }
+
+            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=>$participant->getId(),
+            "thirdEl"=> $allowance];
+
         }
-*/
 
-        echo $engine->render("listWith3Columns", ["row"=>$participants_data]);
-
-
+         // this user causes an error ????
+        // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
 
-        /*$idOfTheParticipant = 1;
-        echo $engine->render("listWith3ColumnsAndForm", ["row" => [
-            ['firstEl' => "hikmet simsir", 'secondEl' => "allowed", "value" => "Remove", "buttonName" => "Manage"],
-            ['firstEl' => "hikmet simsir", 'secondEl' => "allowed", "value" => "Remove", "buttonName" => "Manage"]
-        ], "title" => "Participants of the Event",
-            "column1" => "Student Name", "column2" => "Risk Status", "column3" => "RemoveStudent"]);
+        echo $engine->render("listWith3Columns", ["row"=>$participants_data,
+        "column1"=>"Name", "column2"=>"Id", "column3"=>"Allowance", "title"=>"Participants of the Event"]);
 
-        echo $engine->render("listWith2ColumnsAndForm", ["row" => [
-            ['firstEl' => "hikmet simsir teacher", "value" => "Remove", "buttonName" => "name"],
-            ['firstEl' => "hikmet simsir teacher", "value" => "Remove", "buttonName" => "name"]
-        ], "title" => "Coordinators",
-            "column1" => "Coordinators", "column2" => "Remove Coordinator"]);
-        $addCoordinatorButton = <<<EOF
+        /*$d1 = new DateTime("2009-12-22");
+        $d2 = new DateTime('now');
+        echo intval($d2->diff($d1)->format('%R%a'));*/
+
+        /*$addCoordinatorButton = <<<EOF
 <section class="hero is-success">
     <div class="hero-body">
         <div class="columns is-centered">

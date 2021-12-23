@@ -4,7 +4,7 @@ class VaccineFactory
 {
 
     // this function makes a vaccine object from the database using the id
-    public function makeVaccineById(PDO $conn, int $id): Vaccine
+    public function makeVaccineById(PDO $conn, int $id): ?Vaccine
     {
         $sql = "SELECT * FROM ".Vaccine::TABLE_NAME." WHERE vaccine_id = :id";
         $stmt = $conn->prepare($sql);
@@ -27,7 +27,7 @@ class VaccineFactory
     }
 
         // this function makes a vaccine object from the database
-    public function makeVaccineByCvxCode(PDO $conn, int $cvx_code): Vaccine
+    public function makeVaccineByCvxCode(PDO $conn, int $cvx_code): ?Vaccine
     {
         $sql = "SELECT * FROM ".Vaccine::TABLE_NAME." WHERE cvx_code = :cvx_code";
         $stmt = $conn->prepare($sql);
