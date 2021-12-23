@@ -47,6 +47,8 @@ ob_start();
         echo "event Id is " . $_SESSION["eventToDisplay"] . "<br>";
         $eventToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
 
+        // echo $eventToDisplay->getStartDate();
+
         print_r($eventToDisplay);
         // echo get_class($eventToDisplay);
 

@@ -53,7 +53,7 @@ class EventFactory {
         return $events;
     }
 
-    public function getEvent(int $eventId, string $event_type = Event::TABLE_NAME): ?Event {
+    public function getEvent(int $eventId, string $event_type = Event::TABLE_NAME): null| Event | SportsEvent | CourseEvent | TestAppointmentEvent {
         $sql = "SELECT * FROM $event_type where event_id = :event_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(":event_id", $eventId);

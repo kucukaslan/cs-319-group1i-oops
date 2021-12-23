@@ -18,7 +18,6 @@ abstract class User implements EventParticipant {
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
-    protected ?string $HESCodeStatus;
     protected ?array $closeContacts;
     protected ?array $eventsIParticipate;
 
