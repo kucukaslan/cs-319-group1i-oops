@@ -142,7 +142,7 @@
                 {
                     $myVaccineType = $vaccine->getVaccineType();
                     $myVaccineDate = $vaccine->getVaccineDate();
-                    $abc[$i] = ['vaccineDate'=> $myVaccineDate, 'vaccineType'=> $myVaccineType];
+                    $abc[$i] = ['vaccineDate'=> $myVaccineDate->format('r'), 'vaccineType'=> $myVaccineType];
                     $i = $i + 1;
                 }
                 

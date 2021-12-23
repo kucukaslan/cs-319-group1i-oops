@@ -317,7 +317,7 @@ abstract class User implements EventParticipant {
         }
     }
 
-    public function getEventsIParticipate( $event_type =Event::TABLE_NAME ): array {
+    public function getEventsIParticipate($event_type =Event::TABLE_NAME): array {
         $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);

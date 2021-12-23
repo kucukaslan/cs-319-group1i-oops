@@ -89,10 +89,16 @@ ob_start();
 
 
         // render participant
+        $date = "";
+        if (get_class($eventToDisplay) == "SportsEvent")
+            $date = $eventToDisplay->getStartDate()->format("d") . "-" . $eventToDisplay->getStartDate()->format('M')
+                . " " . $eventToDisplay->getStartDate()->format('h') . ":" . $eventToDisplay->getStartDate()->format('i'). "-"
+                .$eventToDisplay->getEndDate()->format('h') . ":" . $eventToDisplay->getEndDate()->format('i');
         echo $m->render('eventparticipants', [
             'added' => $contact_data,
             "nonAdded" => $non_contact_data,
             "eventName" => $eventToDisplay->getTitle(),
+            "date"=>$date
         ]);
 
         // add a participants as close contact

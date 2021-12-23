@@ -79,10 +79,10 @@ EOF;
         print_r($participants);
 
          foreach ($participants as $participant) {
-            if ($participant->getId() == 22104260) {
+            /*if ($participant->getId() == 22104260) {
                 echo " cont ";
                 break;
-            }
+            }*/
 
 
             $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
