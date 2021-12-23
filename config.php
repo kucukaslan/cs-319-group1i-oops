@@ -30,6 +30,8 @@
         header('Cache-Control: no cache'); //no cache
         session_cache_limiter('private_no_expire'); // back page fix
         $result = session_start($options);
+
+
         
         if (!isset($_SESSION['__LAST_ACTIVITY'])) { // if session variable not set, set it
             $_SESSION['__LAST_ACTIVITY'] = time();
