@@ -13,7 +13,8 @@
                             <td>{{name}}</td>
                             <td>
                                 <form method="post">
-                                <input type="submit" class="button" value="Remove" name="remove-{{name}}">
+                                <input type="hidden" name="remove" value="{{id}}">
+                                <input type="submit" class="button" value="Remove" name="remove">
                                 </form>
                             </td>
                         </tr>
@@ -23,7 +24,8 @@
                             <td>{{name}}</td>
                             <td>
                                 <form method="post">
-                                <input type="submit" class="button" value="Add" name="add-{{name}}">
+                                <input type="hidden" name="add" value="{{id}}">
+                                <input type="submit" class="button" value="Add" name="add">
                                 </form>
                             </td>
                         </tr>

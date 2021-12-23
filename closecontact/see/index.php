@@ -43,20 +43,25 @@ $pagename = '/closecontact/see';
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
         $lectureToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
         print_r($lectureToDisplay);
-
+        echo "<br>";
         $participantsOfTheEvent = $lectureToDisplay->getParticipants();
+        print_r($participantsOfTheEvent);
 
-        $added_name_list = [];
-        $non_added_name_list = [];
+        $added_data = [];
+        $non_added_data = [];
+
+
 
         foreach ($participantsOfTheEvent as $participant) {
             if ($participant->isContacted($userId)) {
-                $added_name_list[] = ["name"=>$participant->getName()];
+                $added_data[] = ["name"=>$participant->getFirstName() . $participant->getLastName(), "id"=>$participant->getId()];
             } else {
-                $non_added_name_list[] = ["name"=>$participant->getName()];
+                $non_added_data[] = ["name"=>$participant->getFirstName() . $participant->getLastName(), "id"=>$participant->getId()];
             }
         }
 
+        echo "<br>";
+        print_r($non_added_data);
 
         echo '<header>';
         $navbar = new NavBar($usertype, $pagename);
@@ -70,11 +75,33 @@ $pagename = '/closecontact/see';
 
 
         // render participant
-        echo $m->render('lectureparticipants', [
-            'added' => $added_name_list,
-            "nonAdded" => $non_added_name_list,
+        echo $m->render('eventparticipants', [
+            'added' => $added_data,
+            "nonAdded" => $non_added_data,
             "eventName" => $lectureToDisplay->getTitle(),
         ]);
+
+        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["add"])) {
+
+            $_SESSION["add"] = $_POST["add"];
+            echo "inside post if " . $_POST["add"];
+            unset($_POST);
+            // echo "<script> document.location.reload() </script>";
+            header("Refresh:0");
+
+        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["add"])){
+            $userIdToAdd = $_SESSION["add"];
+            unset($_SESSION["add"]);
+
+            //if ($user->addCloseContact($userIdToAdd, 1)) {
+                echo "added USER WITH ID: " . $userIdToAdd;
+            /*} else {
+                echo "DID NOT MANAGE TO add " . $userIdToAdd;
+            }*/
+            // echo "<script> document.location.reload() </script>";
+            header("Refresh:0");
+        }
+
     }
 
     ?>

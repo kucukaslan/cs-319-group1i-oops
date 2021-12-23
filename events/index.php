@@ -1,10 +1,11 @@
 <?php
 include_once("../config.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
+require_once(rootDirectory() . "/util/EventFactory.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 startDefaultSessionWith();
 $pagename = "/events";
-// ob_start();
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +41,7 @@ $pagename = "/events";
 </div>
 EOF;
     $uf = new UserFactory();
+    $ef = new EventFactory($conn);
     $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
 
     $navbar = new NavBar($usertype);
@@ -49,11 +51,13 @@ EOF;
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
     ));
 
-    $lectures = $user->getEventsIParticipate();
-    $sports = $user->getEventsIParticipate();
+    $lectures = $user->getEventsIParticipate(CourseEvent::TABLE_NAME);
+    $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
 
-    // print_r($lectures);
-
+    /*print_r($lectures);
+    echo "<br>";
+    print_r($sports);
+*/
     $lecture_data = [];
     foreach ($lectures as $lecture) {
         $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
@@ -63,17 +67,27 @@ EOF;
     $sports_data_enrolled = [];
     $sports_data_not_enrolled = [];
 
+    // set the property of eventIParticipate
+    $user->getEventsIParticipate();
+
+    // format data
     foreach ($sports as $sport) {
+        $formattedData = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate()->format("d") . "-" . $sport->getStartDate()->format('M')
+            , "timeslot"=>$sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i'). "-" .
+            $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i')
+            , "eventId"=>$sport->getEventId(),
+            "value"=>"Leave"];
         if ($user->doIParticipate($sport->getEventId())) {
-            $sports_data_enrolled[] = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate(), "timeslot"=>$sport->getStartDate(), "eventId"=>$sport->getEventId(),
-                "value"=>"Leave"];
+            $sports_data_enrolled[] = $formattedData;
         } else {
-            $sports_data_not_enrolled[] = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate(), "timeslot"=>$sport->getStartDate(), "eventId"=>$sport->getEventId(),
-                "value"=>"Leave"];
+            $sports_data_not_enrolled[] = $formattedData;
         }
     }
 
     print_r($sports_data_enrolled);
+    echo "not enrolled: <br>";
+    print_r($sports_data_not_enrolled);
+
 
 
     // RENDER RALATED PARTS
@@ -88,17 +102,46 @@ EOF;
         "notenrolledevent" => $sports_data_not_enrolled
     ]);
 
+    // enroll an event
+    if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
+        $_SESSION["enroll"] = $_POST["enroll"];
+        echo "inside post if remove" . $_POST["enroll"];
+        unset($_POST);
 
-    // implementation of leaving an sports event
-    if (isset($_POST["action"])) {
+        header("Refresh:0");
 
-        $activityId = $_POST["action"];
+    } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["enroll"])) {
+        $eventIdToEnroll = $_SESSION["enroll"];
+        unset($_SESSION["enroll"]);
+        echo "ENROLLING " . $eventIdToEnroll;
 
-        if ($user->cancelSportsAppointment($activityId)) {
-            echo "LEAVED ACTIVITY WITH ID " . $activityId;
+        $eventToEnroll = $ef->getEvent($eventIdToEnroll);
+        if ($eventToEnroll->getCanPeopleJoin() && $eventToEnroll->getCurrentNumberOfParticipants() < $eventToEnroll->getMaxNoOfParticipant()) {
+            $user->joinSportsActivity($eventIdToEnroll);
+            echo "ENROLLED ACTIVITY WITH ID " . $eventIdToEnroll;
         } else {
             echo "Did not manage to leave the sports activity";
         }
+
+        header("Refresh:0");
+    }
+
+    // cancel sports event
+    if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
+        $_SESSION["cancel"] = $_POST["cancel"];
+        echo "inside post if remove" . $_POST["cancel"];
+        unset($_POST);
+
+        header("Refresh:0");
+
+    } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["cancel"])) {
+        $eventIdToCancel = $_SESSION["cancel"];
+        unset($_SESSION["cancel"]);
+        echo "canceling  " . $eventIdToCancel;
+
+        $user->cancelSportsAppointment($eventIdToCancel);
+
+        header("Refresh:0");
     }
     ?>
 </div>

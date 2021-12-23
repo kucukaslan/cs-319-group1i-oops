@@ -389,6 +389,8 @@ abstract class User implements EventParticipant {
      * @return bool is user contacted with the parameter
      */
     public function isContacted(int $userId): bool {
+        if ($this->closeContacts == null)
+            return false;
         foreach ($this->closeContacts as $contact) {
             if ($userId == $contact->getId()) {
                 return true;
@@ -417,6 +419,7 @@ abstract class User implements EventParticipant {
         } catch (PDOException $e) {
             getConsoleLogger()->log("User Join Event", $e->getMessage());
             //throw $e;
+            return false;
         }
     }
 

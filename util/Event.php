@@ -107,8 +107,7 @@ class Event
     /**
      * @return array|null
      */
-    public function getParticipants($usertype = Student::TABLE_NAME): ?array
-    {
+    public function getParticipants($usertype = Student::TABLE_NAME): ?array {
         if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
             $sql = 'Select * from '.User::TABLE_NAME. " NATURAL JOIN  ".self::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
             $stmt = $this->conn->prepare($sql);

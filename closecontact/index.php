@@ -131,11 +131,15 @@ EOF;
         // add to close contact
 
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
-            $_SESSION["closeContact"] = $_POST["closeContact"];
-            echo "inside post if " . $_POST["closeContact"];
-            unset($_POST);
-            // echo "<script> document.location.reload() </script>";
-            header("Refresh:0");
+            if (is_numeric($_POST['closeContact'])) {
+                $_SESSION["closeContact"] = $_POST["closeContact"];
+                echo "inside post if " . $_POST["closeContact"];
+                unset($_POST);
+                // echo "<script> document.location.reload() </script>";
+                header("Refresh:0");
+            } else {
+                echo "Not valid HES CODE";
+            }
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["closeContact"])){
             $userIdToAdd = $_SESSION["closeContact"];
             unset($_SESSION["closeContact"]);
@@ -154,10 +158,11 @@ EOF;
         // implementation of deleting user from the close contact list
         // check if a button is pressed for any user in the table
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
-            $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
-            echo "inside post if remove" . $_POST["removeCloseContact"];
-            unset($_POST);
-            header("Refresh:0");
+                $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
+                echo "inside post if remove" . $_POST["removeCloseContact"];
+                unset($_POST);
+                header("Refresh:0");
+
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["removeCloseContact"])) {
             $userIdToDelete = $_SESSION["removeCloseContact"];
             unset($_SESSION["removeCloseContact"]);

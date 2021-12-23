@@ -17,8 +17,8 @@
                             <td>{{timeslot}}</td>
                             <td>
                                 <form method="post" action="../events/index.php">
-                                <input type="hidden" name="action" value="{{eventId}}">
-                                <input type="submit" class="button is-warning" name="leave" value="Leave">
+                                <input type="hidden" name="cancel" value="{{eventId}}">
+                                <input type="submit" class="button is-warning" value="Leave">
                                 </form>
                             </td>
                         </tr>
@@ -30,8 +30,8 @@
                             <td>{{timeslot}}</td>
                             <td>
                                 <form method="post">
-                                <input type="hidden" name="action" value="{{eventId}}">
-                                <input type="submit" class="button is-success" name="enroll" value="Enroll">
+                                <input type="hidden" name="enroll" value="{{eventId}}">
+                                <input type="submit" class="button is-success" value="Enroll">
                                 </form>
                             </td>
                         </tr>
