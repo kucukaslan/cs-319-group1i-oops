@@ -47,43 +47,32 @@ startDefaultSessionWith();
             // set button names
             $buttonNames[] = "button" . ($i + 1);
         }*/
+
+        $lectures = $user->getEventsControlledByMe();
+        print_r($lectures);
+
+        // create data to display
+        $lecture_data = [];
+        foreach ($lectures as $event) {
+            $lecture_data[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(),
+                "eventId"=>$event->getEventID()];
+        }
+
+
         // render upcoming lectures
-        echo $engine->render("listWith3ColumnsAndButton", ["row" => [
-        ['firstEl' => 'Math123', 'secondEl' => 'Sa122', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
-            ['firstEl' => 'Math123', 'secondEl' => 'Sa122', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
-        ], "title"=>"Upcoming Lectures",
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => $lecture_data, "title"=>"Your Lectures",
         "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Manage Lecture"]);
 
-        // render past lectures
-        echo $engine->render("listWith2Column", ["row" => [
-            ["firstEl"=>"code1", "secondEl"=>"Sa122"],
-            ["firstEl"=>"code1", "secondEl"=>"Sa122"]],
-            "title"=>"Past Lectures", "column1"=>"Place", "column2"=>"Lecture Date"]);
+        // if see event button is pressed, move to this page
+        // go to the see event page if see button is pressed
+        if(isset($_POST["goEvent"])) {
+            $_SESSION["lectureToDisplay"] = $_POST["goEvent"];
 
-        // create lecture
-        $createLectureButton = <<<EOF
-<form method="POST"> <input type="submit" class="button" name="" value="Create Lecture"> </form>
-EOF;
-        echo $createLectureButton;
+            header("Location: ../../lectures/manage");
+        }
 
     }
     ?>
-
-    <!--
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>Lectures Page</h2>
-            <br>
-            <form action="manage">
-                <div class="form-group">
-                    <input type="submit" class="button button_submit" value="See Course Details">
-                    <input type="hidden" name="courseid" id="courseid" value="CS101">
-                </div>
-            </form>
-        </div>
-    </div>
-    !-->
 </div>
 </body>
 </html>

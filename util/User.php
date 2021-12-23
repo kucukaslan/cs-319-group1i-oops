@@ -18,7 +18,6 @@ abstract class User implements EventParticipant {
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
-    protected ?string $HESCodeStatus;
     protected ?array $closeContacts;
     protected ?array $eventsIParticipate;
 
@@ -183,7 +182,7 @@ abstract class User implements EventParticipant {
     /**
      * @param int $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -199,7 +198,7 @@ abstract class User implements EventParticipant {
     /**
      * @param string $lastname
      */
-    public function setLastname(string $lastname): void
+    public function setLastname(?string $lastname): void
     {
         $this->lastname = $lastname;
     }
@@ -207,7 +206,7 @@ abstract class User implements EventParticipant {
     /**
      * @param string $email
      */
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }

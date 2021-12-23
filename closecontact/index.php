@@ -76,12 +76,11 @@ ob_start();
 
 
         // get contents of the events I participate
-        $i = 0;
+
         $event_list = [];
         foreach ($events as $event) {
             $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(),
                 "eventId"=>$event->getEventID()];
-            $i++;
         }
 
         // RENDERING HTMLs

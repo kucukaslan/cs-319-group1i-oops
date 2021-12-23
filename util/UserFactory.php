@@ -95,7 +95,7 @@ class UserFactory{
             $this->user->setHESCode($row['hescode']);
 
         } catch (PDOException $exception) {
-
+            // echo $exception->getMessage();
         }
         return $this->user;
     }
