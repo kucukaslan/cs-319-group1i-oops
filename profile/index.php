@@ -70,12 +70,22 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $currentPassword = $_POST['verP'];
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
             $std->setPassword($currentPassword);
-            if ($std->verifyPassword()) {
-                $newPassword = $_POST['newP'];
-                $std->updatePassword($newPassword);
-                getConsoleLogger()->log("profile","Password changed");// np: $newPassword, cp: $currentPassword");
-            } else {
+             try {
+                if ( $std->verifyPassword()) {
+                    $newPassword = $_POST['newP'];
+                    $std->updatePassword($newPassword);
+                    getConsoleLogger()->log("profile","Password changed");// np: $newPassword, cp: $currentPassword");
+                } else {
+                    $wrongVerPassword = 'Current password is invalid';
+                }
+            }
+            catch (PasswordIsWrongException $e) {
+                $wrongVerPassword = 'Current password is incorrect';
+                getConsoleLogger()->log("profile","Password change failed");
+            }
+            catch (Exception $e) {
                 $wrongVerPassword = 'Current password is invalid';
+                getConsoleLogger()->log("profile","Password change failed");
             }
         }
     }
