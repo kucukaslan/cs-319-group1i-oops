@@ -1,4 +1,15 @@
 <?php
+   // Why do we try to connect database before user is logged in? (talking specifically for this page)
+    require_once("config.php");
+    require_once(rootDirectory() . "/util/class.pdf2text.php");
+    require_once(rootDirectory() . "/util/UserFactory.php");
+    require_once(rootDirectory() . "/util/Vaccine.php");
+    require_once(rootDirectory() . "/util/VaccineFactory.php");
+    require_once(rootDirectory() . "/util/VaccineManager.php");
+    require_once(rootDirectory() . "/util/Test.php");
+    require_once(rootDirectory() . "/util/NavBar.php");
+    require_once(rootDirectory() . "/util/CustomException.php");
+
 // Why do we try to connect database before user is logged in? (talking specifically for this page)
 require_once("config.php");
 require_once(rootDirectory() . "/util/class.pdf2text.php");
@@ -77,8 +88,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     $type = str_replace(' ', '', $pieces[1]);
                     $type = str_replace("\n", '', $type);
 
-
-                    $vaccineInstance = new Vaccine($date, $type);
+                        $vaccineInstance = new Vaccine($date,$type);
 
                 }
             }
@@ -130,7 +140,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     echo $engine->render('vax',
                         ['vaccine' => $abc]);
-                  
+
                     ?>
                 </div>
             </div>
@@ -155,7 +165,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     //$upcomingTest = ["date" => "2023"];
                     $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
                     $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
-    
+
                     $pastArr = array();
                     $futureArr = array();
                     foreach( $pastTests as $p) {
@@ -164,11 +174,11 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     foreach( $futureTests as $p) {
                         $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
                     }
-    
+
                     echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
                         'pastTest' => $pastArr
                     ]);
-                    
+
                     ?>
                 </p>
             </div>

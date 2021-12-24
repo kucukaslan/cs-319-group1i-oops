@@ -117,6 +117,7 @@ abstract class User implements EventParticipant {
             return true;
         } else {
             throw new PasswordIsWrongException();
+            $this->id = null;
             return false;
         }
     }
