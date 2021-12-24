@@ -1,0 +1,70 @@
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h1 class="title is-4">ID: {{id}}</h1>
+                <div class="block"></div>
+                <h1 class="title is-4">Name: {{name}}</h1>
+                <div class="control">
+                    <form class="box" id="nameF" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-info" value="Change First Name">
+                                {{#fnErr}}
+                                    <input type="text" name="newName" class="input is-danger" id="newName" required
+                                           minlength="1" placeholder="Enter New Name">
+                                {{/fnErr}}
+                                {{^fnErr}}
+                                    <input type="text" name="newName" class="input" id="newName" required minlength="1"
+                                           placeholder="Enter New Name">
+                                {{/fnErr}}
+                            </div>
+                            {{#fnErr}}
+                                <p class="help is-danger">{{fnErr}}</p>
+                            {{/fnErr}}
+                        </div>
+                    </form>
+                    <form class="box" id="snameF" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-info" value="Change Last Name">
+                                {{#lnErr}}
+                                    <input type="text" name="newsName" class="input is-danger" id="newsName" required
+                                           minlength="1" placeholder="Enter New Last Name">
+                                {{/lnErr}}
+                                {{^lnErr}}
+                                    <input type="text" name="newsName" class="input" id="newsName" required
+                                           minlength="1" placeholder="Enter New Last Name">
+                                {{/lnErr}}
+                            </div>
+                            {{#lnErr}}
+                                <p class="help is-danger">{{lnErr}}</p>
+                            {{/lnErr}}
+                        </div>
+                    </form>
+                </div>
+                <div class="block"></div>
+                <h1 class="title is-4">E-mail: {{email}}</h1>
+                <div class="control">
+                    <form class="box" id="emailF" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-info" value="Change Email">
+                            </div>
+                            <label for="emailF"></label> <input type="email" name="newEmail" class="input" id="emailF"
+                                                                required placeholder="Enter New Email">
+                        </div>
+                    </form>
+                </div>
+                <div class="block"></div>
+                <div class="control">
+                    <form class="box has-text-centered" method="post" action="/delete">
+                        <div class="field">
+                            <input type="submit" href="/delete" class="button is-danger" value="!!! DELETE ACCOUNT !!!">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
