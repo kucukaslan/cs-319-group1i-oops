@@ -118,13 +118,22 @@ class Diagnosis
 
     }
     
-    public static function updateDiagnosisesOfUser() : void
+    public function updateDiagnosisesOfUser(PDO $conn) : void
     {
-        //"UPDATE " . $this->getTableName() . " SET diagnosis_id = :diagnosis_id, type = :type, result = :result, date = :date, user_id = :user_id WHERE id = :id";
+       
         //INSERT INTO `table_name`(column_1,column_2,...) VALUES (value_1,value_2,...);
 
         $sql = "INSERT INTO ". Diagnosis::TABLE_NAME ."  (type, result, date, user_id) VALUES (:type, :result, :date, :user_id) ";
-        
+        $stmt = $conn->prepare($sql);
+    $stmt->bindParam(":user_id", $_SESSION['id']);
+    echo $this->diagnosisDate->format('Y-m-d H:i:s');
+    $stringDate = $this->diagnosisDate->format('Y-m-d H:i:s');
+
+    $stmt->bindParam(":date", $stringDate);
+    $stmt->bindParam(":result", $this->result);
+    $stmt->bindParam(":type", $this->type);
+
+    $stmt->execute();
     }
     
 
