@@ -57,6 +57,37 @@
                     </form>
                 </div>
                 <div class="block"></div>
+                <h1 class="title is-4">Change Password</h1>
+                <div class="control">
+                    <form class="box" id="passF" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" class="button is-warning" value="Change Password">
+                            </div>
+                            <div class="control">
+                                <label for="verP">
+                                    {{^WVPass}}
+                                        <input type="password" name="verP" class="input" id="verP" required
+                                               placeholder="Enter Current Password">
+                                    {{/WVPass}}
+                                    {{#WVPass}}
+                                        <input type="password" name="verP" class="input is-danger" id="verP" required
+                                               placeholder="Enter Current Password">
+                                    {{/WVPass}}
+                                </label>
+                            </div>
+                            {{#WVPass}}
+                                <p class="help is-danger">{{WVPass}}</p>
+                            {{/WVPass}}
+                            <div>
+                                <label for="newP"> <input type="password" name="newP" class="input" id="newP" required
+                                                          placeholder="Enter New Password"></label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="block"></div>
                 <div class="control">
                     <form class="box has-text-centered" method="post" action="/delete">
                         <div class="field">

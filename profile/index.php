@@ -45,13 +45,14 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
     ));
 
+    $wrongVerPassword = '';
     if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['newName'])) {
             $newFName = $_POST['newName'];
             $std->setFirstname($newFName);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
             $std->updateToDatabase();
-            echo $newFName;
+            //echo $newFName
         }
         if (isset($_POST['newsName'])) {
 
@@ -65,14 +66,27 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $std->setEmail($newEmail);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
         }
+        if (isset($_POST['newP']) && isset($_POST['verP'])) {
+            $verPassword = $_POST['verP'];
+            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            if (password_verify($verPassword, password_hash($std->getPassword(), PASSWORD_ARGON2I))) {
+                $newPassword = $_POST['newP'];
+                $std->setPassword($newPassword);
+                $std->updatePassword($newPassword);
+                $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            } else {
+                $wrongVerPassword = 'Current password is invalid';
+            }
+        }
     }
     echo $m->render('profilePage', [
         "name" => $std->getFirstName(),
         "email" => $std->getEmail(),
         "id" => $std->getId(),
+        'WVPass' => 'wdw ' . $std->getPassword()
     ]);
     ?>
 </div>
-
+<?= $navbar->footer(); ?>
 </body>
 </html>
