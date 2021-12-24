@@ -8,7 +8,7 @@ require_once(rootDirectory() . "/util/UserFactory.php");
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{title}}</title>
+    <title>Log In</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <style>
@@ -56,10 +56,16 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         else if (true) // password is wrong
         {
             echo $m->render('login', [
-                'title' => 'Login',
+                'title' => 'Log in',
                 'id' => 'University ID',
                 'pass' => 'Password',
                 'passErr' => 'Password is wrong'
+            ]);
+        } else {
+            echo $m->render('login', [
+                'title' => 'Login',
+                'id' => 'University ID',
+                'pass' => 'Password'
             ]);
         }
     }
