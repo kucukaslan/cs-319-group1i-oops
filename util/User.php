@@ -114,7 +114,6 @@ abstract class User implements EventParticipant {
             $this->HESCode = $row['hescode'];
             return true;
         } else {
-            $this->id = null;
             return false;
         }
     }
@@ -176,12 +175,14 @@ abstract class User implements EventParticipant {
             return false;
         }
     }
-    public function updatePassword(string $newPassword)
+    public function updatePassword(int|string $newPassword)
     {
-        $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE id = :id";
+        $query = "UPDATE " . USER::TABLE_NAME . " SET password_hash = :password_hash WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $hash = password_hash($newPassword, PASSWORD_ARGON2I);
         $stmt->bindParam(':password_hash', $hash);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
     }
 
     public function getTableName(): string
