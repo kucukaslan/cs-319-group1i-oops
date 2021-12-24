@@ -98,6 +98,7 @@ class Diagnosis
     $sql = "SELECT * FROM ".Diagnosis::TABLE_NAME ." JOIN ".User::TABLE_NAME .
     " ON ".Diagnosis::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Diagnosis::TABLE_NAME .".user_id = :id";
      $stmt = $conn->prepare($sql);
+
     $stmt->bindParam(":id", $_SESSION['id']);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,4 +118,14 @@ class Diagnosis
 
     }
     
+    public static function updateDiagnosisesOfUser() : void
+    {
+        //"UPDATE " . $this->getTableName() . " SET diagnosis_id = :diagnosis_id, type = :type, result = :result, date = :date, user_id = :user_id WHERE id = :id";
+        //INSERT INTO `table_name`(column_1,column_2,...) VALUES (value_1,value_2,...);
+
+        $sql = "INSERT INTO ". Diagnosis::TABLE_NAME ."  (type, result, date, user_id) VALUES (:type, :result, :date, :user_id) ";
+        
+    }
+    
+
 }

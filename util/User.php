@@ -2,6 +2,7 @@
 require_once ("EventParticipant.php");
 require_once("Event.php");
 require_once("EventFactory.php");
+require_once("CustomException.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
 abstract class User implements EventParticipant {
@@ -96,11 +97,12 @@ abstract class User implements EventParticipant {
         // verify password from database 
         $query = "SELECT * FROM " . $this->getTableName() . " WHERE id = :id "; // . $this->id;
         $stmt = $this->conn->prepare($query);
-        // var_dump($query);
-        // echo '<br>';
         $stmt->execute(array('id' => $this->id));
-        // var_dump($stmt);
-        // echo '<br>';
+
+        if($stmt->rowCount() < 1) {
+            throw new UserDoesNotExistsException();
+            return false;
+        }
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         // var_dump($row);
         // echo '<br>';
@@ -114,7 +116,7 @@ abstract class User implements EventParticipant {
             $this->HESCode = $row['hescode'];
             return true;
         } else {
-            $this->id = null;
+            throw new PasswordIsWrongException();
             return false;
         }
     }
@@ -130,7 +132,7 @@ abstract class User implements EventParticipant {
             $stmt = $this->conn->prepare($query);
             $stmt->execute(array('id' => $this->id, 'password_hash' => password_hash($this->password, PASSWORD_ARGON2I), 'name' => $this->firstname, 'lastname' => $this->lastname, 'email' => $this->email, 'hescode' => $this->HESCode));
 
-            return insertToSpecializedTable();
+            return $this->insertToSpecializedTable();
         } catch (Exception $e) {
             echo $e->getMessage();
             throw new Exception("Error inserting to database." . $this->getTableName());
@@ -176,12 +178,14 @@ abstract class User implements EventParticipant {
             return false;
         }
     }
-    public function updatePassword(string $newPassword)
+    public function updatePassword(int|string $newPassword)
     {
-        $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE id = :id";
+        $query = "UPDATE " . USER::TABLE_NAME . " SET password_hash = :password_hash WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $hash = password_hash($newPassword, PASSWORD_ARGON2I);
         $stmt->bindParam(':password_hash', $hash);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
     }
 
     public function getTableName(): string
