@@ -77,6 +77,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     $type = str_replace(' ', '', $pieces[1]);
                     $type = str_replace("\n", '', $type);
 
+
                     $vaccineInstance = new Vaccine($date, $type);
 
                 }
