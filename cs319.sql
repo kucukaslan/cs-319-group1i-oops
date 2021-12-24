@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 23, 2021 at 03:54 PM
+-- Generation Time: Dec 24, 2021 at 04:11 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -37,6 +37,7 @@ CREATE TABLE `academic_staff` (
 ,`email` varchar(255)
 ,`password_hash` varchar(255)
 ,`hescode` char(10)
+,`hescode_status` tinyint(1)
 ,`profile_picture` blob
 );
 
@@ -46,7 +47,7 @@ CREATE TABLE `academic_staff` (
 -- Table structure for table `contact`
 --
 -- Creation: Dec 17, 2021 at 12:30 AM
--- Last update: Dec 23, 2021 at 05:47 PM
+-- Last update: Dec 24, 2021 at 05:57 PM
 --
 
 DROP TABLE IF EXISTS `contact`;
@@ -71,11 +72,19 @@ CREATE TABLE `contact` (
 --
 
 INSERT INTO `contact` (`main_user_id`, `contacted_user_id`, `event_id`) VALUES
+(1, 2, 2),
 (1, 3, 2),
+(1, 5, 1),
 (1, 123, 1),
 (1, 22102843, 1),
+(1, 22103090, 1),
+(1, 22103480, 1),
 (2, 1, 1),
-(2, 3, 4);
+(2, 3, 4),
+(123, 3, 1),
+(123, 22101907, 1),
+(123, 22102843, 1),
+(123, 22102973, 1);
 
 -- --------------------------------------------------------
 
@@ -134,7 +143,6 @@ INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`, `document
 -- Table structure for table `event`
 --
 -- Creation: Dec 23, 2021 at 05:04 PM
--- Last update: Dec 23, 2021 at 05:21 PM
 --
 
 DROP TABLE IF EXISTS `event`;
@@ -268,7 +276,6 @@ INSERT INTO `event` (`event_id`, `event_name`, `place`, `max_no_of_participant`,
 -- Table structure for table `event_control`
 --
 -- Creation: Dec 16, 2021 at 11:58 PM
--- Last update: Dec 23, 2021 at 05:39 PM
 --
 
 DROP TABLE IF EXISTS `event_control`;
@@ -359,7 +366,6 @@ INSERT INTO `event_control` (`event_id`, `user_id`) VALUES
 -- Table structure for table `event_course`
 --
 -- Creation: Dec 16, 2021 at 11:36 PM
--- Last update: Dec 23, 2021 at 05:15 PM
 --
 
 DROP TABLE IF EXISTS `event_course`;
@@ -439,7 +445,6 @@ INSERT INTO `event_course` (`event_id`, `year`, `semester`) VALUES
 -- Table structure for table `event_participation`
 --
 -- Creation: Dec 16, 2021 at 11:55 PM
--- Last update: Dec 23, 2021 at 05:53 PM
 --
 
 DROP TABLE IF EXISTS `event_participation`;
@@ -519,13 +524,11 @@ INSERT INTO `event_participation` (`event_id`, `user_id`) VALUES
 (6, 22102830),
 (6, 22102895),
 (6, 22103233),
-(7, 1),
 (7, 3),
 (7, 5),
 (7, 22102492),
 (7, 22103363),
 (7, 22104065),
-(8, 1),
 (8, 5),
 (8, 22101400),
 (8, 22101738),
@@ -1305,7 +1308,6 @@ INSERT INTO `event_participation` (`event_id`, `user_id`) VALUES
 -- Table structure for table `event_sport`
 --
 -- Creation: Dec 16, 2021 at 11:22 PM
--- Last update: Dec 23, 2021 at 05:29 PM
 --
 
 DROP TABLE IF EXISTS `event_sport`;
@@ -1455,6 +1457,7 @@ CREATE TABLE `sports_center_staff` (
 ,`email` varchar(255)
 ,`password_hash` varchar(255)
 ,`hescode` char(10)
+,`hescode_status` tinyint(1)
 ,`profile_picture` blob
 );
 
@@ -1474,6 +1477,7 @@ CREATE TABLE `student` (
 ,`email` varchar(255)
 ,`password_hash` varchar(255)
 ,`hescode` char(10)
+,`hescode_status` tinyint(1)
 ,`profile_picture` blob
 );
 
@@ -1509,6 +1513,7 @@ CREATE TABLE `university_administration` (
 ,`email` varchar(255)
 ,`password_hash` varchar(255)
 ,`hescode` char(10)
+,`hescode_status` tinyint(1)
 ,`profile_picture` blob
 );
 
@@ -1518,7 +1523,6 @@ CREATE TABLE `university_administration` (
 -- Table structure for table `user`
 --
 -- Creation: Dec 17, 2021 at 12:40 AM
--- Last update: Dec 23, 2021 at 05:41 PM
 --
 
 DROP TABLE IF EXISTS `user`;
@@ -1856,7 +1860,6 @@ INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_has
 -- Table structure for table `user_academic_staff`
 --
 -- Creation: Dec 13, 2021 at 01:33 AM
--- Last update: Dec 23, 2021 at 05:40 PM
 --
 
 DROP TABLE IF EXISTS `user_academic_staff`;
@@ -1907,7 +1910,6 @@ INSERT INTO `user_academic_staff` (`id`, `registration_date`) VALUES
 -- Table structure for table `user_sports_center_staff`
 --
 -- Creation: Dec 13, 2021 at 01:33 AM
--- Last update: Dec 23, 2021 at 04:37 PM
 --
 
 DROP TABLE IF EXISTS `user_sports_center_staff`;
@@ -1956,7 +1958,6 @@ INSERT INTO `user_sports_center_staff` (`id`) VALUES
 -- Table structure for table `user_student`
 --
 -- Creation: Dec 13, 2021 at 01:31 AM
--- Last update: Dec 23, 2021 at 04:33 PM
 --
 
 DROP TABLE IF EXISTS `user_student`;
@@ -2188,7 +2189,6 @@ INSERT INTO `user_student` (`id`, `registration_date`) VALUES
 -- Table structure for table `user_university_administration`
 --
 -- Creation: Dec 13, 2021 at 01:33 AM
--- Last update: Dec 23, 2021 at 05:40 PM
 --
 
 DROP TABLE IF EXISTS `user_university_administration`;
@@ -2265,6 +2265,7 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 -- Table structure for table `vaccine_administration`
 --
 -- Creation: Dec 21, 2021 at 01:16 AM
+-- Last update: Dec 24, 2021 at 05:57 PM
 --
 
 DROP TABLE IF EXISTS `vaccine_administration`;
@@ -2303,7 +2304,7 @@ INSERT INTO `vaccine_administration` (`vaccination_id`, `vaccine_id`, `user_id`,
 DROP TABLE IF EXISTS `academic_staff`;
 
 DROP VIEW IF EXISTS `academic_staff`;
-CREATE VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `user_academic_staff`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_academic_staff` join `user` on(`user_academic_staff`.`id` = `user`.`id`)) ;
+CREATE VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `user_academic_staff`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_academic_staff` join `user` on(`user_academic_staff`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2333,7 +2334,7 @@ CREATE VIEW `sport`  AS SELECT `event_sport`.`event_id` AS `event_id`, `event_sp
 DROP TABLE IF EXISTS `sports_center_staff`;
 
 DROP VIEW IF EXISTS `sports_center_staff`;
-CREATE VIEW `sports_center_staff`  AS SELECT `user`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user` join `user_sports_center_staff` on(`user`.`id` = `user_sports_center_staff`.`id`)) ;
+CREATE VIEW `sports_center_staff`  AS SELECT `user_sports_center_staff`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_sports_center_staff` join `user` on(`user_sports_center_staff`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2343,7 +2344,7 @@ CREATE VIEW `sports_center_staff`  AS SELECT `user`.`id` AS `id`, `user`.`index_
 DROP TABLE IF EXISTS `student`;
 
 DROP VIEW IF EXISTS `student`;
-CREATE VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_student` join `user` on(`user_student`.`id` = `user`.`id`)) ;
+CREATE VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_student` join `user` on(`user_student`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2363,7 +2364,7 @@ CREATE VIEW `test_appointment`  AS SELECT `event`.`event_id` AS `event_id`, `eve
 DROP TABLE IF EXISTS `university_administration`;
 
 DROP VIEW IF EXISTS `university_administration`;
-CREATE VIEW `university_administration`  AS SELECT `user_university_administration`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`profile_picture` AS `profile_picture` FROM (`user_university_administration` join `user` on(`user_university_administration`.`id` = `user`.`id`)) ;
+CREATE VIEW `university_administration`  AS SELECT `user_university_administration`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_university_administration` join `user` on(`user_university_administration`.`id` = `user`.`id`)) ;
 
 --
 -- Indexes for dumped tables
@@ -2505,7 +2506,7 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `index_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=566;
+  MODIFY `index_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=557;
 
 --
 -- AUTO_INCREMENT for table `vaccine`
@@ -2517,7 +2518,7 @@ ALTER TABLE `vaccine`
 -- AUTO_INCREMENT for table `vaccine_administration`
 --
 ALTER TABLE `vaccine_administration`
-  MODIFY `vaccination_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `vaccination_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Constraints for dumped tables
