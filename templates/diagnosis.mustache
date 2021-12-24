@@ -4,10 +4,12 @@
         <table>
             <tr>
                 <th>Date</th>
+                <th>Type</th>
             </tr>
             {{#diagnosis}}
                 <tr>
                     <th>{{date}}</th>
+                    <th>{{type}}</th>
                 </tr>
             {{/diagnosis}}
         </table>
@@ -16,16 +18,17 @@
 
 
         <form method="post" enctype="multipart/form-data">
-            Choose Your File
-            <input class="button is-info" type="file" name="file"/>
+            Choose Your File <input class="button is-info" type="file" name="file"/>
 
 
             <div class="block"></div>
 
-        <label for="start">Add new Diagnosis Information (Applied Date):</label>
-        <input type="date" id="start" name="trip-start"
-               value="2018-07-22"
-               min="2018-01-01" max="2018-12-31" class="button">
+            <label for="start">Add new Diagnosis Information (Applied Date):</label> <input type="date" id="start"
+                                                                                            name="trip-start"
+                                                                                            value="2018-07-22"
+                                                                                            min="2018-01-01"
+                                                                                            max="2018-12-31"
+                                                                                            class="button">
             <div class="block"></div>
             <input type="submit" class="button is-success" name="add-diag" value="Add New Diagnosis">
             <!--<input type="submit" class="button" name="upd-diag" value="Update Diagnosis">-->
