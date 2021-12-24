@@ -78,25 +78,75 @@ class UserFactory{
         return $this->user;
     }
 
-    public function makeUserById(PDO $db, string $usertype, int $id) : User
+    public function makeUserById(PDO $db, string $user_type = User::TABLE_NAME, int $id) : User
     {
-        $this->makeUser($usertype);
-
-        $this->user->setId($id);
-        $this->user->setDatabaseConnection($db);
+        if( strcmp($user_type, User::TABLE_NAME) != 0 ) {
+            try {
+                return $this->makeUserByDBRow( $user_type, $this->getRow($db, $user_type, $id),$db );
+            }
+            catch(Exception $e) {
+                // getConsoleLogger()->error($e->getMessage());
+            }
+        }
+        // is User an Administrator
         try {
-            $query = "SELECT * FROM ".$this->user->getTableName()." WHERE id = :id "; // . $this->id;
-            $stmt = $db->prepare($query);
-            $stmt->execute(array('id'=>$this->user->getId()));
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->user->setFirstname($row['name']);
-            $this->user->setLastname($row['lastname']);
-            $this->user->setEmail($row['email']);
-            $this->user->setHESCode($row['hescode']);
-
-        } catch (PDOException $exception) {
+            return $this->makeUserByDBRow( UniversityAdministration::TABLE_NAME, $this->getRow($db, UniversityAdministration::TABLE_NAME, $id), $db );
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->error($e->getMessage());
 
         }
+        // is User a Academic Staff
+        try {
+            return $this->makeUserByDBRow( AcademicStaff::TABLE_NAME, $this->getRow($db, AcademicStaff::TABLE_NAME, $id), $db );
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->error($e->getMessage());
+        }
+        // is User a Sports Center Staff
+        try {
+            return $this->makeUserByDBRow( SportsCenterStaff::TABLE_NAME, $this->getRow($db, SportsCenterStaff::TABLE_NAME, $id), $db );
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->error($e->getMessage());
+        }
+        // is User a Student
+        try {
+            return $this->makeUserByDBRow( Student::TABLE_NAME, $this->getRow($db, Student::TABLE_NAME, $id),$db );
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->error($e->getMessage());
+        }
+        // last resort is User a User!!!
+        try{
+            return $this->makeUserByDBRow( User::TABLE_NAME, $this->getRow($db, User::TABLE_NAME, $id), $db );
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->error($e->getMessage());
+        }
+    }
+
+    private function getRow(PDO $conn, string $user_type, int $user_id) : array
+    {
+        $query = "SELECT * FROM " . $user_type . " WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->execute(array('id'=>$user_id));
+        if( $stmt->rowCount() == 0)
+            return null;
+        else
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function makeUserByDBRow(string $user_type, array $row, PDO $conn) : ?User
+    {
+        $this->makeUser(0== strcmp($user_type, User::TABLE_NAME) ? Student::TABLE_NAME : $user_type);
+        $this->user->setDatabaseConnection($conn);
+        $this->user->setId($row['id']);
+        $this->user->setFirstname($row['name']);
+        $this->user->setLastname($row['lastname']);
+        $this->user->setEmail($row['email']);
+        $this->user->setHESCode($row['hescode']);
+        $this->user->setHescodeStatus($row['hescode_status']);
         return $this->user;
     }
 }

@@ -142,7 +142,7 @@
                 {
                     $myVaccineType = $vaccine->getVaccineType();
                     $myVaccineDate = $vaccine->getVaccineDate();
-                    $abc[$i] = ['vaccineDate'=> $myVaccineDate, 'vaccineType'=> $myVaccineType];
+                    $abc[$i] = ['vaccineDate'=> $myVaccineDate->format('r'), 'vaccineType'=> $myVaccineType];
                     $i = $i + 1;
                 }
                 
@@ -188,19 +188,15 @@
                 $pastArr = array();
                 $futureArr = array();
                 foreach( $pastTests as $p) {
-                    $pastArr[] = array( "date" => $p->getTestDate() , "result" =>$p->getResult());
+                    $pastArr[] = array( "date" => $p->getTestDate()->format('r') , "result" =>$p->getResult());
                 }
                 foreach( $futureTests as $p) {
-                    $futureArr[] = array( "date" => $p->getTestDate());
+                    $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
                 }
 
                 echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
                     'pastTest' => $pastArr
                 ]);
-
-
-
-
 
 
                 
@@ -213,7 +209,6 @@
                     $pastTest, $pastTest
                 ]]);
                 */
-
                 ?>
             </p>
         </div>

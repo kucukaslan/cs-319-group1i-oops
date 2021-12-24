@@ -2,6 +2,7 @@
     <div class="hero-body">
         <div class="columns is-centered">
             <div class="column is-narrow">
+                <h2>{{title}}</h2>
                 <table class="table is-narrow is-bordered is-hoverable is-striped">
                     <tr>
                         <th>{{column1}}</th>
@@ -18,11 +19,9 @@
                             <td>{{fourthEl}}</td>
                             <td>
                                 <form method="post">
-                                    <input href="{{buttonLink}}" type="submit" class="button" value="See">
+                                    <input type="hidden" name="seeEvent" value="{{eventId}}">
+                                    <input type="submit" class="button" value="See">
                                 </form>
-
-
-                                <!-- <a href="{{buttonLink}}" class="button">{{buttonName}}</a> -->
                             </td>
                         </tr>
                     {{/row}}

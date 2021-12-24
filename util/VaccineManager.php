@@ -31,7 +31,7 @@ class VaccineManager
             $vaccine->setCvxCode($row["cvx_code"]);
             $vaccine->setVaccineName($row["vaccine_name"]);
             $vaccine->setVaccineType($row["vaccine_type"]);
-            $vaccine->setVaccineDate($row["administration_date"]);
+            $vaccine->setVaccineDate(new DateTime($row["administration_date"]));
             $vaccines[] = $vaccine;
         }
         return $vaccines;
