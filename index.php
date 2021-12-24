@@ -70,19 +70,59 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     $pieces = explode(" ", $vaccinecardasString);
 
                     $date = $pieces[0];
-                    $type = $pieces[1];
+                    $cvx = $pieces[1];
 
                     $date = str_replace(' ', '', $pieces[0]);
                     $date = str_replace("\n", '', $date);
 
-                    $type = str_replace(' ', '', $pieces[1]);
-                    $type = str_replace("\n", '', $type);
+                    $cvx = str_replace(' ', '', $pieces[1]);
+                    $cvx = str_replace("\n", '', $cvx);
+
+                    $vf = new VaccineFactory();
+
+                    $vaccineInstance = $vf->makeVaccineByCvxCode(getDatabaseConnection(), 208);
+                    $vacmanager = new VaccineManager(getDatabaseConnection(), $_SESSION['id']);
+                    $vacmanager->insertVaccination($vaccineInstance,new DateTime($date));
+                }
+            }
 
 
-                    $vaccineInstance = new Vaccine($date, $type);
+            if (isset($_POST['diagnosis'])) {
+                if ($_FILES['file']['type'] == "application/pdf") {
+                    $a1 = new PDF2Text();
+                    $a1->setFilename($_FILES['file']['tmp_name']);
+                    $a1->decodePDF();
+
+                    $diagnosisasString = $a1->output();
+
+                    $pieces1 = explode(" ", $diagnosisasString);
+
+                    $date = $pieces1[0];
+                    $type = $pieces1[1];
+		            $result = $pieces1[2];
+
+
+                    $date1 = str_replace(' ', '', $pieces1[0]);
+                    $date1 = str_replace("\n", '', $date);
+
+                    $type1 = str_replace(' ', '', $pieces1[1]);
+                    $type1 = str_replace("\n", '', $type1);
+
+	                $currentId = $_SESSION['id'];
+
+
+                    $diagnosisInstance = new Diagnosis();
+                    $diagnosisInstance->setDiagnosisDate($date1);
+                    $diagnosisInstance->setResult($result);
+                    $diagnosisInstance->setType($type1);
+                    
 
                 }
             }
+
+
+
+
         }
 
         ?>
