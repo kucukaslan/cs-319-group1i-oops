@@ -53,18 +53,54 @@ class EventFactory {
         return $events;
     }
 
-    public function getEvent(int $eventId, string $event_type = Event::TABLE_NAME): ?Event {
+    /*
+    * This method infers the type of event by sequentially searching for the tables
+    * that contain the given event_id column.
+    * the priority between the event types is:
+    * 1. CourseEvent
+    * 2. SportsEvent
+    * 3. TestAppointmentEvent
+    * @param $event_type string
+    *
+    */
+    public function getEvent(int $eventId): ?Event {
+        try {
+            return $this->makeEventFromDBRow(CourseEvent::TABLE_NAME, $this->getRow(CourseEvent::TABLE_NAME, $eventId));
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->log("EventFactory::getEvent(): "$eventId is not a type of $event_type");
+        }
+        try {
+            return $this->makeEventFromDBRow(SportsEvent::TABLE_NAME, $this->getRow(SportsEvent::TABLE_NAME, $eventId));
+        } 
+        catch(Exception $e) {
+            // getConsoleLogger()->log("EventFactory::getEvent(): "$eventId is not a type of $event_type");
+        } 
+        try {
+            return $this->makeEventFromDBRow(TestAppointmentEvent::TABLE_NAME, $this->getRow(TestAppointmentEvent::TABLE_NAME, $eventId));
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->log("EventFactory::getEvent(): "$eventId is not a type of $event_type");
+        }
+        try {
+            return $this->makeEventFromDBRow(Event::TABLE_NAME, $this->getRow(Event::TABLE_NAME, $eventId));
+        }
+        catch(Exception $e) {
+            // getConsoleLogger()->log("EventFactory::getEvent(): "$eventId is not in the database");
+        }
+        return null;
+    }
+
+    private function getRow(string $event_type, int $eventId) : array | null {
+
         $sql = "SELECT * FROM $event_type where event_id = :event_id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(":event_id", $eventId);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($result == null)
+        if( $stmt->rowCount() == 0)
             return null;
         else
-        {
-            return $this->makeEventFromDBRow($event_type, $result);
-        }
+            return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     private function makeEvent(string $type) : null| Event | SportsEvent | CourseEvent | TestAppointmentEvent {
@@ -86,7 +122,9 @@ class EventFactory {
     * if any of the expected keys is not found in the array, it throws Exception!
     * if the row is null, then the function returns null.
     */
-    public function makeEventFromDBRow(string $type, array $row) : null| Event | SportsEvent | CourseEvent | TestAppointmentEvent {
+    public function makeEventFromDBRow(string $type, ?array $row) : null| Event | SportsEvent | CourseEvent | TestAppointmentEvent {
+        if($row == null)
+            throw new Exception("EventFactory::makeEventFromDBRow(): row is null");
         $event = $this->makeEvent($type);
         $event->setConn($this->conn);
         $event->setEventID($row['event_id']);

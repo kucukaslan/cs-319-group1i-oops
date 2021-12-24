@@ -19,7 +19,7 @@ abstract class User implements EventParticipant {
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
-    protected ?string $HESCodeStatus;
+    protected ?string $hescode_status;
     protected ?array $closeContacts;
     protected ?array $eventsIParticipate;
 
@@ -33,6 +33,7 @@ abstract class User implements EventParticipant {
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
+        $this->hescode_status = null;
         $this->closeContacts = null;
         $this->eventsIParticipate = null;
     }
@@ -74,6 +75,22 @@ abstract class User implements EventParticipant {
         return $this->password;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getHescodeStatus(): ?string
+    {
+        return $this->hescode_status;
+    }
+
+    /**
+     * Set hescode_status of a user (THIS METHOD DOES NOT MODIFY DATABASE)
+     * @param string $hescode_status
+     */
+    public function setHescodeStatus(string $hescode_status): void
+    {
+        $this->hescode_status = $hescode_status;
+    }
 
     public function verifyPassword(): bool
     {
@@ -162,12 +179,14 @@ abstract class User implements EventParticipant {
             return false;
         }
     }
-    public function updatePassword(string $newPassword)
+    public function updatePassword(int|string $newPassword)
     {
-        $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE id = :id";
+        $query = "UPDATE " . USER::TABLE_NAME . " SET password_hash = :password_hash WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $hash = password_hash($newPassword, PASSWORD_ARGON2I);
         $stmt->bindParam(':password_hash', $hash);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
     }
 
     public function getTableName(): string
@@ -186,7 +205,7 @@ abstract class User implements EventParticipant {
     /**
      * @param int $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -202,7 +221,7 @@ abstract class User implements EventParticipant {
     /**
      * @param string $lastname
      */
-    public function setLastname(string $lastname): void
+    public function setLastname(?string $lastname): void
     {
         $this->lastname = $lastname;
     }
@@ -210,7 +229,7 @@ abstract class User implements EventParticipant {
     /**
      * @param string $email
      */
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
@@ -321,7 +340,7 @@ abstract class User implements EventParticipant {
         }
     }
 
-    public function getEventsIParticipate( $event_type =Event::TABLE_NAME ): array {
+    public function getEventsIParticipate($event_type =Event::TABLE_NAME): array {
         $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -346,8 +365,8 @@ abstract class User implements EventParticipant {
         return false;
     }
 
-    public function getEventsControlledByMe() : array {
-        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+    public function getEventsControlledByMe($event_type =Event::TABLE_NAME) : array {
+        $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();

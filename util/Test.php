@@ -7,7 +7,7 @@ class Test
 
     // object properties
     private int $test_id;
-    protected ?string $test_date;
+    protected ?DateTime $test_date;
     protected ?string $result; // it is enum with the possible values: 'POSITIVE', 'NEGATIVE', 'UNKNOWN', 'PENDING'
     protected int $user_id;
     protected $document;
@@ -36,7 +36,7 @@ class Test
     /**
      * @return string|null
      */
-    public function getTestDate(): ?string
+    public function getTestDate(): ?DateTime
     {
         return $this->test_date;
     }
@@ -44,7 +44,7 @@ class Test
     /**
      * @param string|null $test_date
      */
-    public function setTestDate(?string $test_date): void
+    public function setTestDate(?DateTime $test_date): void
     {
         $this->test_date = $test_date;
     }
@@ -131,7 +131,7 @@ class Test
         {
             $test = new Test();
             $test->settestId($row["test_id"]);
-            $test->setTestDate($row["test_date"]);
+            $test->setTestDate(new DateTime($row["test_date"]));
             $test->setResult($row["result"]);
             $test->setDocument($row["document"]);
             $tests[] = $test;
@@ -156,7 +156,7 @@ class Test
         {
             $test = new Test();
             $test->settestId($row["test_id"]);
-            $test->setTestDate($row["test_date"]);
+            $test->setTestDate(new DateTime($row["test_date"]));
             $test->setResult($row["result"]);
             $test->setDocument($row["document"]);
             if ( $row["test_date"] >= $DateAndTime)
@@ -173,8 +173,6 @@ class Test
         $DateAndTime = date('Y-m-d h:i:s a', time());
 
 
-        
-
         $sql = "SELECT * FROM ".Test::TABLE_NAME ." JOIN ".User::TABLE_NAME .
             " ON ".Test::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Test::TABLE_NAME .".user_id = :id";
         $stmt = $conn->prepare($sql);
@@ -185,9 +183,9 @@ class Test
         foreach($result as $row)
         {
             
-                $test = new Test();
+            $test = new Test();
             $test->settestId($row["test_id"]);
-            $test->setTestDate($row["test_date"]);
+            $test->setTestDate(new DateTime($row["test_date"]));
             $test->setResult($row["result"]);
             $test->setDocument($row["document"]);
             if ( $row["test_date"] < $DateAndTime)

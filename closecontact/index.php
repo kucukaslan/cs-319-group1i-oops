@@ -53,7 +53,9 @@ ob_start();
 
         $buttonNames = [];
         $contact_list = [];
-        $events = $user->getEventsIParticipate();
+
+        $event_lecture = $user->getEventsIParticipate(CourseEvent::TABLE_NAME);
+        $event_sports = $user->getEventsIParticipate(SportsEvent::TABLE_NAME);
 
         // mock data
         /*$events[] = new Event($conn, 10, "example title", new DateTime("now"), true,
@@ -72,17 +74,24 @@ ob_start();
 
             $i++;
         }
-        print_r($contact_list);
+        // print_r($contact_list);
 
 
         // get contents of the events I participate
-        $i = 0;
+
         $event_list = [];
-        foreach ($events as $event) {
-            $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(),
+        foreach ($event_sports as $event) {
+            $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace() . " " . $event->getStartDate()->format("d") . "-" . $event->getStartDate()->format('M')
+                . " " . $event->getStartDate()->format('h') . ":" . $event->getStartDate()->format('i'). "-"
+                .$event->getEndDate()->format('h') . ":" . $event->getEndDate()->format('i'),
                 "eventId"=>$event->getEventID()];
-            $i++;
         }
+
+        foreach ($event_lecture as $event) {
+            $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(), "eventId"=>$event->getEventID()];
+        }
+
+
 
         // RENDERING HTMLs
         // render close contacts
@@ -91,7 +100,7 @@ ob_start();
         // render lectures
         echo $m->render('listWith3ColumnsAndButton',
             ['row' => $event_list
-            , "title"=>"Your Events", "column1"=>"Name", "column2"=>"Place", "column3"=>"Participants"]);
+            , "title"=>"Your Events", "column1"=>"Name", "column2"=>"Info", "column3"=>"Participants"]);
 
 
         // add close contact component

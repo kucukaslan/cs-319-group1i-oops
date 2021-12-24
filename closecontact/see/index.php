@@ -47,6 +47,8 @@ ob_start();
         echo "event Id is " . $_SESSION["eventToDisplay"] . "<br>";
         $eventToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
 
+        // echo $eventToDisplay->getStartDate();
+
         print_r($eventToDisplay);
         // echo get_class($eventToDisplay);
 
@@ -85,12 +87,19 @@ ob_start();
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
 
+        $date = "";
+        // if the event is a sports event, add date
+        if (get_class($eventToDisplay) == "SportsEvent")
+            $date = $eventToDisplay->getStartDate()->format("d") . "-" . $eventToDisplay->getStartDate()->format('M')
+                . " " . $eventToDisplay->getStartDate()->format('h') . ":" . $eventToDisplay->getStartDate()->format('i'). "-"
+                .$eventToDisplay->getEndDate()->format('h') . ":" . $eventToDisplay->getEndDate()->format('i');
 
-        // render participant
+        // RENDER HTML
         echo $m->render('eventparticipants', [
             'added' => $contact_data,
             "nonAdded" => $non_contact_data,
             "eventName" => $eventToDisplay->getTitle(),
+            "date"=>$date
         ]);
 
         // add a participants as close contact

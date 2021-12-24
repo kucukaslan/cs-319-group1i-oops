@@ -2,10 +2,9 @@
 include_once("../../config.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
+require_once(rootDirectory() . "/util/EventFactory.php");
+require_once(rootDirectory() . "/util/AllowanceFacade.php");
 startDefaultSessionWith();
-
-$courseCode = "Math-123";
-$date = "1.2.3232";
 ?>
 
 <!DOCTYPE html>
@@ -39,37 +38,77 @@ $date = "1.2.3232";
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
-        $courseCodeAndDate = <<<EOF
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $uf = new UserFactory();
+        $ef = new EventFactory($conn);
+        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
+        $lectureId = $_SESSION["lectureToDisplay"];
+        echo "Lecture id: " . $lectureId;
+
+
+        // create event object whose participants will be displayed
+        $thisLecture = $ef->getEvent($lectureId);
+
+        print_r($thisLecture);
+        $participants = $user->getParticipants($lectureId);
+
+        // print_r($participants);
+        echo "No of participants is " . sizeof($participants);
+
+        $navbar = new NavBar($usertype);
+        echo $navbar->draw();
+
+        $courseCode = $thisLecture->getTitle();
+        $courseCodeAndDate_HTML = <<<EOF
 <section class="hero is-primary">
     <div class="hero-body">
         <div class="columns is-centered">
             <div class="column is-narrow">
             <h2> Manage Course </h2>
-<h4><b>Course Code: $courseCode  Date: $date </b></h4>
+<h4><b>Course Code:  $courseCode </b></h4>
 </div>
 </div>
 </div>
 </section>
 EOF;
+        echo $courseCodeAndDate_HTML;
 
-        $navbar = new NavBar($usertype);
-        echo $navbar->draw();
-        echo $courseCodeAndDate;
+        // create participants data to display
+        $participants_data = [];
 
-        $idOfTheParticipant = 1;
-        echo $engine->render("listWith3ColumnsAndForm", ["row" => [
-            ['firstEl' => "hikmet simsir", 'secondEl' => "allowed", "value" => "Remove", "buttonName" => "Manage"],
-            ['firstEl' => "hikmet simsir", 'secondEl' => "allowed", "value" => "Remove", "buttonName" => "Manage"]
-        ], "title" => "Participants of the Event",
-            "column1" => "Student Name", "column2" => "Risk Status", "column3" => "RemoveStudent"]);
+        // print_r($participants);
 
-        echo $engine->render("listWith2ColumnsAndForm", ["row" => [
-            ['firstEl' => "hikmet simsir teacher", "value" => "Remove", "buttonName" => "name"],
-            ['firstEl' => "hikmet simsir teacher", "value" => "Remove", "buttonName" => "name"]
-        ], "title" => "Coordinators",
-            "column1" => "Coordinators", "column2" => "Remove Coordinator"]);
-        $addCoordinatorButton = <<<EOF
+         foreach ($participants as $participant) {
+            /*if ($participant->getId() == 22104260) {
+                echo " cont ";
+                break;
+            }*/
+
+            $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
+
+            if ($af->getIsAllowed()) {
+                $allowance = "Allowed";
+            } else {
+                $allowance = "Not Allowed";
+            }
+
+            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=>$participant->getId(),
+            "thirdEl"=> $allowance];
+
+        }
+
+         // this user causes an error ????
+        // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
+
+
+        echo $engine->render("listWith3Columns", ["row"=>$participants_data,
+        "column1"=>"Name", "column2"=>"Id", "column3"=>"Allowance", "title"=>"Participants of the Event"]);
+
+        /*$d1 = new DateTime("2009-12-22");
+        $d2 = new DateTime('now');
+        echo intval($d2->diff($d1)->format('%R%a'));*/
+
+        /*$addCoordinatorButton = <<<EOF
 <section class="hero is-success">
     <div class="hero-body">
         <div class="columns is-centered">
@@ -88,36 +127,7 @@ EOF;
     </div>
 </section>
 EOF;
-        echo $addCoordinatorButton;
-        /*$m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory().'/templates'),
-        ));
-        echo $m->render('navbar', ['links' => [
-            ['href' => '../../', 'title' => 'Main Menu'],
-            ['href' => '../../administration', 'title' => 'Administration','id'=> 'selected'],
-            ['href' => '../../lectures', 'title' => 'Lectures'],
-            //['href' =>'../../reservations', 'title' => 'Reservations'],
-            ['href' => '../../events', 'title' => 'Events'],
-            ['href' => '../../closecontact', 'title' => 'Close Contact'],
-            ['href' => '../../profile', 'title' => 'Profile'],
-            ['href' => '../../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
-        );*/
-
-        /*
-                echo '<div class="centerwrapper">
-                        <div class="centerdiv">
-                            <br><br>
-                            <h2>Event Details Page</h2>
-                            <br>';
-                echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-                echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-                echo "<br>  ".( (array_key_exists('courseid',$_GET)) ? "You are seeing the details of the course " . $_GET['courseid']  :  "The course details cannot be found!");
-                echo '<form method="get" action="../"><div class="form-group">
-                                <input type="submit" class="button button_submit" value="Return to Close Contact Page">
-                            </div>
-                        </form>
-                    </div>
-                </div>';*/
+       echo $addCoordinatorButton;*/
 
     }
 

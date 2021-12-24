@@ -96,4 +96,17 @@ final class EventDatabaseTest extends TestCase
         return $ptcp;
     }
     */
+
+    /**
+     * @depends testDatabaseConnection
+    
+    public function testGetUsers(PDO $conn)
+    {
+        $ef = new EventFactory($conn);
+        for($i = 0; $i< 10 ; $i++) {
+            var_dump( $ef->getEvent($i));
+        }
+        
+    }
+     */
 }

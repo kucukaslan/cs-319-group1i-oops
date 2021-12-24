@@ -5,6 +5,7 @@
     require_once(rootDirectory() . "/util/SportsEvent.php");
     require_once(rootDirectory() . "/util/CustomException.php");
     startDefaultSessionWith();
+    ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -38,23 +39,36 @@
         ));
         $usertype  = $_SESSION['usertype'] ?? SportsCenterStaff::TABLE_NAME;
         $uf = new UserFactory();
+        $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
-        $eventsOfUser = $user->getEventsIParticipate(SportsEvent::TABLE_NAME);
+        $eventsOfUser = $user->getEventsControlledByMe();
+        print_r($eventsOfUser);
 
-        // add sportsevents  to events  list
-        $i = 0;
-        foreach($eventsOfUser as $sportsEvent) {
-            // mustafa "datetime"ı string'e çevirmerk için "format" metodunu kullanabilirsin
-            $events_list[] = ["firstEl" => $sportsEvent->getPlace(), "secondEl" => $sportsEvent->getStartDate()->format("Y-m-d H:i:s")/* ->format(DateTimeInterface::RFC3339)*/, 
-                "Quota" => $sportsEvent->getCurrentNumberOfParticipants() . " /" . $sportsEvent->getMaxNoOfParticipant(),
-                "id" => $sportsEvent->getEventId()];
-            // get all participants in a specific event
-            $participantsList = $sportsEvent->getParticipants();
+        // we need to select sports events from all events where user is controller
+        $sportsData_past = array();
+        $sportsData_future = array();
 
-            $i++;
+        foreach ($eventsOfUser as $event) {
+            $eventToCheck = $ef->getEvent($event->getEventID());
+            if (get_class($eventToCheck) == "SportsEvent") {
+                // format the data that will be given to the mustache engine
+                $formattedDate = ["firstEl"=>$eventToCheck->getPlace(), "secondEl"=>$eventToCheck->getStartDate()->format("d") . "-" .
+                    $eventToCheck->getStartDate()->format('M')
+                    , "thirdEl"=>$eventToCheck->getStartDate()->format('h') . ":" . $eventToCheck->getStartDate()->format('i'). "-" .
+                    $eventToCheck->getEndDate()->format('h') . ":" . $eventToCheck->getEndDate()->format('i'),
+                    "fourthEl"=>$eventToCheck->getCurrentNumberOfParticipants() . "/" . $eventToCheck->getMaxNoOfParticipant(),
+                    "eventId"=>$eventToCheck->getEventID()];
+
+                // differentiate past and future sports events
+                if ($eventToCheck->getStartDate() <= new DateTime("now")) {
+                    $sportsData_past[] = $formattedDate;
+                } else {
+                    $sportsData_future[] = $formattedDate;
+                }
+
+            }
         }
-
 
 
 
@@ -64,17 +78,22 @@
             <h2>Reservations Page</h2>
     </div>";
 
-
-        echo $engine->render("list5ColButton", ["row" => $events_list,
-            "title"=>"Upcoming Events",
+        // RENDER HTMLs
+        echo $engine->render("list5ColButton", ["row" => $sportsData_future,
+            "title"=>"Upcoming Sports Events",
             "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
 
-        echo $engine->render("list5ColButton", ["row" => [
-            ['firstEl' => 'Main Sports Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
-            ['firstEl' => 'Main Sports Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
-            "title"=>"Past Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"Past Participants"]);
+        echo $engine->render("list5ColButton", ["row" => $sportsData_past,
+            "title"=>"Past Sport Events",
+            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"People Participated", "column5"=>"Past Participants"]);
 
+
+        // if see button is pressed go to the reservation/see page
+        if(isset($_POST["seeEvent"])) {
+            $_SESSION["seeEvent"] = $_POST["seeEvent"];
+            // echo $_POST["seeEvent"];
+            header("Location: ../../reservations/see");
+        }
     }
 
     ?>

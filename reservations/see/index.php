@@ -2,6 +2,7 @@
     include_once("../../config.php");
     require_once(rootDirectory()."/util/NavBar.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
+    require_once(rootDirectory() . "/util/AllowanceFacade.php");
     startDefaultSessionWith();
     ?>
 
@@ -36,6 +37,7 @@
         ));
         $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
+        $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
         $navbar = new NavBar($usertype);
@@ -44,9 +46,25 @@
             <h2>See Event Page</h2>
     </div>";
 
-        echo $engine->render("listWith2Column", ["row" => [
-            ["firstEl"=>"hikmet", "secondEl"=>"allowed"],
-            ["firstEl"=>"hikmet", "secondEl"=>"allowed"]],
+        echo "event is is " . $_SESSION["seeEvent"] . "<br>";
+        $thisEvent = $ef->getEvent($_SESSION["seeEvent"]);
+
+        $participants = $user->getParticipants($thisEvent->getEventID());
+
+        $participants_data = array();
+        foreach ($participants as $participant) {
+            $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
+
+            if ($af->getIsAllowed()) {
+                $allowance = "Allowed";
+            } else {
+                $allowance = "Not Allowed";
+            }
+
+            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=> $allowance];
+        }
+
+        echo $engine->render("listWith2Column", ["row" => $participants_data,
             "title"=>"Sports Event Details", "column1"=>"Name", "column2"=>"Allowance Status"]);
 
 

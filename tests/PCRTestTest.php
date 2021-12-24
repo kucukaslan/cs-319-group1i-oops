@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 // the terminal command is (for windows):
 // .\vendor\bin\phpunit tests
-final class EventDatabaseTest extends TestCase
+final class PCRTestTest extends TestCase
 {
     public function testDatabaseConnection(): PDO
     {
@@ -41,3 +41,4 @@ final class EventDatabaseTest extends TestCase
         
     }
     */
+}
