@@ -47,7 +47,7 @@ startDefaultSessionWith();
 
 
         // create event object whose participants will be displayed
-        $thisLecture = $ef->getEvent($lectureId, CourseEvent::TABLE_NAME);
+        $thisLecture = $ef->getEvent($lectureId);
 
         print_r($thisLecture);
         $participants = $user->getParticipants($lectureId);
@@ -76,7 +76,7 @@ EOF;
         // create participants data to display
         $participants_data = [];
 
-        print_r($participants);
+        // print_r($participants);
 
          foreach ($participants as $participant) {
             /*if ($participant->getId() == 22104260) {
@@ -84,9 +84,7 @@ EOF;
                 break;
             }*/
 
-
             $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
-
 
             if ($af->getIsAllowed()) {
                 $allowance = "Allowed";

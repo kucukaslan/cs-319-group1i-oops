@@ -91,7 +91,10 @@ class RiskStatusManager {
      * from an external system.
      */
     public function checkHESCode(): void {
-        $this->HESCodeStatus = ord($this->HESCode) % 2 == 0;
+        if (isset($this->HESCode))
+            $this->HESCodeStatus = crc32($this->HESCode) % 7 != 0;
+        else
+            $this->HESCodeStatus = false;
     }
 
 

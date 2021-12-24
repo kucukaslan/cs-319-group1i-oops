@@ -3,6 +3,7 @@ include_once("../config.php");
 require_once(rootDirectory()."/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +37,7 @@ startDefaultSessionWith();
         ));
         $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
+        $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
         $navbar = new NavBar($usertype);
@@ -54,8 +56,12 @@ startDefaultSessionWith();
         // create data to display
         $lecture_data = [];
         foreach ($lectures as $event) {
-            $lecture_data[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(),
-                "eventId"=>$event->getEventID()];
+            $eventToCheck = $ef->getEvent($event->getEventID());
+
+            if (get_class($eventToCheck) == "CourseEvent") {
+                $lecture_data[] = ["firstEl" => $event->getTitle(), "secondEl" => $event->getPlace(),
+                    "eventId" => $event->getEventID()];
+            }
         }
 
 

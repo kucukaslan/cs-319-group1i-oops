@@ -13,7 +13,7 @@ class AllowanceFacade {
     protected ?RiskStatusManager $rsm;
     protected ?VaccineManager $vm;
     protected ?array $tests;
-    protected ?User $user;
+    // protected ?User $user;
     protected ?int $userId;
     protected ?string $userType;
     protected ?bool $isAllowed;
@@ -27,13 +27,12 @@ class AllowanceFacade {
         $this->tests = Test::getTestsOfUserPast($this->userId,$conn);
         // print_r($this->tests);
 
-
         $this->rsm = new RiskStatusManager($conn, $userType, $userId);
         $this->vm = new VaccineManager($conn, $userId);
     }
 
     public function getIsAllowed(): ?bool {
-        echo "in is allowed ";
+        // echo "in is allowed ";
         $this->isAllowed = $this->checkAllowance();
         return $this->isAllowed;
     }
@@ -43,7 +42,7 @@ class AllowanceFacade {
     public function checkAllowance(): ?bool {
         // echo "in check allowance ";
         if ($this->rsm->getHESCodeStatus() == false) {
-            echo "false since HES CODE ";
+            echo $this->userId . " false since HES CODE <br>" ;
             return false;
         }
         // echo "in check allowance  2 ";
@@ -51,20 +50,24 @@ class AllowanceFacade {
             // check if he has a negative test result in specified # of days
             foreach ($this->tests as $test) {
                 $time_difference_in_days = intval($test->getTestDate()->diff(new DateTime("now"))->format('%R%a'));
-                echo $time_difference_in_days . "-" . $test->getTestId() . " ";
+                // echo $time_difference_in_days . "-" . $test->getTestId() . " ";
                 if ($time_difference_in_days <= AllowanceFacade::MIN_NO_OF_DAYS_FOR_TEST && $time_difference_in_days > 0
                     && $test->getResult() == "NEGATIVE") {
-                    // echo "true since has a negative test";
+                    echo $this->userId . " true since has a negative test<br>" ;
                     return true;
                 }
             }
-            // echo "false since no negative test given";
+            echo $this->userId ."false since no negative test given <br>";
             return false;
         }
 
-        // echo "true since vaccinated ";
+        echo $this->userId . "true since vaccinated <br>";
         return true;
     }
+/*
+    public static function giveAllowedOnes(?array $participants ): ?array {
+
+    }*/
 
 
 }
