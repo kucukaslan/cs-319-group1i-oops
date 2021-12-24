@@ -139,6 +139,17 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                 <p>
                     <?php
 
+                     
+                    $diagnosisTest = new Diagnosis();
+                    $diagnosisTest->setType("hadi bakalim");
+                    $diagnosisTest->setResult(3);
+                    $diagnosisTest->setDiagnosisId(24);
+                    $diagnosisTest->setUserId($_SESSION['id']);
+                    $DateAndTime1 = new DateTime('NOW');
+                    echo $DateAndTime1->format('Y-m-d H:i:s');
+                    $diagnosisTest->setDiagnosisDate($DateAndTime1);
+                    //$diagnosisTest->updateDiagnosisesOfUser($conn);
+                    $diagnosises = Diagnosis::getDiagnosisesOfUser($_SESSION['id'] , $conn);
 
                     echo $engine->render("diagnosis",
                         ["diagnosis" => [["date" => "date 1"],
