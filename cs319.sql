@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 24, 2021 at 04:11 PM
+-- Generation Time: Dec 24, 2021 at 11:06 PM
 -- Server version: 10.4.21-MariaDB
--- PHP Version: 8.0.11
+-- PHP Version: 8.0.12
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -27,7 +27,6 @@ START TRANSACTION;
 -- Stand-in structure for view `academic_staff`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `academic_staff`;
 CREATE TABLE `academic_staff` (
 `id` int(11)
 ,`registration_date` timestamp
@@ -46,11 +45,7 @@ CREATE TABLE `academic_staff` (
 --
 -- Table structure for table `contact`
 --
--- Creation: Dec 17, 2021 at 12:30 AM
--- Last update: Dec 24, 2021 at 05:57 PM
---
 
-DROP TABLE IF EXISTS `contact`;
 CREATE TABLE `contact` (
   `main_user_id` int(11) NOT NULL,
   `contacted_user_id` int(11) NOT NULL,
@@ -58,21 +53,10 @@ CREATE TABLE `contact` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
--- RELATIONSHIPS FOR TABLE `contact`:
---   `main_user_id`
---       `user` -> `id`
---   `event_id`
---       `event` -> `event_id`
---   `contacted_user_id`
---       `user` -> `id`
---
-
---
 -- Dumping data for table `contact`
 --
 
 INSERT INTO `contact` (`main_user_id`, `contacted_user_id`, `event_id`) VALUES
-(1, 2, 2),
 (1, 3, 2),
 (1, 5, 1),
 (1, 123, 1),
@@ -92,7 +76,6 @@ INSERT INTO `contact` (`main_user_id`, `contacted_user_id`, `event_id`) VALUES
 -- Stand-in structure for view `course`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `course`;
 CREATE TABLE `course` (
 `event_id` int(11)
 ,`year` year(4)
@@ -108,10 +91,7 @@ CREATE TABLE `course` (
 --
 -- Table structure for table `covid_test`
 --
--- Creation: Dec 21, 2021 at 12:28 AM
---
 
-DROP TABLE IF EXISTS `covid_test`;
 CREATE TABLE `covid_test` (
   `test_id` int(11) NOT NULL,
   `test_date` datetime NOT NULL,
@@ -119,12 +99,6 @@ CREATE TABLE `covid_test` (
   `user_id` int(11) NOT NULL,
   `document` mediumblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `covid_test`:
---   `user_id`
---       `user` -> `id`
---
 
 --
 -- Dumping data for table `covid_test`
@@ -140,12 +114,32 @@ INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`, `document
 -- --------------------------------------------------------
 
 --
--- Table structure for table `event`
---
--- Creation: Dec 23, 2021 at 05:04 PM
+-- Table structure for table `diagnosis`
 --
 
-DROP TABLE IF EXISTS `event`;
+CREATE TABLE `diagnosis` (
+  `diagnosis_id` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `result` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `diagnosis`
+--
+
+INSERT INTO `diagnosis` (`diagnosis_id`, `type`, `result`, `date`, `user_id`) VALUES
+(1, 'tomography', 0, '2021-12-24 21:07:34', 1),
+(4, 'Ultrasound', 1, '2021-12-24 21:14:41', 1),
+(5, 'Blood test', 1, '2021-12-24 21:16:18', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event`
+--
+
 CREATE TABLE `event` (
   `event_id` int(11) NOT NULL,
   `event_name` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
@@ -153,10 +147,6 @@ CREATE TABLE `event` (
   `max_no_of_participant` int(11) NOT NULL DEFAULT 99999,
   `can_people_join` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `event`:
---
 
 --
 -- Dumping data for table `event`
@@ -275,22 +265,11 @@ INSERT INTO `event` (`event_id`, `event_name`, `place`, `max_no_of_participant`,
 --
 -- Table structure for table `event_control`
 --
--- Creation: Dec 16, 2021 at 11:58 PM
---
 
-DROP TABLE IF EXISTS `event_control`;
 CREATE TABLE `event_control` (
   `event_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `event_control`:
---   `event_id`
---       `event` -> `event_id`
---   `user_id`
---       `user` -> `index_id`
---
 
 --
 -- Dumping data for table `event_control`
@@ -365,21 +344,12 @@ INSERT INTO `event_control` (`event_id`, `user_id`) VALUES
 --
 -- Table structure for table `event_course`
 --
--- Creation: Dec 16, 2021 at 11:36 PM
---
 
-DROP TABLE IF EXISTS `event_course`;
 CREATE TABLE `event_course` (
   `event_id` int(11) NOT NULL,
   `year` year(4) NOT NULL,
   `semester` enum('FALL','SPRING','SUMMER') COLLATE utf8mb4_turkish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `event_course`:
---   `event_id`
---       `event` -> `event_id`
---
 
 --
 -- Dumping data for table `event_course`
@@ -444,22 +414,11 @@ INSERT INTO `event_course` (`event_id`, `year`, `semester`) VALUES
 --
 -- Table structure for table `event_participation`
 --
--- Creation: Dec 16, 2021 at 11:55 PM
---
 
-DROP TABLE IF EXISTS `event_participation`;
 CREATE TABLE `event_participation` (
   `event_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `event_participation`:
---   `event_id`
---       `event` -> `event_id`
---   `user_id`
---       `user` -> `id`
---
 
 --
 -- Dumping data for table `event_participation`
@@ -1307,21 +1266,12 @@ INSERT INTO `event_participation` (`event_id`, `user_id`) VALUES
 --
 -- Table structure for table `event_sport`
 --
--- Creation: Dec 16, 2021 at 11:22 PM
---
 
-DROP TABLE IF EXISTS `event_sport`;
 CREATE TABLE `event_sport` (
   `event_id` int(11) NOT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `event_sport`:
---   `event_id`
---       `event` -> `event_id`
---
 
 --
 -- Dumping data for table `event_sport`
@@ -1380,21 +1330,12 @@ INSERT INTO `event_sport` (`event_id`, `start_date`, `end_date`) VALUES
 --
 -- Table structure for table `event_test_appointment`
 --
--- Creation: Dec 22, 2021 at 08:06 PM
---
 
-DROP TABLE IF EXISTS `event_test_appointment`;
 CREATE TABLE `event_test_appointment` (
   `event_id` int(11) NOT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `event_test_appointment`:
---   `event_id`
---       `event` -> `event_id`
---
 
 --
 -- Dumping data for table `event_test_appointment`
@@ -1409,10 +1350,7 @@ INSERT INTO `event_test_appointment` (`event_id`, `start_date`, `end_date`) VALU
 --
 -- Table structure for table `feedback`
 --
--- Creation: Dec 21, 2021 at 12:37 AM
---
 
-DROP TABLE IF EXISTS `feedback`;
 CREATE TABLE `feedback` (
   `feedback_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL COMMENT 'user may prefer to be anonymous',
@@ -1421,17 +1359,12 @@ CREATE TABLE `feedback` (
   `document` mediumblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
---
--- RELATIONSHIPS FOR TABLE `feedback`:
---
-
 -- --------------------------------------------------------
 
 --
 -- Stand-in structure for view `sport`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `sport`;
 CREATE TABLE `sport` (
 `event_id` int(11)
 ,`start_date` datetime
@@ -1448,7 +1381,6 @@ CREATE TABLE `sport` (
 -- Stand-in structure for view `sports_center_staff`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `sports_center_staff`;
 CREATE TABLE `sports_center_staff` (
 `id` int(11)
 ,`index_id` int(11)
@@ -1467,7 +1399,6 @@ CREATE TABLE `sports_center_staff` (
 -- Stand-in structure for view `student`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `student`;
 CREATE TABLE `student` (
 `id` int(11)
 ,`registration_date` timestamp
@@ -1487,7 +1418,6 @@ CREATE TABLE `student` (
 -- Stand-in structure for view `test_appointment`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `test_appointment`;
 CREATE TABLE `test_appointment` (
 `event_id` int(11)
 ,`event_name` varchar(255)
@@ -1504,7 +1434,6 @@ CREATE TABLE `test_appointment` (
 -- Stand-in structure for view `university_administration`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `university_administration`;
 CREATE TABLE `university_administration` (
 `id` int(11)
 ,`index_id` int(11)
@@ -1522,10 +1451,7 @@ CREATE TABLE `university_administration` (
 --
 -- Table structure for table `user`
 --
--- Creation: Dec 17, 2021 at 12:40 AM
---
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `index_id` int(11) NOT NULL,
   `id` int(11) NOT NULL,
@@ -1537,10 +1463,6 @@ CREATE TABLE `user` (
   `hescode_status` tinyint(1) NOT NULL DEFAULT 1,
   `profile_picture` blob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- RELATIONSHIPS FOR TABLE `user`:
---
 
 --
 -- Dumping data for table `user`
@@ -1859,69 +1781,51 @@ INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_has
 --
 -- Table structure for table `user_academic_staff`
 --
--- Creation: Dec 13, 2021 at 01:33 AM
---
 
-DROP TABLE IF EXISTS `user_academic_staff`;
 CREATE TABLE `user_academic_staff` (
   `id` int(11) NOT NULL,
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
--- RELATIONSHIPS FOR TABLE `user_academic_staff`:
---   `id`
---       `user` -> `id`
---
-
---
 -- Dumping data for table `user_academic_staff`
 --
 
 INSERT INTO `user_academic_staff` (`id`, `registration_date`) VALUES
-(1, '2021-12-09 17:13:40'),
-(2, '2021-12-09 17:28:10'),
-(5, '2021-12-09 17:28:10'),
-(123, '2021-12-09 17:28:10'),
-(22103623, '2021-12-23 16:35:36'),
-(22103636, '2021-12-23 16:35:36'),
-(22103649, '2021-12-23 16:35:36'),
-(22103662, '2021-12-23 16:35:36'),
-(22103675, '2021-12-23 16:35:36'),
-(22103688, '2021-12-23 16:35:36'),
-(22103701, '2021-12-23 16:35:36'),
-(22103714, '2021-12-23 16:35:36'),
-(22103727, '2021-12-23 16:35:36'),
-(22103740, '2021-12-23 16:35:36'),
-(22103753, '2021-12-23 16:35:36'),
-(22103766, '2021-12-23 16:35:36'),
-(22103779, '2021-12-23 16:35:36'),
-(22103792, '2021-12-23 16:35:36'),
-(22103805, '2021-12-23 16:35:36'),
-(22103818, '2021-12-23 16:35:36'),
-(22103831, '2021-12-23 16:35:36'),
-(22103844, '2021-12-23 16:35:36'),
-(22103857, '2021-12-23 16:35:36'),
-(22103870, '2021-12-23 16:35:36');
+(1, '2021-12-09 14:13:40'),
+(2, '2021-12-09 14:28:10'),
+(5, '2021-12-09 14:28:10'),
+(123, '2021-12-09 14:28:10'),
+(22103623, '2021-12-23 13:35:36'),
+(22103636, '2021-12-23 13:35:36'),
+(22103649, '2021-12-23 13:35:36'),
+(22103662, '2021-12-23 13:35:36'),
+(22103675, '2021-12-23 13:35:36'),
+(22103688, '2021-12-23 13:35:36'),
+(22103701, '2021-12-23 13:35:36'),
+(22103714, '2021-12-23 13:35:36'),
+(22103727, '2021-12-23 13:35:36'),
+(22103740, '2021-12-23 13:35:36'),
+(22103753, '2021-12-23 13:35:36'),
+(22103766, '2021-12-23 13:35:36'),
+(22103779, '2021-12-23 13:35:36'),
+(22103792, '2021-12-23 13:35:36'),
+(22103805, '2021-12-23 13:35:36'),
+(22103818, '2021-12-23 13:35:36'),
+(22103831, '2021-12-23 13:35:36'),
+(22103844, '2021-12-23 13:35:36'),
+(22103857, '2021-12-23 13:35:36'),
+(22103870, '2021-12-23 13:35:36');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `user_sports_center_staff`
 --
--- Creation: Dec 13, 2021 at 01:33 AM
---
 
-DROP TABLE IF EXISTS `user_sports_center_staff`;
 CREATE TABLE `user_sports_center_staff` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- RELATIONSHIPS FOR TABLE `user_sports_center_staff`:
---   `id`
---       `user` -> `id`
---
 
 --
 -- Dumping data for table `user_sports_center_staff`
@@ -1957,250 +1861,232 @@ INSERT INTO `user_sports_center_staff` (`id`) VALUES
 --
 -- Table structure for table `user_student`
 --
--- Creation: Dec 13, 2021 at 01:31 AM
---
 
-DROP TABLE IF EXISTS `user_student`;
 CREATE TABLE `user_student` (
   `id` int(11) NOT NULL,
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_turkish_ci;
 
 --
--- RELATIONSHIPS FOR TABLE `user_student`:
---   `id`
---       `user` -> `id`
---
-
---
 -- Dumping data for table `user_student`
 --
 
 INSERT INTO `user_student` (`id`, `registration_date`) VALUES
-(1, '2021-12-09 17:13:40'),
-(2, '2021-12-09 17:28:10'),
-(3, '2021-12-09 17:28:10'),
-(5, '2021-12-09 17:28:10'),
-(123, '2021-12-23 16:17:01'),
-(22101023, '2021-12-23 16:33:04'),
-(22101036, '2021-12-23 16:33:04'),
-(22101049, '2021-12-23 16:33:04'),
-(22101062, '2021-12-23 16:33:04'),
-(22101075, '2021-12-23 16:33:04'),
-(22101088, '2021-12-23 16:33:04'),
-(22101101, '2021-12-23 16:33:04'),
-(22101114, '2021-12-23 16:33:04'),
-(22101127, '2021-12-23 16:33:04'),
-(22101140, '2021-12-23 16:33:04'),
-(22101153, '2021-12-23 16:33:04'),
-(22101166, '2021-12-23 16:33:04'),
-(22101179, '2021-12-23 16:33:04'),
-(22101192, '2021-12-23 16:33:04'),
-(22101205, '2021-12-23 16:33:04'),
-(22101218, '2021-12-23 16:33:04'),
-(22101231, '2021-12-23 16:33:04'),
-(22101244, '2021-12-23 16:33:04'),
-(22101257, '2021-12-23 16:33:04'),
-(22101270, '2021-12-23 16:33:04'),
-(22101283, '2021-12-23 16:33:04'),
-(22101296, '2021-12-23 16:33:04'),
-(22101309, '2021-12-23 16:33:04'),
-(22101322, '2021-12-23 16:33:04'),
-(22101335, '2021-12-23 16:33:04'),
-(22101348, '2021-12-23 16:33:04'),
-(22101361, '2021-12-23 16:33:04'),
-(22101374, '2021-12-23 16:33:04'),
-(22101387, '2021-12-23 16:33:04'),
-(22101400, '2021-12-23 16:33:04'),
-(22101413, '2021-12-23 16:33:04'),
-(22101426, '2021-12-23 16:33:04'),
-(22101439, '2021-12-23 16:33:04'),
-(22101452, '2021-12-23 16:33:04'),
-(22101465, '2021-12-23 16:33:04'),
-(22101478, '2021-12-23 16:33:04'),
-(22101491, '2021-12-23 16:33:04'),
-(22101504, '2021-12-23 16:33:04'),
-(22101517, '2021-12-23 16:33:04'),
-(22101530, '2021-12-23 16:33:04'),
-(22101543, '2021-12-23 16:33:04'),
-(22101556, '2021-12-23 16:33:04'),
-(22101569, '2021-12-23 16:33:04'),
-(22101582, '2021-12-23 16:33:04'),
-(22101595, '2021-12-23 16:33:04'),
-(22101608, '2021-12-23 16:33:04'),
-(22101621, '2021-12-23 16:33:04'),
-(22101634, '2021-12-23 16:33:04'),
-(22101647, '2021-12-23 16:33:04'),
-(22101660, '2021-12-23 16:33:04'),
-(22101673, '2021-12-23 16:33:04'),
-(22101686, '2021-12-23 16:33:04'),
-(22101699, '2021-12-23 16:33:04'),
-(22101712, '2021-12-23 16:33:04'),
-(22101725, '2021-12-23 16:33:04'),
-(22101738, '2021-12-23 16:33:04'),
-(22101751, '2021-12-23 16:33:04'),
-(22101764, '2021-12-23 16:33:04'),
-(22101777, '2021-12-23 16:33:04'),
-(22101790, '2021-12-23 16:33:04'),
-(22101803, '2021-12-23 16:33:04'),
-(22101816, '2021-12-23 16:33:04'),
-(22101829, '2021-12-23 16:33:04'),
-(22101842, '2021-12-23 16:33:04'),
-(22101855, '2021-12-23 16:33:04'),
-(22101868, '2021-12-23 16:33:04'),
-(22101881, '2021-12-23 16:33:04'),
-(22101894, '2021-12-23 16:33:04'),
-(22101907, '2021-12-23 16:33:04'),
-(22101920, '2021-12-23 16:33:04'),
-(22101933, '2021-12-23 16:33:04'),
-(22101946, '2021-12-23 16:33:04'),
-(22101959, '2021-12-23 16:33:04'),
-(22101972, '2021-12-23 16:33:04'),
-(22101985, '2021-12-23 16:33:04'),
-(22101998, '2021-12-23 16:33:04'),
-(22102011, '2021-12-23 16:33:04'),
-(22102024, '2021-12-23 16:33:04'),
-(22102037, '2021-12-23 16:33:04'),
-(22102050, '2021-12-23 16:33:04'),
-(22102063, '2021-12-23 16:33:04'),
-(22102076, '2021-12-23 16:33:04'),
-(22102089, '2021-12-23 16:33:04'),
-(22102102, '2021-12-23 16:33:04'),
-(22102115, '2021-12-23 16:33:04'),
-(22102128, '2021-12-23 16:33:04'),
-(22102141, '2021-12-23 16:33:04'),
-(22102154, '2021-12-23 16:33:04'),
-(22102167, '2021-12-23 16:33:04'),
-(22102180, '2021-12-23 16:33:04'),
-(22102193, '2021-12-23 16:33:04'),
-(22102206, '2021-12-23 16:33:04'),
-(22102219, '2021-12-23 16:33:04'),
-(22102232, '2021-12-23 16:33:04'),
-(22102245, '2021-12-23 16:33:04'),
-(22102258, '2021-12-23 16:33:04'),
-(22102271, '2021-12-23 16:33:04'),
-(22102284, '2021-12-23 16:33:04'),
-(22102297, '2021-12-23 16:33:04'),
-(22102310, '2021-12-23 16:33:04'),
-(22102323, '2021-12-23 16:33:04'),
-(22102336, '2021-12-23 16:33:04'),
-(22102349, '2021-12-23 16:33:04'),
-(22102362, '2021-12-23 16:33:04'),
-(22102375, '2021-12-23 16:33:04'),
-(22102388, '2021-12-23 16:33:04'),
-(22102401, '2021-12-23 16:33:04'),
-(22102414, '2021-12-23 16:33:04'),
-(22102427, '2021-12-23 16:33:04'),
-(22102440, '2021-12-23 16:33:04'),
-(22102453, '2021-12-23 16:33:04'),
-(22102466, '2021-12-23 16:33:04'),
-(22102479, '2021-12-23 16:33:04'),
-(22102492, '2021-12-23 16:33:04'),
-(22102505, '2021-12-23 16:33:04'),
-(22102518, '2021-12-23 16:33:04'),
-(22102531, '2021-12-23 16:33:04'),
-(22102544, '2021-12-23 16:33:04'),
-(22102557, '2021-12-23 16:33:04'),
-(22102570, '2021-12-23 16:33:04'),
-(22102583, '2021-12-23 16:33:04'),
-(22102596, '2021-12-23 16:33:04'),
-(22102609, '2021-12-23 16:33:04'),
-(22102622, '2021-12-23 16:33:04'),
-(22102635, '2021-12-23 16:33:04'),
-(22102648, '2021-12-23 16:33:04'),
-(22102661, '2021-12-23 16:33:04'),
-(22102674, '2021-12-23 16:33:04'),
-(22102687, '2021-12-23 16:33:04'),
-(22102700, '2021-12-23 16:33:04'),
-(22102713, '2021-12-23 16:33:04'),
-(22102726, '2021-12-23 16:33:04'),
-(22102739, '2021-12-23 16:33:04'),
-(22102752, '2021-12-23 16:33:04'),
-(22102765, '2021-12-23 16:33:04'),
-(22102778, '2021-12-23 16:33:04'),
-(22102791, '2021-12-23 16:33:04'),
-(22102804, '2021-12-23 16:33:04'),
-(22102817, '2021-12-23 16:33:04'),
-(22102830, '2021-12-23 16:33:04'),
-(22102843, '2021-12-23 16:33:04'),
-(22102856, '2021-12-23 16:33:04'),
-(22102869, '2021-12-23 16:33:04'),
-(22102882, '2021-12-23 16:33:04'),
-(22102895, '2021-12-23 16:33:04'),
-(22102908, '2021-12-23 16:33:04'),
-(22102921, '2021-12-23 16:33:04'),
-(22102934, '2021-12-23 16:33:04'),
-(22102947, '2021-12-23 16:33:04'),
-(22102960, '2021-12-23 16:33:04'),
-(22102973, '2021-12-23 16:33:04'),
-(22102986, '2021-12-23 16:33:04'),
-(22102999, '2021-12-23 16:33:04'),
-(22103012, '2021-12-23 16:33:04'),
-(22103025, '2021-12-23 16:33:04'),
-(22103038, '2021-12-23 16:33:04'),
-(22103051, '2021-12-23 16:33:04'),
-(22103064, '2021-12-23 16:33:04'),
-(22103077, '2021-12-23 16:33:04'),
-(22103090, '2021-12-23 16:33:04'),
-(22103103, '2021-12-23 16:33:04'),
-(22103116, '2021-12-23 16:33:04'),
-(22103129, '2021-12-23 16:33:04'),
-(22103142, '2021-12-23 16:33:04'),
-(22103155, '2021-12-23 16:33:04'),
-(22103168, '2021-12-23 16:33:04'),
-(22103181, '2021-12-23 16:33:04'),
-(22103194, '2021-12-23 16:33:04'),
-(22103207, '2021-12-23 16:33:04'),
-(22103220, '2021-12-23 16:33:04'),
-(22103233, '2021-12-23 16:33:04'),
-(22103246, '2021-12-23 16:33:04'),
-(22103259, '2021-12-23 16:33:04'),
-(22103272, '2021-12-23 16:33:04'),
-(22103285, '2021-12-23 16:33:04'),
-(22103298, '2021-12-23 16:33:04'),
-(22103311, '2021-12-23 16:33:04'),
-(22103324, '2021-12-23 16:33:04'),
-(22103337, '2021-12-23 16:33:04'),
-(22103350, '2021-12-23 16:33:04'),
-(22103363, '2021-12-23 16:33:04'),
-(22103376, '2021-12-23 16:33:04'),
-(22103389, '2021-12-23 16:33:04'),
-(22103402, '2021-12-23 16:33:04'),
-(22103415, '2021-12-23 16:33:04'),
-(22103428, '2021-12-23 16:33:04'),
-(22103441, '2021-12-23 16:33:04'),
-(22103454, '2021-12-23 16:33:04'),
-(22103467, '2021-12-23 16:33:04'),
-(22103480, '2021-12-23 16:33:04'),
-(22103493, '2021-12-23 16:33:04'),
-(22103506, '2021-12-23 16:33:04'),
-(22103519, '2021-12-23 16:33:04'),
-(22103532, '2021-12-23 16:33:04'),
-(22103545, '2021-12-23 16:33:04'),
-(22103558, '2021-12-23 16:33:04'),
-(22103571, '2021-12-23 16:33:04'),
-(22103584, '2021-12-23 16:33:04'),
-(22103597, '2021-12-23 16:33:04'),
-(22103610, '2021-12-23 16:33:04');
+(1, '2021-12-09 14:13:40'),
+(2, '2021-12-09 14:28:10'),
+(3, '2021-12-09 14:28:10'),
+(5, '2021-12-09 14:28:10'),
+(123, '2021-12-23 13:17:01'),
+(22101023, '2021-12-23 13:33:04'),
+(22101036, '2021-12-23 13:33:04'),
+(22101049, '2021-12-23 13:33:04'),
+(22101062, '2021-12-23 13:33:04'),
+(22101075, '2021-12-23 13:33:04'),
+(22101088, '2021-12-23 13:33:04'),
+(22101101, '2021-12-23 13:33:04'),
+(22101114, '2021-12-23 13:33:04'),
+(22101127, '2021-12-23 13:33:04'),
+(22101140, '2021-12-23 13:33:04'),
+(22101153, '2021-12-23 13:33:04'),
+(22101166, '2021-12-23 13:33:04'),
+(22101179, '2021-12-23 13:33:04'),
+(22101192, '2021-12-23 13:33:04'),
+(22101205, '2021-12-23 13:33:04'),
+(22101218, '2021-12-23 13:33:04'),
+(22101231, '2021-12-23 13:33:04'),
+(22101244, '2021-12-23 13:33:04'),
+(22101257, '2021-12-23 13:33:04'),
+(22101270, '2021-12-23 13:33:04'),
+(22101283, '2021-12-23 13:33:04'),
+(22101296, '2021-12-23 13:33:04'),
+(22101309, '2021-12-23 13:33:04'),
+(22101322, '2021-12-23 13:33:04'),
+(22101335, '2021-12-23 13:33:04'),
+(22101348, '2021-12-23 13:33:04'),
+(22101361, '2021-12-23 13:33:04'),
+(22101374, '2021-12-23 13:33:04'),
+(22101387, '2021-12-23 13:33:04'),
+(22101400, '2021-12-23 13:33:04'),
+(22101413, '2021-12-23 13:33:04'),
+(22101426, '2021-12-23 13:33:04'),
+(22101439, '2021-12-23 13:33:04'),
+(22101452, '2021-12-23 13:33:04'),
+(22101465, '2021-12-23 13:33:04'),
+(22101478, '2021-12-23 13:33:04'),
+(22101491, '2021-12-23 13:33:04'),
+(22101504, '2021-12-23 13:33:04'),
+(22101517, '2021-12-23 13:33:04'),
+(22101530, '2021-12-23 13:33:04'),
+(22101543, '2021-12-23 13:33:04'),
+(22101556, '2021-12-23 13:33:04'),
+(22101569, '2021-12-23 13:33:04'),
+(22101582, '2021-12-23 13:33:04'),
+(22101595, '2021-12-23 13:33:04'),
+(22101608, '2021-12-23 13:33:04'),
+(22101621, '2021-12-23 13:33:04'),
+(22101634, '2021-12-23 13:33:04'),
+(22101647, '2021-12-23 13:33:04'),
+(22101660, '2021-12-23 13:33:04'),
+(22101673, '2021-12-23 13:33:04'),
+(22101686, '2021-12-23 13:33:04'),
+(22101699, '2021-12-23 13:33:04'),
+(22101712, '2021-12-23 13:33:04'),
+(22101725, '2021-12-23 13:33:04'),
+(22101738, '2021-12-23 13:33:04'),
+(22101751, '2021-12-23 13:33:04'),
+(22101764, '2021-12-23 13:33:04'),
+(22101777, '2021-12-23 13:33:04'),
+(22101790, '2021-12-23 13:33:04'),
+(22101803, '2021-12-23 13:33:04'),
+(22101816, '2021-12-23 13:33:04'),
+(22101829, '2021-12-23 13:33:04'),
+(22101842, '2021-12-23 13:33:04'),
+(22101855, '2021-12-23 13:33:04'),
+(22101868, '2021-12-23 13:33:04'),
+(22101881, '2021-12-23 13:33:04'),
+(22101894, '2021-12-23 13:33:04'),
+(22101907, '2021-12-23 13:33:04'),
+(22101920, '2021-12-23 13:33:04'),
+(22101933, '2021-12-23 13:33:04'),
+(22101946, '2021-12-23 13:33:04'),
+(22101959, '2021-12-23 13:33:04'),
+(22101972, '2021-12-23 13:33:04'),
+(22101985, '2021-12-23 13:33:04'),
+(22101998, '2021-12-23 13:33:04'),
+(22102011, '2021-12-23 13:33:04'),
+(22102024, '2021-12-23 13:33:04'),
+(22102037, '2021-12-23 13:33:04'),
+(22102050, '2021-12-23 13:33:04'),
+(22102063, '2021-12-23 13:33:04'),
+(22102076, '2021-12-23 13:33:04'),
+(22102089, '2021-12-23 13:33:04'),
+(22102102, '2021-12-23 13:33:04'),
+(22102115, '2021-12-23 13:33:04'),
+(22102128, '2021-12-23 13:33:04'),
+(22102141, '2021-12-23 13:33:04'),
+(22102154, '2021-12-23 13:33:04'),
+(22102167, '2021-12-23 13:33:04'),
+(22102180, '2021-12-23 13:33:04'),
+(22102193, '2021-12-23 13:33:04'),
+(22102206, '2021-12-23 13:33:04'),
+(22102219, '2021-12-23 13:33:04'),
+(22102232, '2021-12-23 13:33:04'),
+(22102245, '2021-12-23 13:33:04'),
+(22102258, '2021-12-23 13:33:04'),
+(22102271, '2021-12-23 13:33:04'),
+(22102284, '2021-12-23 13:33:04'),
+(22102297, '2021-12-23 13:33:04'),
+(22102310, '2021-12-23 13:33:04'),
+(22102323, '2021-12-23 13:33:04'),
+(22102336, '2021-12-23 13:33:04'),
+(22102349, '2021-12-23 13:33:04'),
+(22102362, '2021-12-23 13:33:04'),
+(22102375, '2021-12-23 13:33:04'),
+(22102388, '2021-12-23 13:33:04'),
+(22102401, '2021-12-23 13:33:04'),
+(22102414, '2021-12-23 13:33:04'),
+(22102427, '2021-12-23 13:33:04'),
+(22102440, '2021-12-23 13:33:04'),
+(22102453, '2021-12-23 13:33:04'),
+(22102466, '2021-12-23 13:33:04'),
+(22102479, '2021-12-23 13:33:04'),
+(22102492, '2021-12-23 13:33:04'),
+(22102505, '2021-12-23 13:33:04'),
+(22102518, '2021-12-23 13:33:04'),
+(22102531, '2021-12-23 13:33:04'),
+(22102544, '2021-12-23 13:33:04'),
+(22102557, '2021-12-23 13:33:04'),
+(22102570, '2021-12-23 13:33:04'),
+(22102583, '2021-12-23 13:33:04'),
+(22102596, '2021-12-23 13:33:04'),
+(22102609, '2021-12-23 13:33:04'),
+(22102622, '2021-12-23 13:33:04'),
+(22102635, '2021-12-23 13:33:04'),
+(22102648, '2021-12-23 13:33:04'),
+(22102661, '2021-12-23 13:33:04'),
+(22102674, '2021-12-23 13:33:04'),
+(22102687, '2021-12-23 13:33:04'),
+(22102700, '2021-12-23 13:33:04'),
+(22102713, '2021-12-23 13:33:04'),
+(22102726, '2021-12-23 13:33:04'),
+(22102739, '2021-12-23 13:33:04'),
+(22102752, '2021-12-23 13:33:04'),
+(22102765, '2021-12-23 13:33:04'),
+(22102778, '2021-12-23 13:33:04'),
+(22102791, '2021-12-23 13:33:04'),
+(22102804, '2021-12-23 13:33:04'),
+(22102817, '2021-12-23 13:33:04'),
+(22102830, '2021-12-23 13:33:04'),
+(22102843, '2021-12-23 13:33:04'),
+(22102856, '2021-12-23 13:33:04'),
+(22102869, '2021-12-23 13:33:04'),
+(22102882, '2021-12-23 13:33:04'),
+(22102895, '2021-12-23 13:33:04'),
+(22102908, '2021-12-23 13:33:04'),
+(22102921, '2021-12-23 13:33:04'),
+(22102934, '2021-12-23 13:33:04'),
+(22102947, '2021-12-23 13:33:04'),
+(22102960, '2021-12-23 13:33:04'),
+(22102973, '2021-12-23 13:33:04'),
+(22102986, '2021-12-23 13:33:04'),
+(22102999, '2021-12-23 13:33:04'),
+(22103012, '2021-12-23 13:33:04'),
+(22103025, '2021-12-23 13:33:04'),
+(22103038, '2021-12-23 13:33:04'),
+(22103051, '2021-12-23 13:33:04'),
+(22103064, '2021-12-23 13:33:04'),
+(22103077, '2021-12-23 13:33:04'),
+(22103090, '2021-12-23 13:33:04'),
+(22103103, '2021-12-23 13:33:04'),
+(22103116, '2021-12-23 13:33:04'),
+(22103129, '2021-12-23 13:33:04'),
+(22103142, '2021-12-23 13:33:04'),
+(22103155, '2021-12-23 13:33:04'),
+(22103168, '2021-12-23 13:33:04'),
+(22103181, '2021-12-23 13:33:04'),
+(22103194, '2021-12-23 13:33:04'),
+(22103207, '2021-12-23 13:33:04'),
+(22103220, '2021-12-23 13:33:04'),
+(22103233, '2021-12-23 13:33:04'),
+(22103246, '2021-12-23 13:33:04'),
+(22103259, '2021-12-23 13:33:04'),
+(22103272, '2021-12-23 13:33:04'),
+(22103285, '2021-12-23 13:33:04'),
+(22103298, '2021-12-23 13:33:04'),
+(22103311, '2021-12-23 13:33:04'),
+(22103324, '2021-12-23 13:33:04'),
+(22103337, '2021-12-23 13:33:04'),
+(22103350, '2021-12-23 13:33:04'),
+(22103363, '2021-12-23 13:33:04'),
+(22103376, '2021-12-23 13:33:04'),
+(22103389, '2021-12-23 13:33:04'),
+(22103402, '2021-12-23 13:33:04'),
+(22103415, '2021-12-23 13:33:04'),
+(22103428, '2021-12-23 13:33:04'),
+(22103441, '2021-12-23 13:33:04'),
+(22103454, '2021-12-23 13:33:04'),
+(22103467, '2021-12-23 13:33:04'),
+(22103480, '2021-12-23 13:33:04'),
+(22103493, '2021-12-23 13:33:04'),
+(22103506, '2021-12-23 13:33:04'),
+(22103519, '2021-12-23 13:33:04'),
+(22103532, '2021-12-23 13:33:04'),
+(22103545, '2021-12-23 13:33:04'),
+(22103558, '2021-12-23 13:33:04'),
+(22103571, '2021-12-23 13:33:04'),
+(22103584, '2021-12-23 13:33:04'),
+(22103597, '2021-12-23 13:33:04'),
+(22103610, '2021-12-23 13:33:04');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `user_university_administration`
 --
--- Creation: Dec 13, 2021 at 01:33 AM
---
 
-DROP TABLE IF EXISTS `user_university_administration`;
 CREATE TABLE `user_university_administration` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- RELATIONSHIPS FOR TABLE `user_university_administration`:
---   `id`
---       `user` -> `id`
---
 
 --
 -- Dumping data for table `user_university_administration`
@@ -2236,10 +2122,7 @@ INSERT INTO `user_university_administration` (`id`) VALUES
 --
 -- Table structure for table `vaccine`
 --
--- Creation: Dec 15, 2021 at 01:08 AM
---
 
-DROP TABLE IF EXISTS `vaccine`;
 CREATE TABLE `vaccine` (
   `vaccine_id` int(11) NOT NULL,
   `vaccine_type` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
@@ -2247,10 +2130,6 @@ CREATE TABLE `vaccine` (
   `manufacturer` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
   `cvx_code` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `vaccine`:
---
 
 --
 -- Dumping data for table `vaccine`
@@ -2264,11 +2143,7 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 --
 -- Table structure for table `vaccine_administration`
 --
--- Creation: Dec 21, 2021 at 01:16 AM
--- Last update: Dec 24, 2021 at 05:57 PM
---
 
-DROP TABLE IF EXISTS `vaccine_administration`;
 CREATE TABLE `vaccine_administration` (
   `vaccination_id` int(11) NOT NULL,
   `vaccine_id` int(11) NOT NULL,
@@ -2276,14 +2151,6 @@ CREATE TABLE `vaccine_administration` (
   `administration_date` datetime NOT NULL,
   `document` mediumblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- RELATIONSHIPS FOR TABLE `vaccine_administration`:
---   `user_id`
---       `user` -> `id`
---   `vaccine_id`
---       `vaccine` -> `vaccine_id`
---
 
 --
 -- Dumping data for table `vaccine_administration`
@@ -2303,8 +2170,7 @@ INSERT INTO `vaccine_administration` (`vaccination_id`, `vaccine_id`, `user_id`,
 --
 DROP TABLE IF EXISTS `academic_staff`;
 
-DROP VIEW IF EXISTS `academic_staff`;
-CREATE VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `user_academic_staff`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_academic_staff` join `user` on(`user_academic_staff`.`id` = `user`.`id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `user_academic_staff`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_academic_staff` join `user` on(`user_academic_staff`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2313,8 +2179,7 @@ CREATE VIEW `academic_staff`  AS SELECT `user_academic_staff`.`id` AS `id`, `use
 --
 DROP TABLE IF EXISTS `course`;
 
-DROP VIEW IF EXISTS `course`;
-CREATE VIEW `course`  AS SELECT `event_course`.`event_id` AS `event_id`, `event_course`.`year` AS `year`, `event_course`.`semester` AS `semester`, `event`.`event_name` AS `event_name`, `event`.`place` AS `place`, `event`.`max_no_of_participant` AS `max_no_of_participant`, `event`.`can_people_join` AS `can_people_join` FROM (`event_course` join `event` on(`event_course`.`event_id` = `event`.`event_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `course`  AS SELECT `event_course`.`event_id` AS `event_id`, `event_course`.`year` AS `year`, `event_course`.`semester` AS `semester`, `event`.`event_name` AS `event_name`, `event`.`place` AS `place`, `event`.`max_no_of_participant` AS `max_no_of_participant`, `event`.`can_people_join` AS `can_people_join` FROM (`event_course` join `event` on(`event_course`.`event_id` = `event`.`event_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2323,8 +2188,7 @@ CREATE VIEW `course`  AS SELECT `event_course`.`event_id` AS `event_id`, `event_
 --
 DROP TABLE IF EXISTS `sport`;
 
-DROP VIEW IF EXISTS `sport`;
-CREATE VIEW `sport`  AS SELECT `event_sport`.`event_id` AS `event_id`, `event_sport`.`start_date` AS `start_date`, `event_sport`.`end_date` AS `end_date`, `event`.`event_name` AS `event_name`, `event`.`place` AS `place`, `event`.`max_no_of_participant` AS `max_no_of_participant`, `event`.`can_people_join` AS `can_people_join` FROM (`event_sport` join `event` on(`event_sport`.`event_id` = `event`.`event_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `sport`  AS SELECT `event_sport`.`event_id` AS `event_id`, `event_sport`.`start_date` AS `start_date`, `event_sport`.`end_date` AS `end_date`, `event`.`event_name` AS `event_name`, `event`.`place` AS `place`, `event`.`max_no_of_participant` AS `max_no_of_participant`, `event`.`can_people_join` AS `can_people_join` FROM (`event_sport` join `event` on(`event_sport`.`event_id` = `event`.`event_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2333,8 +2197,7 @@ CREATE VIEW `sport`  AS SELECT `event_sport`.`event_id` AS `event_id`, `event_sp
 --
 DROP TABLE IF EXISTS `sports_center_staff`;
 
-DROP VIEW IF EXISTS `sports_center_staff`;
-CREATE VIEW `sports_center_staff`  AS SELECT `user_sports_center_staff`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_sports_center_staff` join `user` on(`user_sports_center_staff`.`id` = `user`.`id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `sports_center_staff`  AS SELECT `user_sports_center_staff`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_sports_center_staff` join `user` on(`user_sports_center_staff`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2343,8 +2206,7 @@ CREATE VIEW `sports_center_staff`  AS SELECT `user_sports_center_staff`.`id` AS 
 --
 DROP TABLE IF EXISTS `student`;
 
-DROP VIEW IF EXISTS `student`;
-CREATE VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_student` join `user` on(`user_student`.`id` = `user`.`id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`registration_date` AS `registration_date`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_student` join `user` on(`user_student`.`id` = `user`.`id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2353,8 +2215,7 @@ CREATE VIEW `student`  AS SELECT `user_student`.`id` AS `id`, `user_student`.`re
 --
 DROP TABLE IF EXISTS `test_appointment`;
 
-DROP VIEW IF EXISTS `test_appointment`;
-CREATE VIEW `test_appointment`  AS SELECT `event`.`event_id` AS `event_id`, `event`.`event_name` AS `event_name`, `event`.`place` AS `place`, `event`.`max_no_of_participant` AS `max_no_of_participant`, `event`.`can_people_join` AS `can_people_join`, `event_test_appointment`.`start_date` AS `start_date`, `event_test_appointment`.`end_date` AS `end_date` FROM (`event` join `event_test_appointment` on(`event`.`event_id` = `event_test_appointment`.`event_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `test_appointment`  AS SELECT `event`.`event_id` AS `event_id`, `event`.`event_name` AS `event_name`, `event`.`place` AS `place`, `event`.`max_no_of_participant` AS `max_no_of_participant`, `event`.`can_people_join` AS `can_people_join`, `event_test_appointment`.`start_date` AS `start_date`, `event_test_appointment`.`end_date` AS `end_date` FROM (`event` join `event_test_appointment` on(`event`.`event_id` = `event_test_appointment`.`event_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -2363,8 +2224,7 @@ CREATE VIEW `test_appointment`  AS SELECT `event`.`event_id` AS `event_id`, `eve
 --
 DROP TABLE IF EXISTS `university_administration`;
 
-DROP VIEW IF EXISTS `university_administration`;
-CREATE VIEW `university_administration`  AS SELECT `user_university_administration`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_university_administration` join `user` on(`user_university_administration`.`id` = `user`.`id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `university_administration`  AS SELECT `user_university_administration`.`id` AS `id`, `user`.`index_id` AS `index_id`, `user`.`name` AS `name`, `user`.`lastname` AS `lastname`, `user`.`email` AS `email`, `user`.`password_hash` AS `password_hash`, `user`.`hescode` AS `hescode`, `user`.`hescode_status` AS `hescode_status`, `user`.`profile_picture` AS `profile_picture` FROM (`user_university_administration` join `user` on(`user_university_administration`.`id` = `user`.`id`)) ;
 
 --
 -- Indexes for dumped tables
@@ -2383,6 +2243,13 @@ ALTER TABLE `contact`
 --
 ALTER TABLE `covid_test`
   ADD PRIMARY KEY (`test_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `diagnosis`
+--
+ALTER TABLE `diagnosis`
+  ADD PRIMARY KEY (`diagnosis_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -2491,6 +2358,12 @@ ALTER TABLE `covid_test`
   MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `diagnosis`
+--
+ALTER TABLE `diagnosis`
+  MODIFY `diagnosis_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
@@ -2537,6 +2410,12 @@ ALTER TABLE `contact`
 --
 ALTER TABLE `covid_test`
   ADD CONSTRAINT `covid_test_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `diagnosis`
+--
+ALTER TABLE `diagnosis`
+  ADD CONSTRAINT `diagnosis_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `event_control`
@@ -2600,7 +2479,6 @@ ALTER TABLE `user_university_administration`
 ALTER TABLE `vaccine_administration`
   ADD CONSTRAINT `fk_va_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_va_vaccine` FOREIGN KEY (`vaccine_id`) REFERENCES `vaccine` (`vaccine_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
