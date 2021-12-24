@@ -67,13 +67,13 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
         }
         if (isset($_POST['newP']) && isset($_POST['verP'])) {
-            $verPassword = $_POST['verP'];
+            $currentPassword = $_POST['verP'];
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            if (password_verify($verPassword, password_hash($std->getPassword(), PASSWORD_ARGON2I))) {
+            $std->setPassword($currentPassword);
+            if ($std->verifyPassword()) {
                 $newPassword = $_POST['newP'];
-                $std->setPassword($newPassword);
                 $std->updatePassword($newPassword);
-                $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                getConsoleLogger()->log("profile","Password changed");// np: $newPassword, cp: $currentPassword");
             } else {
                 $wrongVerPassword = 'Current password is invalid';
             }
@@ -83,7 +83,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         "name" => $std->getFirstName(),
         "email" => $std->getEmail(),
         "id" => $std->getId(),
-        'WVPass' => 'wdw ' . $std->getPassword()
+        'WVPass' => $wrongVerPassword  
     ]);
     ?>
 </div>
