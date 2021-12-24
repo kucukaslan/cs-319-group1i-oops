@@ -132,7 +132,7 @@ abstract class User implements EventParticipant {
             $stmt = $this->conn->prepare($query);
             $stmt->execute(array('id' => $this->id, 'password_hash' => password_hash($this->password, PASSWORD_ARGON2I), 'name' => $this->firstname, 'lastname' => $this->lastname, 'email' => $this->email, 'hescode' => $this->HESCode));
 
-            return insertToSpecializedTable();
+            return $this->insertToSpecializedTable();
         } catch (Exception $e) {
             echo $e->getMessage();
             throw new Exception("Error inserting to database." . $this->getTableName());
