@@ -203,33 +203,8 @@
                 
 
 
-                function getDiagnosisesOfUser(int $id, PDO $conn) : array
-                {
-
-        
-
-                $sql = "SELECT * FROM ".Diagnosis::TABLE_NAME ." JOIN ".User::TABLE_NAME .
-                " ON ".Diagnosis::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Diagnosis::TABLE_NAME .".user_id = :id";
-                 $stmt = $conn->prepare($sql);
-                $stmt->bindParam(":id", $_SESSION['id']);
-                $stmt->execute();
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $diagnosises = array();
-                foreach($result as $row)
-                {
-                    $diagnosis = new Diagnosis();
-                    $diagnosis->setType($row["type"]);
-                    $diagnosis->setResult($row["result"]);
-                    $diagnosis->setDiagnosisDate(new DateTime($row["date"]));
-                    $diagnosis->setDiagnosisId($row["diagnosis_id"]);
-                    $diagnosis->setUserId($row["user_id"]);
-                    
-                    $diagnosises[] = $diagnosis;
-                }
-                return $diagnosises;
-
-                }
-                $diagnosises = getDiagnosisesOfUser($_SESSION['id'], $conn);
+                
+                $diagnosises = Diagnosis::getDiagnosisesOfUser($_SESSION['id'], $conn);
                 foreach($diagnosises as $d)
                 {
                     echo $d;
@@ -238,7 +213,7 @@
 
 
 
-
+                /*
                 $diagnosisTest = new Diagnosis();
                 $diagnosisTest->setType("ultrason");
                 $diagnosisTest->setResult(3);
@@ -249,6 +224,7 @@
                 echo $DateAndTime1->format('Y-m-d H:i:s');
                 $diagnosisTest->setDiagnosisDate($DateAndTime1);
                 echo $diagnosisTest;
+                */
                 /*
                 // upcoming test are loaded first so that they appear on the top of the table.
                 $upcomingTest =['date'=>12];
