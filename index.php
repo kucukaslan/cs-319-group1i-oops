@@ -1,15 +1,4 @@
 <?php
-   // Why do we try to connect database before user is logged in? (talking specifically for this page)
-    require_once("config.php");
-    require_once(rootDirectory() . "/util/class.pdf2text.php");
-    require_once(rootDirectory() . "/util/UserFactory.php");
-    require_once(rootDirectory() . "/util/Vaccine.php");
-    require_once(rootDirectory() . "/util/VaccineFactory.php");
-    require_once(rootDirectory() . "/util/VaccineManager.php");
-    require_once(rootDirectory() . "/util/Test.php");
-    require_once(rootDirectory() . "/util/NavBar.php");
-    require_once(rootDirectory() . "/util/CustomException.php");
-
 // Why do we try to connect database before user is logged in? (talking specifically for this page)
 require_once("config.php");
 require_once(rootDirectory() . "/util/class.pdf2text.php");
