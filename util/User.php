@@ -2,6 +2,7 @@
 require_once ("EventParticipant.php");
 require_once("Event.php");
 require_once("EventFactory.php");
+require_once("CustomException.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
 abstract class User implements EventParticipant {
@@ -79,11 +80,12 @@ abstract class User implements EventParticipant {
         // verify password from database 
         $query = "SELECT * FROM " . $this->getTableName() . " WHERE id = :id "; // . $this->id;
         $stmt = $this->conn->prepare($query);
-        // var_dump($query);
-        // echo '<br>';
         $stmt->execute(array('id' => $this->id));
-        // var_dump($stmt);
-        // echo '<br>';
+
+        if($stmt->rowCount() < 1) {
+            throw new UserDoesNotExistsException();
+            return false;
+        }
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         // var_dump($row);
         // echo '<br>';
@@ -97,6 +99,7 @@ abstract class User implements EventParticipant {
             $this->HESCode = $row['hescode'];
             return true;
         } else {
+            throw new PasswordIsWrongException();
             $this->id = null;
             return false;
         }

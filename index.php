@@ -8,6 +8,8 @@
     require_once(rootDirectory() . "/util/VaccineManager.php");
     require_once(rootDirectory() . "/util/Test.php");
     require_once(rootDirectory()."/util/NavBar.php");
+    require_once(rootDirectory() . "/util/CustomException.php");
+
 
     $conn = getDatabaseConnection();
     $pagename = '/';
@@ -77,17 +79,7 @@
                         $type = str_replace(' ', '', $pieces[1]);
                         $type = str_replace("\n", '', $type);
 
-
-
                         $vaccineInstance = new Vaccine($date,$type);
-
-
-
-
-
-
-                        //echo $vaccineInstance->getVaccineName();
-                        //echo $vaccineInstance->getDateApplied()->format(DATE_RFC3339);
 
 
                     }
