@@ -1,8 +1,9 @@
 <?php
-    include_once("../config.php");
+    include_once(__DIR__."../config.php");
     require_once(rootDirectory()."/util/NavBar.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
     require_once(rootDirectory() . "/util/SportsEvent.php");
+    require_once(rootDirectory() . "/util/CustomException.php");
     startDefaultSessionWith();
     ob_start();
 ?>

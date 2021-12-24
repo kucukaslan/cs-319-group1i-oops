@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{title}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <style>
-
-    </style>
-</head>
-<body>
-
 <section class="hero is-primary is-fullheight">
     <div class="hero-body">
         <div class="container">
@@ -21,46 +7,60 @@
                         <div class="field">
                             <div class="control">
                                 <label for="userid">{{id}}
-                                    <input type="number" name="userid" class="input" id="userid" min="1" required>
+                                    {{^idErr}}
+                                        <input type="number" name="userid" class="input" id="userid" min="1" required>
+                                    {{/idErr}}
+                                    {{#iderr}}
+                                        <input type="number" name="userid" class="input is-danger" id="userid" min="1"
+                                               required>
+                                    {{/iderr}}
                                 </label>
                             </div>
+                            {{#iderr}}
+                                <p class="help is-danger">{{idErr}}</p>
+                            {{/iderr}}
                         </div>
 
                         <div class="field">
                             <div class="control">
-                                <label for="password">{{pass}}
-                                    <input type="password" name="password" class="input" id="password" required>
-                                </label>
+                                <label for="password">{{pass}} <input type="password" name="password" class="input"
+                                                                      id="password" required> </label>
                             </div>
                         </div>
 
                         <div class="field">
                             <div class="control">
                                 <label for="BilkentEmail">{{mail}}
-                                    <input type="email" name="BilkentEmail" class="input" id="BilkentEmail" required>
+                                    {{^emailErr}}
+                                        <input type="email" name="BilkentEmail" class="input" id="BilkentEmail"
+                                               required>
+                                    {{/emailErr}}
+                                    {{#emailErr}}
+                                        <input type="email" name="BilkentEmail" class="input is-danger"
+                                               id="BilkentEmail" required>
+                                    {{/emailErr}}
                                 </label>
                             </div>
+                            {{#emailErr}}
+                                <p class="help is-danger">{{emailErr}}</p>
+                            {{/emailErr}}
                         </div>
-
 
 
                         <div class="field">
                             <div class="control">
-                                <label for="UserName">{{name}}
-                                    <input type="text" name="UserName" class="input" id="UserName" required>
-                                </label>
+                                <label for="UserName">{{name}} <input type="text" name="UserName" class="input"
+                                                                      id="UserName" required min="1"> </label>
                             </div>
                         </div>
 
 
                         <div class="field">
                             <div class="control">
-                                <label for="UserSurname">{{surname}}
-                                    <input type="text" name="UserSurname" class="input" id="UserSurname" required>
-                                </label>
+                                <label for="UserSurname">{{surname}} <input type="text" name="UserSurname" class="input"
+                                                                            id="UserSurname" required min="1"> </label>
                             </div>
                         </div>
-
 
 
                         <div class="field">
@@ -72,7 +72,3 @@
         </div>
     </div>
 </section>
-
-
-</body>
-</html>
