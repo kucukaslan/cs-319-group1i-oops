@@ -77,7 +77,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     $type = str_replace(' ', '', $pieces[1]);
                     $type = str_replace("\n", '', $type);
 
-                        $vaccineInstance = new Vaccine($date,$type);
+
+                    $vaccineInstance = new Vaccine($date, $type);
 
                 }
             }
@@ -129,7 +130,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     echo $engine->render('vax',
                         ['vaccine' => $abc]);
-
+                  
                     ?>
                 </div>
             </div>
@@ -154,7 +155,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     //$upcomingTest = ["date" => "2023"];
                     $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
                     $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
-
+    
                     $pastArr = array();
                     $futureArr = array();
                     foreach( $pastTests as $p) {
@@ -163,11 +164,11 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     foreach( $futureTests as $p) {
                         $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
                     }
-
+    
                     echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
                         'pastTest' => $pastArr
                     ]);
-
+                    
                     ?>
                 </p>
             </div>
