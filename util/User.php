@@ -18,6 +18,7 @@ abstract class User implements EventParticipant {
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
+    protected ?string $hescode_status;
     protected ?array $closeContacts;
     protected ?array $eventsIParticipate;
 
@@ -31,6 +32,7 @@ abstract class User implements EventParticipant {
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
+        $this->hescode_status = null;
         $this->closeContacts = null;
         $this->eventsIParticipate = null;
     }
@@ -72,6 +74,22 @@ abstract class User implements EventParticipant {
         return $this->password;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getHescodeStatus(): ?string
+    {
+        return $this->hescode_status;
+    }
+
+    /**
+     * Set hescode_status of a user (THIS METHOD DOES NOT MODIFY DATABASE)
+     * @param string $hescode_status
+     */
+    public function setHescodeStatus(string $hescode_status): void
+    {
+        $this->hescode_status = $hescode_status;
+    }
 
     public function verifyPassword(): bool
     {
@@ -342,8 +360,8 @@ abstract class User implements EventParticipant {
         return false;
     }
 
-    public function getEventsControlledByMe() : array {
-        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+    public function getEventsControlledByMe($event_type =Event::TABLE_NAME) : array {
+        $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
