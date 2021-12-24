@@ -15,8 +15,8 @@ function getDatabaseConnection(): PDO
 
     } catch (PDOException $e) {
 
-        getConsoleLogger() . log("DB conn:", servername . " " . username);
-        getConsoleLogger() . log("DB conn:", "Connection failed: " . $e->getMessage());
+        getConsoleLogger() -> log("DB conn:", servername . " " . username);
+        getConsoleLogger() -> log("DB conn:", "Connection failed: " . $e->getMessage());
         // todo we might want to redirect to a proper error page from here
 
         echo <<< 'HTML'
