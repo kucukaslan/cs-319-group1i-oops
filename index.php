@@ -1,15 +1,4 @@
 <?php
-   // Why do we try to connect database before user is logged in? (talking specifically for this page)
-    require_once("config.php");
-    require_once(rootDirectory() . "/util/class.pdf2text.php");
-    require_once(rootDirectory() . "/util/UserFactory.php");
-    require_once(rootDirectory() . "/util/Vaccine.php");
-    require_once(rootDirectory() . "/util/VaccineFactory.php");
-    require_once(rootDirectory() . "/util/VaccineManager.php");
-    require_once(rootDirectory() . "/util/Test.php");
-    require_once(rootDirectory() . "/util/NavBar.php");
-    require_once(rootDirectory() . "/util/CustomException.php");
-
 // Why do we try to connect database before user is logged in? (talking specifically for this page)
 require_once("config.php");
 require_once(rootDirectory() . "/util/class.pdf2text.php");
@@ -88,7 +77,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     $type = str_replace(' ', '', $pieces[1]);
                     $type = str_replace("\n", '', $type);
 
-                        $vaccineInstance = new Vaccine($date,$type);
+                    $vaccineInstance = new Vaccine($date, $type);
 
                 }
             }
@@ -130,12 +119,10 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
 
                     $abc = [];
-                    $i = 0;
                     foreach ($myVaccines as $vaccine) {
                         $myVaccineType = $vaccine->getVaccineType();
                         $myVaccineDate = $vaccine->getVaccineDate();
-                        $abc[$i] = ['vaccineDate'=> $myVaccineDate->format('r'), 'vaccineType'=> $myVaccineType];
-                        $i = $i + 1;
+                        $abc[] = ['vaccineDate' => $myVaccineDate->format('d F Y'), 'vaccineType' => $myVaccineType];
                     }
 
                     echo $engine->render('vax',
@@ -163,19 +150,19 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     <?php
                     //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                     //$upcomingTest = ["date" => "2023"];
-                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
-                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
+                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'], $conn);
+                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'], $conn);
 
                     $pastArr = array();
                     $futureArr = array();
-                    foreach( $pastTests as $p) {
-                        $pastArr[] = array( "date" => $p->getTestDate()->format('r') , "result" =>$p->getResult());
+                    foreach ($pastTests as $p) {
+                        $pastArr[] = array("date" => $p->getTestDate()->format('d F Y'), "result" => $p->getResult());
                     }
-                    foreach( $futureTests as $p) {
-                        $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
+                    foreach ($futureTests as $p) {
+                        $futureArr[] = array("date" => $p->getTestDate()->format('d F Y'));
                     }
 
-                    echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
+                    echo $engine->render("PCRtest", ['upcomingTest' => $futureArr,
                         'pastTest' => $pastArr
                     ]);
 
@@ -184,6 +171,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             </div>
         </div>
     </div>
-
+    <?= $navbar->footer() ?>
 </body>
 </html>
