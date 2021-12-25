@@ -199,20 +199,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                         'type' => $diagnosise->getType()
                     ];
                 }
-                function diagnosisTypeasString(int $r): string
-                {
-                    $out = '';
-                    if ($r === 0) {
-                        $out = 'Positive';
-                    } elseif ($r === 1) {
-                        $out = 'Negative';
-                    } elseif ($r === 2) {
-                        $out = 'Unknown';
-                    } else {
-                        $out = 'Pending';
-                    }
-                    return $out;
-                }
 
                 echo $engine->render("diagnosis",
                     ["diagnosis" => $dTable]);
