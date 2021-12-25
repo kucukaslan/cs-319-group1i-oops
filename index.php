@@ -46,7 +46,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
         $id = $_SESSION['id'];
 
-
+        $hesErr = '';
         $uf = new UserFactory();//$usertype);
         $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
 
@@ -57,6 +57,9 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                 $hescode = $_POST['HESCode'];
                 $std->updateHESCode($hescode);
                 $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                // hes code invalid
+                $hesErr = 'HES Code is invalid';
+
             }
 
             if (isset($_POST['vaccinecard'])) {
@@ -148,8 +151,9 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                         "name" => $std->getFirstName(),
                         "email" => $std->getEmail(),
                         "id" => $std->getId(),
-                        "allowance" => "Allowed",
-                        'hescode' => $std->getHESCode()
+                        'allowance' => "Allowed",
+                        'hescode' => $std->getHESCode(),
+                        'hesErr' => $hesErr
                     ]);
 
                     ?>
@@ -235,5 +239,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             </div>
         </div>
     </div>
+    <?= $navbar->footer() ?>
 </body>
 </html>
