@@ -1,0 +1,34 @@
+<section class="hero is-success">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2>{{title}}</h2>
+                <table class="table is-narrow is-bordered is-hoverable is-striped">
+                    <tr>
+                        <th>{{column1}}</th>
+                        <th>{{column2}}</th>
+                        <th>{{column3}}</th>
+                        <th>{{column4}}</th>
+                        <th>{{column5}}</th>
+                        <th>{{column5}}</th>
+                    </tr>
+                    {{#row}}
+                        <tr>
+                            <td>{{firstEl}}</td>
+                            <td>{{secondEl}}</td>
+                            <td>{{thirdEl}}</td>
+                            <td>{{fourthEl}}</td>
+                            <td>{{fifthEl}}</td>
+                            <td>
+                                <form method="post">
+                                    <input type="hidden" name="seeEvent" value="{{eventId}}">
+                                    <input type="submit" class="button" value="See">
+                                </form>
+                            </td>
+                        </tr>
+                    {{/row}}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

@@ -50,8 +50,25 @@ ob_start();
 ?>
         <h2>Admin Page</h2>
         <?php
-        $lectures = $ef->getEvents(CourseEvent::TABLE_NAME);
-        $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
+
+        $lecture_key = '';
+        $sports_key = "";
+        if (isset($_SESSION["lectureToDisplay"])) {
+            $lecture_key = $_SESSION["lectureToDisplay"];
+            unset($_SESSION["lectureToDisplay"]);
+
+            $lectures = $ef->getEvents(CourseEvent::TABLE_NAME, $lecture_key);
+            $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
+        } else if (isset($_SESSION["sportsToDisplay"])) {
+            $sports_key = $_SESSION["sportsToDisplay"];
+            unset($_SESSION["sportsToDisplay"]);
+
+            $lectures = $ef->getEvents(CourseEvent::TABLE_NAME);
+            $sports = $ef->getEvents(SportsEvent::TABLE_NAME, $sports_key);
+        } else {
+            $lectures = $ef->getEvents(CourseEvent::TABLE_NAME);
+            $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
+        }
 
         // format data
         $lecture_data = [];
@@ -64,27 +81,25 @@ ob_start();
 
         // format data
         foreach ($sports as $sport) {
-            $sports_data[] = ["firstEl"=>$sport->getPlace(), "secondEl"=>$sport->getStartDate()->format("d") . "-" .
+            $sports_data[] = ["firstEl"=>$sport->getTitle(), "secondEl"=>$sport->getPlace(), "thirdEl"=>$sport->getStartDate()->format("d") . "-" .
                 $sport->getStartDate()->format('M')
-                , "thirdEl"=>$sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i'). "-" .
+                , "fourthEl"=>$sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i'). "-" .
                     $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i'),
-                "fourthEl"=>$sport->getCurrentNumberOfParticipants() . "/" . $sport->getMaxNoOfParticipant(),
+                "fifthEl"=>$sport->getCurrentNumberOfParticipants() . "/" . $sport->getMaxNoOfParticipant(),
                 "eventId"=>$sport->getEventID()];;
         }
 
         // render lecture events
-        echo $my_engine->render("searchBar", ["title"=>"Lectures", "eventType"=>"Lecture"]);
+        echo $my_engine->render("searchBar", ["title"=>"Lectures", "value"=>$lecture_key,"eventType"=>"Lecture"]);
         echo $engine->render("listWith3ColumnsAndButton", ["row" => $lecture_data, "column1"=>"Course Code",
             "column2"=>"Place", "column3"=>"Manage Lecture"]);
 
         // render sports events
-        echo $my_engine->render("searchBar", ["title"=>"Sports Events","eventType"=>"Sports Event",
+        echo $my_engine->render("searchBar", ["title"=>"Sports Events","value"=>$sports_key, "eventType"=>"Sports",
             "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
 
-        echo $engine->render("list5ColButton", ["row" => $sports_data, "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot",
-            "column4"=>"Quota", "column5"=>"See Participants", "title"=>"Sports Events"]);
-
-
+        echo $engine->render("list6ColButton", ["row" => $sports_data, "column1"=>"Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot",
+            "column5"=>"Quota", "column6"=>"See Participants", "title"=>"Sports Events"]);
 
         if(isset($_POST["goEvent"])) {
             $_SESSION["eventToDisplay"] = $_POST["goEvent"];
@@ -92,14 +107,27 @@ ob_start();
             echo "go " . $_POST["goEvent"];
             header("Location: ../../administration/see");
         }
-
         if(isset($_POST["seeEvent"])) {
             $_SESSION["eventToDisplay"] = $_POST["seeEvent"];
+
             echo "go " . $_POST["seeEvent"];
             header("Location: ../../administration/see");
         }
 
 
+        if(isset($_POST["Lecture"])) {
+            $_SESSION["lectureToDisplay"] = $_POST["Lecture"];
+            echo "go " . $_POST["Lecture"];
+            unset($_POST);
+            header("Refresh:0");
+        }
+
+        if(isset($_POST["Sports"])) {
+            $_SESSION["sportsToDisplay"] = $_POST["Sports"];
+            echo "go " . $_SESSION["sportsToDisplay"];
+            unset($_POST);
+            header("Refresh:0");
+        }
     }
 
     ?>
