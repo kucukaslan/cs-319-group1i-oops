@@ -6,11 +6,8 @@ require_once ("UniversityAdministration.php");
 require_once("CustomException.php");
 
 class UserFactory{
-
-
     //variables
     protected ?User $user;
-
 
     //methods
     public function makeUser(string $usertype) : User{ 
@@ -26,7 +23,6 @@ class UserFactory{
             throw(new Exception("User type not found"));
         return $this->user;
     }
-
 
     // ! does not inserts the user into the database 
     public function makeUserByRegister(PDO $db, string $usertype, int $id, string|int $password, string $firstname, string $lastname,string $email) : User

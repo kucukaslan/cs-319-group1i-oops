@@ -128,7 +128,7 @@ class Test
         
 
         $sql = "SELECT * FROM ".Test::TABLE_NAME ." JOIN ".User::TABLE_NAME .
-            " ON ".Test::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Test::TABLE_NAME .".user_id = :id";
+            " ON ".Test::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Test::TABLE_NAME .".user_id = :id and test_date > NOW()";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":id", $id);
         $stmt->execute();
@@ -153,10 +153,8 @@ class Test
     public static function getTestsOfUserPast(int $id, PDO $conn) : array
     {
         $DateAndTime = date('Y-m-d h:i:s a', time());
-
-
         $sql = "SELECT * FROM ".Test::TABLE_NAME ." JOIN ".User::TABLE_NAME .
-            " ON ".Test::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Test::TABLE_NAME .".user_id = :id";
+            " ON ".Test::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Test::TABLE_NAME .".user_id = :id and test_date < NOW()";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":id", $id);
         $stmt->execute();
@@ -164,17 +162,13 @@ class Test
         $tests = array();
         foreach($result as $row)
         {
-            
             $test = new Test();
             $test->settestId($row["test_id"]);
             $test->setTestDate(new DateTime($row["test_date"]));
             $test->setResult($row["result"]);
             $test->setDocument($row["document"]);
-            if ( $row["test_date"] < $DateAndTime)
-            {
-                $tests[] = $test;
-            }
-            
+            $tests[] = $test;
+
         }
         return $tests;
 

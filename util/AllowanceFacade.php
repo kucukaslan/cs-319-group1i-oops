@@ -3,17 +3,18 @@ require_once("VaccineManager.php");
 require_once("RiskStatusManager.php");
 require_once("VaccineManager.php");
 require_once("UserFactory.php");
+require_once("Diagnosis.php");
 require_once("Test.php");
 
 class AllowanceFacade {
     const MIN_NO_OF_VACCINES = 2;
-    const MIN_NO_OF_DAYS_FOR_TEST = 3;
+    const MAX_NO_OF_DAYS_FOR_TEST = 3;
 
     protected ?PDO $conn;
     protected ?RiskStatusManager $rsm;
     protected ?VaccineManager $vm;
     protected ?array $tests;
-    // protected ?User $user;
+    protected ?User $user;
     protected ?int $userId;
     protected ?string $userType;
     protected ?bool $isAllowed;
@@ -25,6 +26,9 @@ class AllowanceFacade {
         $this->userType = $userType;
         $this->isAllowed = false;
 
+        $uf = new UserFactory();
+        $this->user = $uf->makeUserById($conn, $userType, $userId);
+
         $this->tests = Test::getTestsOfUserPast($this->userId,$conn);
         // print_r($this->tests);
 
@@ -32,30 +36,80 @@ class AllowanceFacade {
         $this->vm = new VaccineManager($conn, $userId);
     }
 
-
     public function getIsAllowed(): ?bool {
         // echo "in is allowed ";
         $this->isAllowed = $this->checkAllowance();
         return $this->isAllowed;
     }
 
-    // TODO: hasta olup iyilestikten sonra 30 gun asidan muaf
-    // TODO: son 180 gunde hastaysa tek asi yeterli
+    /**
+     * @return bool false if the user is not allowed on campus
+     * If HES is risky, then does not allow user
+     * If the user has 2 vaccines and have a not risky status, allow him
+     * If the user is infected, after 180 days, 1 vaccine is enough
+     * After the recovery from the disease, for 30 days, no vaccine is required
+     * If the vaccine is given and no past diagnosis, in that case look for negative
+     * tests that are given in 3 days
+     */
     public function checkAllowance(): ?bool {
         // echo "in check allowance ";
         if ($this->rsm->getHESCodeStatus() == false) {
-            //echo $this->userId . " false since HES CODE <br>" ;
+            // echo $this->userId . " false since HES CODE <br>" ;
             return false;
         }
-        // echo "in check allowance  2 ";
-        if (sizeof($this->vm->getUserVaccines()) < AllowanceFacade::MIN_NO_OF_VACCINES) {
+        $requiredNoOfVaccines = AllowanceFacade::MIN_NO_OF_VACCINES;
+
+        $diagnoses = Diagnosis::getDiagnosisesOfUser($this->userId, $this->conn);
+
+        $recentDiagnosisDate = 0;
+        $firstNegTestAfterDiag = new DateTime();
+        $firstNegTestAfterDiag->setDate(9999, 0, 0);
+
+        // if there is a past diagnosis, look for negative tests
+        // and determine the # of vaccines required
+        if (sizeof($diagnoses) > 0) {
+            // find the recent diagnosis
+            $recentDiagnosisDate = $diagnoses[0]->getDiagnosisDate();
+
+            for ($i = 0; $i < sizeof($diagnoses); $i++) {
+                if ($diagnoses[$i]->getDiagnosisDate() > $recentDiagnosisDate) {
+                    $recentDiagnosisDate = $diagnoses[$i]->getDiagnosisDate();
+                }
+            }
+
+
+            $tests = Test::getTestsOfUserPast($this->userId, $this->conn);
+
+            if (sizeof($tests) > 0) {
+                for ($i = 0; $i < sizeof($tests); $i++) {
+                    if ($tests[$i]->getTestDate() < $firstNegTestAfterDiag
+                        && $tests[$i]->getResult() == "NEGATIVE" && $tests[$i]->getTestDate() > $recentDiagnosisDate)
+                        $firstNegTestAfterDiag = $tests[$i]->getTestDate();
+                }
+
+                if ( intval($firstNegTestAfterDiag->diff(new DateTime("now"))->format('%R%a')) > 0
+                    && intval($firstNegTestAfterDiag->diff(new DateTime("now"))->format('%R%a')) <= 30)
+                    $requiredNoOfVaccines = 0;
+
+            }
+
+            if (intval($recentDiagnosisDate->diff(new DateTime("now"))->format('%R%a')) < 180
+            && $requiredNoOfVaccines != 0) {
+                $requiredNoOfVaccines = 1;
+            }
+
+        }
+        // echo "no of req $requiredNoOfVaccines ";
+        // if the user does not have enough # of vaccines
+        // look for past tests
+        if (sizeof($this->vm->getUserVaccines()) < $requiredNoOfVaccines) {
             // check if he has a negative test result in specified # of days
             foreach ($this->tests as $test) {
-                $time_difference_in_days = intval($test->getTestDate()->diff(new DateTime("now"))->format('%R%a'));
-                // echo $time_difference_in_days . "-" . $test->getTestId() . " ";
-                if ($time_difference_in_days <= AllowanceFacade::MIN_NO_OF_DAYS_FOR_TEST && $time_difference_in_days > 0
+                $time_difference_in_days = intval(date_diff($test->getTestDate(), new DateTime("now"))->format('%R%a'));
+                // echo $test->getTestDate()->diff(new DateTime("now"))->format('%R%a') . " =";
+                if ($time_difference_in_days <= AllowanceFacade::MAX_NO_OF_DAYS_FOR_TEST && $time_difference_in_days >= 0
                     && $test->getResult() == "NEGATIVE") {
-                   // echo $this->userId . " true since has a negative test<br>" ;
+                    // echo $this->userId . " true since has a negative test<br>" ;
                     return true;
                 }
             }
@@ -66,9 +120,5 @@ class AllowanceFacade {
       //  echo $this->userId . "true since vaccinated <br>";
         return true;
     }
-/*
-    public static function giveAllowedOnes(?array $participants ): ?array {
-
-    }*/
 
 }
