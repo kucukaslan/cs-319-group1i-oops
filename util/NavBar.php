@@ -1,11 +1,11 @@
 <?php
-require_once(__DIR__."/../config.php");
+require_once(__DIR__ . "/../config.php");
 require_once("User.php");
 require_once("Student.php");
 require_once("UniversityAdministration.php");
 require_once("AcademicStaff.php");
 require_once("SportsCenterStaff.php");
-require_once(rootDirectory().'/vendor/autoload.php');
+require_once(rootDirectory() . '/vendor/autoload.php');
 
 
 class NavBar
@@ -68,7 +68,6 @@ class NavBar
             $nav = $EENGINE->render('navbar', [
                 'title' => 'Main Page',
                 'links' => [
-                    ['href' => '/reservations', 'title' => 'Reservations'],
                     ['href' => '/events', 'title' => 'Events'],
                     ['href' => '/closecontact', 'title' => 'Close Contact'],
                     ['href' => '/profile', 'title' => 'Profile']
@@ -81,4 +80,22 @@ class NavBar
         return $nav;
     }
 
+    public function footer(): string
+    {
+        return <<< 'HTML'
+
+<footer class="footer is-primary">
+  <div class="content has-text-centered">
+    <p>
+      <a href="/credits">Credits</a><br>
+      <a href="/about">About</a><br>
+      <a href="/about">Privacy</a><br>
+    </p>
+  </div>
+</footer>
+HTML;
+
+    }
+
 }
+

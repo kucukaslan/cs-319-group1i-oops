@@ -2,6 +2,7 @@
 require_once ("EventParticipant.php");
 require_once("Event.php");
 require_once("EventFactory.php");
+require_once("CustomException.php");
 // Sometimes we just don't care the type of the user,
 // so why not allow an instance of User? 
 abstract class User implements EventParticipant {
@@ -18,6 +19,7 @@ abstract class User implements EventParticipant {
     protected ?string $lastname;
     protected ?string $email;
     protected ?string $HESCode;
+    protected ?string $hescode_status;
     protected ?array $closeContacts;
     protected ?array $eventsIParticipate;
 
@@ -31,6 +33,7 @@ abstract class User implements EventParticipant {
         $this->lastname = null;
         $this->email = null;
         $this->HESCode = null;
+        $this->hescode_status = null;
         $this->closeContacts = null;
         $this->eventsIParticipate = null;
     }
@@ -72,17 +75,34 @@ abstract class User implements EventParticipant {
         return $this->password;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getHescodeStatus(): ?string
+    {
+        return $this->hescode_status;
+    }
+
+    /**
+     * Set hescode_status of a user (THIS METHOD DOES NOT MODIFY DATABASE)
+     * @param string $hescode_status
+     */
+    public function setHescodeStatus(string $hescode_status): void
+    {
+        $this->hescode_status = $hescode_status;
+    }
 
     public function verifyPassword(): bool
     {
         // verify password from database 
         $query = "SELECT * FROM " . $this->getTableName() . " WHERE id = :id "; // . $this->id;
         $stmt = $this->conn->prepare($query);
-        // var_dump($query);
-        // echo '<br>';
         $stmt->execute(array('id' => $this->id));
-        // var_dump($stmt);
-        // echo '<br>';
+
+        if($stmt->rowCount() < 1) {
+            throw new UserDoesNotExistsException();
+            return false;
+        }
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         // var_dump($row);
         // echo '<br>';
@@ -96,7 +116,7 @@ abstract class User implements EventParticipant {
             $this->HESCode = $row['hescode'];
             return true;
         } else {
-            $this->id = null;
+            throw new PasswordIsWrongException();
             return false;
         }
     }
@@ -104,7 +124,11 @@ abstract class User implements EventParticipant {
     /*
         This might be an example of template method pattern.
     */
-
+    /**
+     * Insert to database and call the method 
+     * insertToSpecializedTable() to insert to specialized table
+     * for child classes. 
+     */
     public function insertToDatabase(): bool
     {
         try {
@@ -112,10 +136,20 @@ abstract class User implements EventParticipant {
             $stmt = $this->conn->prepare($query);
             $stmt->execute(array('id' => $this->id, 'password_hash' => password_hash($this->password, PASSWORD_ARGON2I), 'name' => $this->firstname, 'lastname' => $this->lastname, 'email' => $this->email, 'hescode' => $this->HESCode));
 
-            return insertToSpecializedTable();
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            throw new Exception("Error inserting to database." . $this->getTableName());
+            return $this->insertToSpecializedTable();
+        } catch (PDOException $e) {
+            $errormsg = $e->getMessage();
+            if( str_contains($errormsg, "id")) {
+                throw new UserIdAlreadyExistsException();
+            } else if (str_contains($errormsg, "email")) {
+                throw new EmailAlreadyExistsException();
+            }
+            //getConsoleLogger()->log("Debug", $e->getMessage());
+            //otherwise ignore the exception  return false, bad practice saves time!
+            return false;
+        }
+        catch(Exception $e) {
+            // ignore the exception return false, bad practice --yet it saves time!
             return false;
         }
     }
@@ -158,12 +192,14 @@ abstract class User implements EventParticipant {
             return false;
         }
     }
-    public function updatePassword(string $newPassword)
+    public function updatePassword(int|string $newPassword)
     {
-        $query = "UPDATE " . $this->getTableName() . " SET password_hash = :password_hash WHERE id = :id";
+        $query = "UPDATE " . USER::TABLE_NAME . " SET password_hash = :password_hash WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $hash = password_hash($newPassword, PASSWORD_ARGON2I);
         $stmt->bindParam(':password_hash', $hash);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
     }
 
     public function getTableName(): string
@@ -317,8 +353,16 @@ abstract class User implements EventParticipant {
         }
     }
 
-    public function getEventsIParticipate($event_type =Event::TABLE_NAME): array {
+    /**
+     * Finds the events the user is participating
+     * @param $event_type the type of the event, which are identified with the corresponding TABLE_NAME constant of the event clas
+     * @
+     */
+    public function getEventsIParticipate($event_type = Event::TABLE_NAME, string $search_key = null): array {
         $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
+        if ($search_key != null) {
+            $sql = $sql." AND event_name LIKE '%".$search_key."%' ";
+        }
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -333,6 +377,11 @@ abstract class User implements EventParticipant {
         return $this->eventsIParticipate;
     }
 
+    /**
+     * Checks if the user is a participant of the given event.
+     * @param int $event_id the event id
+     * @return bool
+     */
     public function doIParticipate(int $eventId): bool {
         foreach ($this->eventsIParticipate as $event) {
             if ($eventId == $event->getEventId()) {
@@ -342,8 +391,15 @@ abstract class User implements EventParticipant {
         return false;
     }
 
-    public function getEventsControlledByMe() : array {
-        $sql = "SELECT * FROM ". Event::TABLE_NAME." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+    /**
+    * @return array of events that the user is "controller" of
+    * each are Event objects whose "name", "start_date", "end_date" and "location" are set.
+    */
+    public function getEventsControlledByMe($event_type =Event::TABLE_NAME, string $search_key = null ) : array {
+        $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+        if ($search_key != null) {
+            $sql = $sql." AND event_name LIKE '%".$search_key."%' ";
+        }
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -361,10 +417,12 @@ abstract class User implements EventParticipant {
         return $events;
     }
 
-    /*
+    /**
     * Return the participants of the specified event
     * users are Student objects whose "name", "lastname" and "email" are set,
     * as well as their ids.
+    * @param $event_id the id of the event
+    * @return array of users
     */
     public function getParticipants(int $eventId): array {
         $sql = "SELECT * FROM ".User::TABLE_NAME. " INNER JOIN " . Event::PARTICIPATION_TABLE_NAME." ON user_id = id WHERE event_id = :event_id";

@@ -84,7 +84,7 @@ class Event
      */
     public function getControllers($usertype = AcademicStaff::TABLE_NAME): ?array
     {
-        if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
+        if( isset($this->conn) ){
             $sql = 'Select * from '.User::TABLE_NAME. " NATURAL JOIN  ".self::CONTROL_TABLE_NAME.' where event_id = :event_id';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute(['event_id' => $this->getEventID()]);
@@ -107,15 +107,15 @@ class Event
     /**
      * @return array|null
      */
-    public function getParticipants($usertype = Student::TABLE_NAME): ?array {
+    public function getParticipants($usertype = User::TABLE_NAME): ?array {
         if( isset($this->conn) ){  // todo table name 'event_participation' is hardcoded, to be fixed! 
-            $sql = 'Select * from '.User::TABLE_NAME. " NATURAL JOIN  ".self::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
+            $sql = 'Select * from '.$usertype. " NATURAL JOIN  ".self::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute(['event_id' => $this->getEventID()]);
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $users = [];
             foreach ($row as $user) {
-                $users[$user['user_id']] = (new UserFactory())->makeUser( $usertype);
+                $users[$user['user_id']] = (new UserFactory())->makeUser( 0== strcmp($usertype, User::TABLE_NAME) ? Student::TABLE_NAME : $usertype);
                 $users[$user['user_id']]->setDatabaseConnection($this->conn);
                 $users[$user['user_id']]->setId($user['user_id']);
                 $users[$user['user_id']]->setFirstname($user['name']);

@@ -11,7 +11,7 @@ class EventFactory {
         $this->conn = $databaseConnection;
     }
 
-    public function getEvents(string  $event_type) : array | null {
+    public function getEvents(string  $event_type, string $contains = null) : array | null {
         if($event_type == SportsEvent::TABLE_NAME)
             $sql = "SELECT * FROM ". SportsEvent::TABLE_NAME;
         else if ($event_type == CourseEvent::TABLE_NAME)
@@ -20,6 +20,8 @@ class EventFactory {
             $sql = "SELECT * FROM ". TestAppointmentEvent::TABLE_NAME;
         else
             return null;
+        if ($contains != null)
+            $sql .= " WHERE event_name LIKE ".$contains;
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();//[$event_type]);
@@ -131,6 +133,7 @@ class EventFactory {
         $event->setTitle($row["event_name"]);
         $event->setPlace($row["place"]);
         $event->setMaxNoOfParticipant($row['max_no_of_participant']);
+        $event->setCanPeopleJoin($row['can_people_join']);
         if($type == SportsEvent::TABLE_NAME || $type == TestAppointmentEvent::TABLE_NAME) {
             $event->setStartDate(new DateTime($row['start_date']));
             $event->setEndDate(new DateTime($row['end_date']));

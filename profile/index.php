@@ -1,12 +1,28 @@
-<?php 
-    include_once("../config.php");
-    startDefaultSessionWith();
-?>    
+<?php
+// Why do we try to connect database before user is logged in? (talking specifically for this page)
+require_once("../config.php");
+require_once(rootDirectory() . "/util/class.pdf2text.php");
+require_once(rootDirectory() . "/util/UserFactory.php");
+require_once(rootDirectory() . "/util/Vaccine.php");
+require_once(rootDirectory() . "/util/VaccineFactory.php");
+require_once(rootDirectory() . "/util/VaccineManager.php");
+require_once(rootDirectory() . "/util/Test.php");
+require_once(rootDirectory() . "/util/NavBar.php");
+
+$conn = getDatabaseConnection();
+startDefaultSessionWith();
+
+if (!isset($_SESSION['id']) || !isset($conn)) {
+    header("location: ../login");
+
+}
+$usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile Page <?php echo isset($_SESSION['firstname']) ? " of ".$_SESSION['firstname'] : "" ?></title>
+    <title>Profile Page</title>
     <link rel="stylesheet" href="../styles.css">
 
     <meta name="author" content="Muhammed Can Küçükaslan">
@@ -14,49 +30,73 @@
 
 </head>
 <body>
-<div class="container">
-
-<?php
-    require_once rootDirectory().'/vendor/autoload.php';
-
-    $conn = getDatabaseConnection();
-
-    if (!isset($_SESSION['id'])) {
-        echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
-            . "You haven't logged in";
-        echo "<form method='get' action=\"..\"><div class=\"form-group\">
-                        <input type=\"submit\" class=\"button button_submit\" value=\"Go to Login Page\">
-                    </div> </form>";
-        echo "</div> </div>";
-        exit();
-    } else {
-        $m = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates'),
-        ));
-        echo $m->render('navbar', ['links' => [
-                ['href' => '../', 'title' => 'Main Menu'],
-                ['href' => '../events', 'title' => 'Events'],
-                ['href' => '../closecontact', 'title' => 'Close Contact'],
-                ['href' => '../profile', 'title' => 'Profile'],
-                ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
-        );
-
-        echo "<h3> <abbr title='Your Majesties, Your Excellencies, Your Highnesses'>Hey</abbr> " . $_SESSION['firstname'] . " </h3>";
-        echo "<i> Welcome to the <abbr title='arguably'>smallest</abbr> ... University Contact Tracing Service, <abbr title='of course by us'> <b>ever</b></abbr>!</i>";
-
-    }
-
+<header>
+    <?php
+    $navbar = new NavBar($usertype);
+    echo $navbar->draw();
     ?>
-    <div class="centerwrapper">
-        <div class="centerdiv">
-            <br><br>
-            <h2>User Profile Page</h2>
-            <br>
-        </div>
-    </div>
+</header>
+<div class="container">
+    <?php
+    $uf = new UserFactory();
+    $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
 
+    $m = new Mustache_Engine(array(
+        'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
+    ));
 
+    $wrongVerPassword = '';
+    if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST['newName'])) {
+            $newFName = $_POST['newName'];
+            $std->setFirstname($newFName);
+            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $std->updateToDatabase();
+            //echo $newFName
+        }
+        if (isset($_POST['newsName'])) {
+
+            $newSName = $_POST['newsName'];
+            $std->setLastname($newSName);
+            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+        }
+        if (isset($_POST['newEmail'])) {
+
+            $newEmail = $_POST['newEmail'];
+            $std->setEmail($newEmail);
+            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+        }
+        if (isset($_POST['newP']) && isset($_POST['verP'])) {
+            $currentPassword = $_POST['verP'];
+            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $std->setPassword($currentPassword);
+             try {
+                if ( $std->verifyPassword()) {
+                    $newPassword = $_POST['newP'];
+                    $std->updatePassword($newPassword);
+                    getConsoleLogger()->log("profile","Password changed");// np: $newPassword, cp: $currentPassword");
+                } else {
+                    $wrongVerPassword = 'Current password is invalid';
+                }
+            }
+            catch (PasswordIsWrongException $e) {
+                $wrongVerPassword = 'Current password is incorrect';
+                getConsoleLogger()->log("profile","Password change failed");
+            }
+            catch (Exception $e) {
+                $wrongVerPassword = 'Current password is invalid';
+                getConsoleLogger()->log("profile","Password change failed");
+            }
+        }
+    }
+    echo $m->render('profilePage', [
+        "name" => $std->getFirstName(),
+        "email" => $std->getEmail(),
+        "id" => $std->getId(),
+        'WVPass' => $wrongVerPassword  
+    ]);
+    ?>
 </div>
-
+<?= $navbar->footer(); ?>
 </body>
 </html>
