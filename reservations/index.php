@@ -33,6 +33,8 @@
                     </div> </form>";
         echo "</div> </div>";
         exit();
+    } else if ($_SESSION['usertype'] != SportsCenterStaff::TABLE_NAME && $_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
     } else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),

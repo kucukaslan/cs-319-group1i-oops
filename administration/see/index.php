@@ -31,6 +31,8 @@
                     </div> </form>";
         echo "</div> </div>";
         exit();
+    } else if ($_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
     } else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -52,9 +54,6 @@
         echo "event is " . $_SESSION["eventToDisplay"] . "<br>";
         $thisEvent = $ef->getEvent($_SESSION["eventToDisplay"]);
 
-
-
-
         $participants = $user->getParticipants($thisEvent->getEventID());
 
         $participants_data = array();
@@ -72,7 +71,6 @@
 
         echo $engine->render("listWith2Column", ["row" => $participants_data,
             "title"=>"Details of ". $thisEvent->getTitle(), "column1"=>"Name", "column2"=>"Allowance Status"]);
-
 
     }
 
