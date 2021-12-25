@@ -1,5 +1,8 @@
 <?php
-require_once(rootDirectory() . '/constants.php'); // all constants are defined here
+// all constants used to connect database are defined here
+// you can either use(rename) sample_constants.php file provided to you or
+// change so that the credentials used in getDatabaseConnection() methods are invalid.
+require_once(rootDirectory() . '/constants.php'); 
 require_once(rootDirectory() . '/util/ConsoleLogger.php');
 const SESSION_TIMEOUT_DURATION = 600; // in seconds
 const SESSION_REGENERATE_ID_DURATION = 300; // in seconds
