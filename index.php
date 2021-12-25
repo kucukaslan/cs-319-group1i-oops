@@ -59,6 +59,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                 if ($formattedHESCode != "") {
                     if (!$user->updateHESCode($formattedHESCode)) {
                         $hesErr = "Failed to update HES Code";
+                    } else {
+                        header("Refresh:0");
                     }
                 } else {
                     $hesErr = "Given value is not of the form of a HES code!";
@@ -156,7 +158,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                         $isAllowed = "";
                     // render and print profile component sessiondan al name,email falan.
                     echo $engine->render("profile", [
-                        "name" => $user->getFirstName(),
+                        "name" => $user->getFirstName() . " " . $user->getLastName(),
                         "email" => $user->getEmail(),
                         "id" => $user->getId(),
                         'allowance' => $isAllowed,
