@@ -1,5 +1,5 @@
 <?php
-    include_once(__DIR__."../config.php");
+    include_once("../config.php");
     require_once(rootDirectory()."/util/NavBar.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
     require_once(rootDirectory() . "/util/SportsEvent.php");

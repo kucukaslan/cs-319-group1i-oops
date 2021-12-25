@@ -51,7 +51,7 @@ ob_start();
         }*/
 
         $lectures = $user->getEventsControlledByMe();
-        print_r($lectures);
+        //print_r($lectures);
 
         // create data to display
         $lecture_data = [];

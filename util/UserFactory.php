@@ -3,6 +3,7 @@ require_once ("Student.php");
 require_once ("AcademicStaff.php");
 require_once ("SportsCenterStaff.php");
 require_once ("UniversityAdministration.php");
+require_once("CustomException.php");
 
 class UserFactory{
 
@@ -126,13 +127,16 @@ class UserFactory{
         }
     }
 
-    private function getRow(PDO $conn, string $user_type, int $user_id) : array
+    private function getRow(PDO $conn, string $user_type, int $user_id) : ?array
     {
         $query = "SELECT * FROM " . $user_type . " WHERE id = :id";
         $stmt = $conn->prepare($query);
         $stmt->execute(array('id'=>$user_id));
         if( $stmt->rowCount() == 0)
-            return null;
+            {
+                throw new UserDoesNotExistsException();
+                return null;
+            }
         else
             return $stmt->fetch(PDO::FETCH_ASSOC);
     }

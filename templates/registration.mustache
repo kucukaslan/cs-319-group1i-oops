@@ -10,15 +10,15 @@
                                     {{^idErr}}
                                         <input type="number" name="userid" class="input" id="userid" min="1" required>
                                     {{/idErr}}
-                                    {{#iderr}}
+                                    {{#idErr}}
                                         <input type="number" name="userid" class="input is-danger" id="userid" min="1"
                                                required>
-                                    {{/iderr}}
+                                    {{/idErr}}
                                 </label>
                             </div>
-                            {{#iderr}}
+                            {{#idErr}}
                                 <p class="help is-danger">{{idErr}}</p>
-                            {{/iderr}}
+                            {{/idErr}}
                         </div>
 
                         <div class="field">

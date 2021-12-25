@@ -131,6 +131,7 @@ class EventFactory {
         $event->setTitle($row["event_name"]);
         $event->setPlace($row["place"]);
         $event->setMaxNoOfParticipant($row['max_no_of_participant']);
+        $event->setCanPeopleJoin($row['can_people_join']);
         if($type == SportsEvent::TABLE_NAME || $type == TestAppointmentEvent::TABLE_NAME) {
             $event->setStartDate(new DateTime($row['start_date']));
             $event->setEndDate(new DateTime($row['end_date']));
