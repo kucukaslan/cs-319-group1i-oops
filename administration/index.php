@@ -3,6 +3,7 @@
     require_once(rootDirectory() . "/util/NavBar.php");
     require_once(rootDirectory() . "/util/UserFactory.php");
     startDefaultSessionWith();
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +42,7 @@
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
         $uf = new UserFactory();
+        $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
 
         $navbar = new NavBar($usertype);
@@ -48,30 +50,55 @@
 ?>
         <h2>Admin Page</h2>
         <?php
+        $lectures = $ef->getEvents(CourseEvent::TABLE_NAME);
+        $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
 
-        echo $my_engine->render("searchByIdHES");
+        // format data
+        $lecture_data = [];
+        foreach ($lectures as $lecture) {
+            $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
+                "eventId"=>$lecture->getEventId()];
+        }
+
+        $sports_data = [];
+
+        // format data
+        foreach ($sports as $sport) {
+            $sports_data[] = ["firstEl"=>$sport->getPlace(), "secondEl"=>$sport->getStartDate()->format("d") . "-" .
+                $sport->getStartDate()->format('M')
+                , "thirdEl"=>$sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i'). "-" .
+                    $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i'),
+                "fourthEl"=>$sport->getCurrentNumberOfParticipants() . "/" . $sport->getMaxNoOfParticipant(),
+                "eventId"=>$sport->getEventID()];;
+        }
+
+        // render lecture events
+        echo $my_engine->render("searchBar", ["title"=>"Lectures", "eventType"=>"Lecture"]);
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => $lecture_data, "column1"=>"Course Code",
+            "column2"=>"Place", "column3"=>"Manage Lecture"]);
 
         // render sports events
-        echo $engine->render("list5ColButton", ["row" => [
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"],
-            ['firstEl' => 'Main Sprots Hall', 'secondEl' => '12.2', "thirdEl"=>"13-12", "fourthEl"=>"10/40","buttonName"=>"See", "buttonLink"=>"../../reservations/see"]],
-            "title"=>"Sports Events",
+        echo $my_engine->render("searchBar", ["title"=>"Sports Events","eventType"=>"Sports Event",
             "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
 
-        // render courses
-        echo $engine->render("listWith3ColumnsAndButton", ["row" => [
-            ['firstEl' => 'Math123', 'secondEl' => 'SBZ-18', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"],
-            ['firstEl' => 'Math123', 'secondEl' => 'SBZ-18', "buttonName"=>"Manage", "buttonLink"=>"../../lectures/manage"]],
-            "title"=>"Lectures",
-            "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Manage Lecture"]);
+        echo $engine->render("list5ColButton", ["row" => $sports_data, "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot",
+            "column4"=>"Quota", "column5"=>"See Participants", "title"=>"Sports Events"]);
 
-        // render search by course form
-        echo $my_engine->render("searchLectureByCode", ["courseCodes"=>[
-                ["courseCode"=>"Math123"], ["courseCode"=>"cs319"]]]);
 
-        if (isset($_POST["lectureCodes"])) {
-            echo $_POST["lectureCodes"];
+
+        if(isset($_POST["goEvent"])) {
+            $_SESSION["eventToDisplay"] = $_POST["goEvent"];
+
+            echo "go " . $_POST["goEvent"];
+            header("Location: ../../administration/see");
         }
+
+        if(isset($_POST["seeEvent"])) {
+            $_SESSION["eventToDisplay"] = $_POST["seeEvent"];
+            echo "go " . $_POST["seeEvent"];
+            header("Location: ../../administration/see");
+        }
+
 
     }
 
