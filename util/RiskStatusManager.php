@@ -97,5 +97,33 @@ class RiskStatusManager {
             $this->HESCodeStatus = false;
     }
 
+    /**
+     * Checks if the given string is of the form of a HES code
+     * Values of the form XXXXXXXXXX or XXXX-XXXX-XX is accepted
+     * where X is an alphanumeric character.
+     * Other values won't be considered as a HES code. If the input is in
+     * the correct form, remove separators and return only alphanumeric characters of the
+     * HES code.
+     */
+    public static function formatHESCode(?string $hesCode): ?string {
+        if (strlen($hesCode) < 10) {
+            return "";
+        }
 
+        $returnHes = '';
+        for($i = 0; $i < strlen($hesCode); $i++) {
+            if ($hesCode[$i] != "-" && !ctype_alnum($hesCode[$i])) {
+                return "";
+            }
+
+            if ($hesCode[$i] != "-") {
+                $returnHes .= $hesCode[$i];
+            }
+        }
+
+        if (strlen($returnHes) != 10)
+            return "";
+
+        return $returnHes;
+    }
 }

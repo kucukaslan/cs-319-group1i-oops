@@ -6,6 +6,7 @@ require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/Vaccine.php");
 require_once(rootDirectory() . "/util/VaccineFactory.php");
 require_once(rootDirectory() . "/util/VaccineManager.php");
+require_once(rootDirectory() . "/util/RiskStatusManager.php");
 require_once(rootDirectory() . "/util/Test.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/Diagnosis.php");
@@ -53,13 +54,14 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         //----
         if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['HESCode'])) {
-
-                $hescode = $_POST['HESCode'];
-                $std->updateHESCode($hescode);
-                $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-                // hes code invalid
-                $hesErr = 'HES Code is invalid';
-
+                $formattedHESCode = RiskStatusManager::formatHESCode($_POST['HESCode']);
+                if ($formattedHESCode != "") {
+                    // $hescode = $_POST['HESCode'];
+                    $std->updateHESCode($formattedHESCode);
+                    $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                } else {
+                    $hesErr = "Given value is not of the form of a HES code!";
+                }
             }
 
             if (isset($_POST['vaccinecard'])) {
@@ -129,8 +131,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                 }
             }
-
-
         }
 
         ?>
@@ -179,7 +179,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     echo $engine->render('vax',
                         ['vaccine' => $abc]);
-
+                  
                     ?>
                 </div>
             </div>
@@ -218,22 +218,22 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     <?php
                     //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                     //$upcomingTest = ["date" => "2023"];
-                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'], $conn);
-                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'], $conn);
-
+                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
+                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
+    
                     $pastArr = array();
                     $futureArr = array();
-                    foreach ($pastTests as $p) {
-                        $pastArr[] = array("date" => $p->getTestDate()->format('r'), "result" => $p->getResult());
+                    foreach( $pastTests as $p) {
+                        $pastArr[] = array( "date" => $p->getTestDate()->format('r') , "result" =>$p->getResult());
                     }
-                    foreach ($futureTests as $p) {
-                        $futureArr[] = array("date" => $p->getTestDate()->format('r'));
+                    foreach( $futureTests as $p) {
+                        $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
                     }
-
-                    echo $engine->render("PCRtest", ['upcomingTest' => $futureArr,
+    
+                    echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
                         'pastTest' => $pastArr
                     ]);
-
+                    
                     ?>
                 </p>
             </div>
