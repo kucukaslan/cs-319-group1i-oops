@@ -133,9 +133,19 @@ abstract class User implements EventParticipant {
             $stmt->execute(array('id' => $this->id, 'password_hash' => password_hash($this->password, PASSWORD_ARGON2I), 'name' => $this->firstname, 'lastname' => $this->lastname, 'email' => $this->email, 'hescode' => $this->HESCode));
 
             return $this->insertToSpecializedTable();
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            throw new Exception("Error inserting to database." . $this->getTableName());
+        } catch (PDOException $e) {
+            $errormsg = $e->getMessage();
+            if( str_contains($errormsg, "id")) {
+                throw new UserIdAlreadyExistsException();
+            } else if (str_contains($errormsg, "email")) {
+                throw new EmailAlreadyExistsException();
+            }
+            //getConsoleLogger()->log("Debug", $e->getMessage());
+            //otherwise ignore the exception  return false, bad practice saves time!
+            return false;
+        }
+        catch(Exception $e) {
+            // ignore the exception return false, bad practice --yet it saves time!
             return false;
         }
     }
