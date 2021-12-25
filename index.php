@@ -6,6 +6,7 @@ require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/Vaccine.php");
 require_once(rootDirectory() . "/util/VaccineFactory.php");
 require_once(rootDirectory() . "/util/VaccineManager.php");
+require_once(rootDirectory() . "/util/RiskStatusManager.php");
 require_once(rootDirectory() . "/util/Test.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 
@@ -52,10 +53,15 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         //----
         if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['HESCode'])) {
-
-                $hescode = $_POST['HESCode'];
-                $std->updateHESCode($hescode);
-                $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                $formattedHESCode = RiskStatusManager::formatHESCode($_POST['HESCode']);
+                if ($formattedHESCode != "") {
+                    // $hescode = $_POST['HESCode'];
+                    $std->updateHESCode($formattedHESCode);
+                    $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                } else {
+                    // TODO: print the error message stating that hes code is not in the correct form
+                    echo '<script> alert("Given value is not of the form of a HES code!")</script>';
+                }
             }
 
             if (isset($_POST['vaccinecard'])) {
