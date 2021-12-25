@@ -87,10 +87,12 @@ EOF;
                 $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i'),
             "eventId" => $sport->getEventId(),
             "value" => "Leave"];
-        if ($user->doIParticipate($sport->getEventId())) {
-            $sports_data_enrolled[] = $formattedData;
-        } else {
-            $sports_data_not_enrolled[] = $formattedData;
+        if ($sport->getCanPeopleJoin() && $sport->getCurrentNumberOfParticipants() < $sport->getMaxNoOfParticipant()) {
+            if ($user->doIParticipate($sport->getEventId())) {
+                $sports_data_enrolled[] = $formattedData;
+            } else {
+                $sports_data_not_enrolled[] = $formattedData;
+            }
         }
     }
     // enroll an event if the enroll button is pressed
