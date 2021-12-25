@@ -11,6 +11,7 @@ class Diagnosis
     protected ?int $result;
     protected ?DateTime $diagnosisDate;
     protected ?int $userId;
+    protected ?string $resultAsString;
 
     public function __construct()
     {
@@ -21,6 +22,20 @@ class Diagnosis
         $this->userId = null;
     }
 
+    public function getResultAsString(): string {
+
+        if( $this->result == 0){
+
+            $this->resultAsString = "Covid Positive";
+        }
+
+        else{
+            $this->resultAsString = "Covid Negative";
+        }
+
+        return $this->resultAsString;
+
+    }
 
     // constructor with $db as database connection
     public function getTableName(): string {

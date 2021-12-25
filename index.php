@@ -169,7 +169,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     foreach ($myVaccines as $vaccine) {
                         $myVaccineType = $vaccine->getVaccineType();
                         $myVaccineDate = $vaccine->getVaccineDate();
-                        $abc[] = ['vaccineDate' => $myVaccineDate->format('d M Y'), 'vaccineType' => $myVaccineType];
+                        $vaccineManufacturer = $vaccine->getVaccineName();
+                        $abc[] = ['vaccineDate' => $myVaccineDate->format('d M Y'), 'vaccineManufacturer' => $vaccineManufacturer];
                     }
 
                     echo $engine->render('vax',
@@ -196,7 +197,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                 foreach ($diagnosises as $diagnosise) {
                     $dTable[] = [
                         'date' => $diagnosise->getDiagnosisDate()->format('d M Y'),
-                        'type' => $diagnosise->getType()
+                        'type' => $diagnosise->getType(),
+                        'result' => $diagnosise->getResultAsString()
                     ];
                 }
 
