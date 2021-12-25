@@ -124,7 +124,11 @@ abstract class User implements EventParticipant {
     /*
         This might be an example of template method pattern.
     */
-
+    /**
+     * Insert to database and call the method 
+     * insertToSpecializedTable() to insert to specialized table
+     * for child classes. 
+     */
     public function insertToDatabase(): bool
     {
         try {
@@ -349,8 +353,16 @@ abstract class User implements EventParticipant {
         }
     }
 
-    public function getEventsIParticipate($event_type =Event::TABLE_NAME): array {
+    /**
+     * Finds the events the user is participating
+     * @param $event_type the type of the event, which are identified with the corresponding TABLE_NAME constant of the event clas
+     * @
+     */
+    public function getEventsIParticipate($event_type = Event::TABLE_NAME, string $search_key = null): array {
         $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::PARTICIPATION_TABLE_NAME." WHERE user_id = :id";
+        if ($search_key != null) {
+            $sql = $sql." AND event_name LIKE '%".$search_key."%' ";
+        }
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -365,6 +377,11 @@ abstract class User implements EventParticipant {
         return $this->eventsIParticipate;
     }
 
+    /**
+     * Checks if the user is a participant of the given event.
+     * @param int $event_id the event id
+     * @return bool
+     */
     public function doIParticipate(int $eventId): bool {
         foreach ($this->eventsIParticipate as $event) {
             if ($eventId == $event->getEventId()) {
@@ -374,8 +391,15 @@ abstract class User implements EventParticipant {
         return false;
     }
 
-    public function getEventsControlledByMe($event_type =Event::TABLE_NAME) : array {
+    /**
+    * @return array of events that the user is "controller" of
+    * each are Event objects whose "name", "start_date", "end_date" and "location" are set.
+    */
+    public function getEventsControlledByMe($event_type =Event::TABLE_NAME, string $search_key = null ) : array {
         $sql = "SELECT * FROM ". $event_type." NATURAL JOIN ".Event::CONTROL_TABLE_NAME."  WHERE user_id = :id";
+        if ($search_key != null) {
+            $sql = $sql." AND event_name LIKE '%".$search_key."%' ";
+        }
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -393,10 +417,12 @@ abstract class User implements EventParticipant {
         return $events;
     }
 
-    /*
+    /**
     * Return the participants of the specified event
     * users are Student objects whose "name", "lastname" and "email" are set,
     * as well as their ids.
+    * @param $event_id the id of the event
+    * @return array of users
     */
     public function getParticipants(int $eventId): array {
         $sql = "SELECT * FROM ".User::TABLE_NAME. " INNER JOIN " . Event::PARTICIPATION_TABLE_NAME." ON user_id = id WHERE event_id = :event_id";
