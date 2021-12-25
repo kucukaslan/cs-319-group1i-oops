@@ -18,6 +18,7 @@ class AllowanceFacade {
     protected ?string $userType;
     protected ?bool $isAllowed;
 
+
     public function __construct(PDO $conn, string $userType, int $userId) {
         $this->conn = $conn;
         $this->userId = $userId;
@@ -42,7 +43,7 @@ class AllowanceFacade {
     public function checkAllowance(): ?bool {
         // echo "in check allowance ";
         if ($this->rsm->getHESCodeStatus() == false) {
-            echo $this->userId . " false since HES CODE <br>" ;
+            //echo $this->userId . " false since HES CODE <br>" ;
             return false;
         }
         // echo "in check allowance  2 ";
@@ -53,15 +54,15 @@ class AllowanceFacade {
                 // echo $time_difference_in_days . "-" . $test->getTestId() . " ";
                 if ($time_difference_in_days <= AllowanceFacade::MIN_NO_OF_DAYS_FOR_TEST && $time_difference_in_days > 0
                     && $test->getResult() == "NEGATIVE") {
-                    echo $this->userId . " true since has a negative test<br>" ;
+                   // echo $this->userId . " true since has a negative test<br>" ;
                     return true;
                 }
             }
-            echo $this->userId ."false since no negative test given <br>";
+          //  echo $this->userId ."false since no negative test given <br>";
             return false;
         }
 
-        echo $this->userId . "true since vaccinated <br>";
+      //  echo $this->userId . "true since vaccinated <br>";
         return true;
     }
 /*
