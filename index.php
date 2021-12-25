@@ -40,9 +40,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     echo $navbar->draw();
     ?>
 </header>
-<div class="container">
-    <p id="info">
-        <?php
+<div class="container has-text-centered">
+    <?php
 
 
         $id = $_SESSION['id'];
@@ -131,6 +130,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                 }
             }
+
+
         }
 
         ?>
@@ -179,7 +180,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     echo $engine->render('vax',
                         ['vaccine' => $abc]);
-                  
+
                     ?>
                 </div>
             </div>
@@ -218,22 +219,22 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     <?php
                     //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                     //$upcomingTest = ["date" => "2023"];
-                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
-                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
-    
+                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'], $conn);
+                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'], $conn);
+
                     $pastArr = array();
                     $futureArr = array();
-                    foreach( $pastTests as $p) {
-                        $pastArr[] = array( "date" => $p->getTestDate()->format('r') , "result" =>$p->getResult());
+                    foreach ($pastTests as $p) {
+                        $pastArr[] = array("date" => $p->getTestDate()->format('r'), "result" => $p->getResult());
                     }
-                    foreach( $futureTests as $p) {
-                        $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
+                    foreach ($futureTests as $p) {
+                        $futureArr[] = array("date" => $p->getTestDate()->format('r'));
                     }
-    
-                    echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
+
+                    echo $engine->render("PCRtest", ['upcomingTest' => $futureArr,
                         'pastTest' => $pastArr
                     ]);
-                    
+
                     ?>
                 </p>
             </div>
