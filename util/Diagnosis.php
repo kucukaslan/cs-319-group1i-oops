@@ -107,14 +107,11 @@ class Diagnosis
 
     public static function getDiagnosisesOfUser(int $id, PDO $conn) : array
     {
-
-
-
     $sql = "SELECT * FROM ".Diagnosis::TABLE_NAME ." JOIN ".User::TABLE_NAME .
     " ON ".Diagnosis::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Diagnosis::TABLE_NAME .".user_id = :id";
      $stmt = $conn->prepare($sql);
 
-    $stmt->bindParam(":id", $_SESSION['id']);
+    $stmt->bindParam(":id", $id);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $diagnosises = array();
