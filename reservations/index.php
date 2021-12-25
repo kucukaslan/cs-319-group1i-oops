@@ -53,18 +53,18 @@
             $eventToCheck = $ef->getEvent($event->getEventID());
             if (get_class($eventToCheck) == "SportsEvent") {
                 // format the data that will be given to the mustache engine
-                $formattedDate = ["firstEl"=>$eventToCheck->getPlace(), "secondEl"=>$eventToCheck->getStartDate()->format("d") . "-" .
+                $formattedData = ["firstEl"=>$eventToCheck->getTitle(), "secondEl"=>$eventToCheck->getPlace(), "thirdEl"=>$eventToCheck->getStartDate()->format("d") . "-" .
                     $eventToCheck->getStartDate()->format('M')
-                    , "thirdEl"=>$eventToCheck->getStartDate()->format('h') . ":" . $eventToCheck->getStartDate()->format('i'). "-" .
+                    ,"fourthEl"=>$eventToCheck->getStartDate()->format('h') . ":" . $eventToCheck->getStartDate()->format('i'). "-" .
                     $eventToCheck->getEndDate()->format('h') . ":" . $eventToCheck->getEndDate()->format('i'),
-                    "fourthEl"=>$eventToCheck->getCurrentNumberOfParticipants() . "/" . $eventToCheck->getMaxNoOfParticipant(),
+                    "fifthEl"=>$eventToCheck->getCurrentNumberOfParticipants() . "/" . $eventToCheck->getMaxNoOfParticipant(),
                     "eventId"=>$eventToCheck->getEventID()];
 
                 // differentiate past and future sports events
                 if ($eventToCheck->getStartDate() <= new DateTime("now")) {
-                    $sportsData_past[] = $formattedDate;
+                    $sportsData_past[] = $formattedData;
                 } else {
-                    $sportsData_future[] = $formattedDate;
+                    $sportsData_future[] = $formattedData;
                 }
 
             }
@@ -79,13 +79,14 @@
     </div>";
 
         // RENDER HTMLs
-        echo $engine->render("list5ColButton", ["row" => $sportsData_future,
+        echo $engine->render("list6ColButton", ["row" => $sportsData_future,
             "title"=>"Upcoming Sports Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"Quota", "column5"=>"See Participants"]);
+            "column1" => "Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot", "column5"=>"Quota", "column6"=>"See Participants"]);
 
-        echo $engine->render("list5ColButton", ["row" => $sportsData_past,
-            "title"=>"Past Sport Events",
-            "column1"=>"Place", "column2"=>"Day Slot", "column3"=>"Time Slot", "column4"=>"People Participated", "column5"=>"Past Participants"]);
+        echo $engine->render("list6ColButton", ["row" => $sportsData_past,
+            "title"=>"Past Sports Events",
+            "column1" => "Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot", "column5"=>"Quota", "column6"=>"See Participants"]);
+
 
 
         // if see button is pressed go to the reservation/see page
