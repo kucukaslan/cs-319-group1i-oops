@@ -100,25 +100,7 @@ class Test
     public static function getTestsOfUser(int $id, PDO $conn) : array
     {
 
-        /*
-         *  $sql = "SELECT * FROM ".self::RELATION_TABLE_NAME." NATURAL JOIN ".Vaccine::TABLE_NAME ."   WHERE user_id = :user_id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(":user_id", $this->userId);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $vaccines = array();
-        foreach($result as $row)
-        {
-            $vaccine = new Vaccine();
-            $vaccine->setId($row["vaccine_id"]);
-            $vaccine->setCvxCode($row["cvx_code"]);
-            $vaccine->setVaccineName($row["vaccine_name"]);
-            $vaccine->setVaccineType($row["vaccine_type"]);
-            $vaccine->setVaccineDate($row["administration_date"]);
-            $vaccines[] = $vaccine;
-        }
-        return $vaccines;
-         */
+        
 
         $sql = "SELECT * FROM ".Test::TABLE_NAME ." JOIN ".User::TABLE_NAME .
             " ON ".Test::TABLE_NAME .".user_id =  ".User::TABLE_NAME .".id   WHERE ". Test::TABLE_NAME .".user_id = :id";

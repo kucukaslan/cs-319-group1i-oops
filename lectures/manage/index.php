@@ -38,25 +38,26 @@ startDefaultSessionWith();
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
         $ef = new EventFactory($conn);
-        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
+        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
         $lectureId = $_SESSION["lectureToDisplay"];
-        echo "Lecture id: " . $lectureId;
+        //echo "Lecture id: " . $lectureId;
 
 
         // create event object whose participants will be displayed
         $thisLecture = $ef->getEvent($lectureId);
 
-        print_r($thisLecture);
+        //print_r($thisLecture);
         $participants = $user->getParticipants($lectureId);
 
         // print_r($participants);
-        echo "No of participants is " . sizeof($participants);
+        //echo "No of participants is " . sizeof($participants);
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
+
 
         $courseCode = $thisLecture->getTitle();
         $courseCodeAndDate_HTML = <<<EOF
@@ -77,14 +78,14 @@ EOF;
         $participants_data = [];
 
         // print_r($participants);
-        $i = 0;
-        foreach ($participants as $participant) {
+
+         foreach ($participants as $participant) {
             /*if ($participant->getId() == 22104260) {
                 echo " cont ";
                 break;
             }*/
 
-            $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
+            $af = new AllowanceFacade($conn, User::TABLE_NAME, $participant->getId());
 
             if ($af->getIsAllowed()) {
                 $allowance = "Allowed";
@@ -92,19 +93,17 @@ EOF;
                 $allowance = "Not Allowed";
             }
 
-            $participants_data[] = ["firstEl" => $participant->getFirstName() . " " . $participant->getLastName(), "secondEl" => $participant->getId(),
-                "thirdEl" => $allowance];
-            echo 'dwdw ' . $i++ . " " . sizeof($participants) . " ";
+            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=>$participant->getId(),
+            "thirdEl"=> $allowance];
 
-        }
-        echo 111;
 
-        // this user causes an error ????
+         }
+
+         // this user causes an error ????
         // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
-
-        echo $engine->render("listWith3Columns", ["row" => $participants_data,
-            "column1" => "Name", "column2" => "Id", "column3" => "Allowance", "title" => "Participants of the Event"]);
+        echo $engine->render("demonstrateStudentsInCourse", ["row"=>$participants_data,
+        "column1"=>"Name", "column2"=>"Id", "column3"=>"Allowance", "title"=>"Participants of the Event"]);
 
         /*$d1 = new DateTime("2009-12-22");
         $d2 = new DateTime('now');
