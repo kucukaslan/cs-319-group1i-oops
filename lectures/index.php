@@ -4,6 +4,7 @@ require_once(rootDirectory()."/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 ob_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +32,11 @@ ob_start();
                     </div> </form>";
         echo "</div> </div>";
         exit();
-    } else {
+    }    
+    else if ($_Session['usertype'] != AcademicStaff::TABLE_NAME && $_Session['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
+    } 
+    else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));

@@ -5,6 +5,8 @@ require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/EventFactory.php");
 require_once(rootDirectory() . "/util/AllowanceFacade.php");
 startDefaultSessionWith();
+ob_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -33,15 +35,19 @@ startDefaultSessionWith();
                     </div> </form>";
         echo "</div> </div>";
         exit();
-    } else {
+    } 
+    else if ($_Session['usertype'] != AcademicStaff::TABLE_NAME && $_Session['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
+    }
+    else {
         // definitions
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
         $ef = new EventFactory($conn);
-        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
         $lectureId = $_SESSION["lectureToDisplay"];
         //echo "Lecture id: " . $lectureId;
 
@@ -73,13 +79,44 @@ startDefaultSessionWith();
 </section>
 EOF;
         echo $courseCodeAndDate_HTML;
+        $coins_data = [];
+        $ef = new EventFactory($conn);
+        $e = $ef->getEvent($lectureId);
+        $instructors = $e->getControllers();
+        // print_r($participants);
+        foreach ($instructors as $instructor) {
+            /*if ($participant->getId() == 22104260) {
+                echo " cont ";
+                break;
+            }*/
 
+            $af = new AllowanceFacade($conn, User::TABLE_NAME, $instructor->getId());
+
+            if ($af->getIsAllowed()) {
+                $allowance = "Allowed";
+            } else {
+                $allowance = "Not Allowed";
+            }
+
+
+            $coins_data[] = ["firstEl" => $instructor->getFirstName() . " " . $instructor->getLastName(), "secondEl" => $instructor->getId(),
+                "thirdEl" => $allowance];
+
+
+        }
+
+
+        // this user causes an error ????
+        // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
+
+        echo $engine->render("demonstrateInstructorsInCourse", ["row" => $coins_data,
+            "column1" => "Name", "column2" => "Id", "column3" => "Allowance", "title" => "Coinstructors of the Event"]);
         // create participants data to display
         $participants_data = [];
 
         // print_r($participants);
 
-         foreach ($participants as $participant) {
+        foreach ($participants as $participant) {
             /*if ($participant->getId() == 22104260) {
                 echo " cont ";
                 break;
@@ -93,17 +130,17 @@ EOF;
                 $allowance = "Not Allowed";
             }
 
-            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=>$participant->getId(),
-            "thirdEl"=> $allowance];
+            $participants_data[] = ["firstEl" => $participant->getFirstName() . " " . $participant->getLastName(), "secondEl" => $participant->getId(),
+                "thirdEl" => $allowance];
 
 
-         }
+        }
 
-         // this user causes an error ????
+        // this user causes an error ????
         // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
-        echo $engine->render("demonstrateStudentsInCourse", ["row"=>$participants_data,
-        "column1"=>"Name", "column2"=>"Id", "column3"=>"Allowance", "title"=>"Participants of the Event"]);
+        echo $engine->render("demonstrateStudentsInCourse", ["row" => $participants_data,
+            "column1" => "Name", "column2" => "Id", "column3" => "Allowance", "title" => "Participants of the Event"]);
 
         /*$d1 = new DateTime("2009-12-22");
         $d2 = new DateTime('now');
