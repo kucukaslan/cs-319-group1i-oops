@@ -51,28 +51,30 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $newFName = $_POST['newName'];
             unset($_POST);
 
-            $std->setFirstname($newFName);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $std->setFirstname($newFName);
             $std->updateToDatabase();
-            echo "new name: " . $newFName;
-            echo "user id" . $_SESSION['id'];
-            // header("Refresh:0");
+            
+            header("Refresh:0");
         }
         if (isset($_POST['newsName'])) {
             $newSName = $_POST['newsName'];
             unset($_POST);
 
-            $std->setLastname($newSName);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $std->setLastname($newSName);
+            $std->updateToDatabase();
+
             header("Refresh:0");
         }
         if (isset($_POST['newEmail'])) {
             $newEmail = $_POST['newEmail'];
             unset($_POST);
 
-            $std->setEmail($newEmail);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            header("Refresh:0");
+            $std->setEmail($newEmail);
+            $std->updateToDatabase();
+           header("Refresh:0");
         }
         if (isset($_POST['newP']) && isset($_POST['verP'])) {
             $currentPassword = $_POST['verP'];
