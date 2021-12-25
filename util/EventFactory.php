@@ -100,7 +100,7 @@ class EventFactory {
         $stmt->bindParam(":event_id", $eventId);
         $stmt->execute();
         if( $stmt->rowCount() == 0)
-            return null;
+            throw new EventDoesNotExistsException();
         else
             return $stmt->fetch(PDO::FETCH_ASSOC);
     }

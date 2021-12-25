@@ -11,13 +11,6 @@ class CourseEvent extends Event {
     protected ?int $year;
     protected ?string $semester;
 
-
-    // todo : muh database ekle, yukarıya table name ekle.
-    public function insertToDatabase() : bool
-    {
-        return false;
-    }
-
     /**
      * @return int|null
      */
@@ -52,6 +45,31 @@ class CourseEvent extends Event {
     {
         $this->semester = $semester;
         return $this;
+    }
+
+    /*
+     * Complete the Insertion of a CourseEvent to the database
+     * @return bool
+     */
+    public function insertToSpecializedTable(): bool
+    {
+       // var_dump($this);
+
+        try {
+            $sql = "INSERT INTO " . CourseEvent::TABLE_PREFIX.CourseEvent::TABLE_NAME . " (event_id, year, semester) VALUES (:event_id, :year, :semester)";
+            //echo $sql.PHP_EOL;
+            $event_id= $this->getEventID();
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":event_id", $event_id);
+            $stmt->bindParam(":year", $this->year);
+            $stmt->bindParam(":semester", $this->semester);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+        
     }
     
 }
