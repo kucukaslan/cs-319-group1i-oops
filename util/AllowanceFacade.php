@@ -32,6 +32,7 @@ class AllowanceFacade {
         $this->vm = new VaccineManager($conn, $userId);
     }
 
+
     public function getIsAllowed(): ?bool {
         // echo "in is allowed ";
         $this->isAllowed = $this->checkAllowance();
