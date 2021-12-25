@@ -5,6 +5,7 @@ require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/EventFactory.php");
 require_once(rootDirectory() . "/util/AllowanceFacade.php");
 startDefaultSessionWith();
+$conn = getDatabaseConnection();
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +22,27 @@ startDefaultSessionWith();
 <div class="container">
 
     <?php
+    if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_FILES['file'])) {
+            $filename = $_FILES['file']['tmp_name'];
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xls');
+            $reader->setReadDataOnly(TRUE);
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
+            $ads = $spreadsheet->getActiveSheet();
+            $maxRow = $ads->getHighestRow();
+            $ids = [];
+            for ($row = 2; $row <= $maxRow; ++$row) {
+                $col = 4;
+                $value = intval($ads->getCellByColumnAndRow($col, $row)->getValue());
+                echo $value . "<br>";
+            }
+            print_r($ids);
+        }
+        //todo add to lecture.
+    }
+
+
+    ?><?php
     require_once rootDirectory() . '/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
@@ -38,10 +60,10 @@ startDefaultSessionWith();
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
         $ef = new EventFactory($conn);
-        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
         $lectureId = $_SESSION["lectureToDisplay"];
         //echo "Lecture id: " . $lectureId;
 
@@ -79,7 +101,7 @@ EOF;
 
         // print_r($participants);
 
-         foreach ($participants as $participant) {
+        foreach ($participants as $participant) {
             /*if ($participant->getId() == 22104260) {
                 echo " cont ";
                 break;
@@ -93,17 +115,46 @@ EOF;
                 $allowance = "Not Allowed";
             }
 
-            $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=>$participant->getId(),
-            "thirdEl"=> $allowance];
+            $participants_data[] = ["firstEl" => $participant->getFirstName() . " " . $participant->getLastName(), "secondEl" => $participant->getId(),
+                "thirdEl" => $allowance];
 
+        }
 
-         }
-
-         // this user causes an error ????
+        // this user causes an error ????
         // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
-        echo $engine->render("demonstrateStudentsInCourse", ["row"=>$participants_data,
-        "column1"=>"Name", "column2"=>"Id", "column3"=>"Allowance", "title"=>"Participants of the Event"]);
+        echo $engine->render("demonstrateStudentsInCourse", ["row" => $participants_data,
+            "column1" => "Name", "column2" => "Id", "column3" => "Allowance", "title" => "Participants of the Event"]);
+        ?>
+        <section class="hero has-background-info-dark">
+            <div class="hero-body">
+                <div class="columns is-centered">
+                    <div class="column is-narrow">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="box has-text-centered">
+
+
+                                <form method="post" enctype="multipart/form-data">
+                                    Choose Your File
+                                    <div class="file">
+                                        <label class="file-label"> <input class="input" type="file" name="file"/>
+                                        </label>
+                                    </div>
+
+                                </form>
+                                <input type="submit" class="button is-primary" value="Add Vaccine Card"
+                                       name="vaccinecard"/>
+
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <?php
 
         /*$d1 = new DateTime("2009-12-22");
         $d2 = new DateTime('now');

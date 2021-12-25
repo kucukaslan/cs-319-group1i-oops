@@ -1,0 +1,75 @@
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <h2><b>{{title}}</b></h2>
+                <div class="control">
+                    <form class="box" id="loginForm" action="" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <label for="ctitle">Course Title
+                                    {{#titleErr}}
+                                        <input type="text" name="ctitle" class="input is-danger" id="ctitle" min="1"
+                                               required placeholder="Enter Course Title"> >
+                                    {{/titleErr}}
+                                    {{^titleErr}}
+                                        <input type="text" name="ctitle" class="input" id="ctitle" min="1" required
+                                               placeholder="Enter Course Title">
+                                    {{/titleErr}}
+                                </label>
+                            </div>
+                            {{#titleErr}}
+                                <p class="help is-danger">{{titleErr}}</p>
+                            {{/titleErr}}
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="cplace">Course Place
+                                    {{#placeErr}}
+                                        <input type="text" name="cplace" class="input is-danger" id="cplace" min="1"
+                                               required placeholder="Enter Course Place"> >
+                                    {{/placeErr}}
+                                    {{^placeErr}}
+                                        <input type="text" name="cplace" class="input" id="cplace" min="1" required
+                                               placeholder="Enter Course Place">
+                                    {{/placeErr}}
+                                </label>
+                            </div>
+                            {{#placeErr}}
+                                <p class="help is-danger">{{placeErr}}</p>
+                            {{/placeErr}}
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="cpart">Max Number of Participants<input type="number" name="cpart"
+                                                                                    class="input" id="cpart" min="0"
+                                                                                    required
+                                                                                    placeholder="Enter Max Number of Participants">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label for="cdate">Start Date<input type="date" name="cdate" class="input" id="cdate"
+                                                                    min="2018-01-01" max="2023-12-31" required> </label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox"> <input type="checkbox" name="callow"> Allow People to Join by
+                                                                                               Default</label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <input type="submit" class="button is-success" value="Create Course">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
