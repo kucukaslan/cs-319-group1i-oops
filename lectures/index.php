@@ -1,6 +1,6 @@
 <?php
 include_once("../config.php");
-require_once(rootDirectory()."/util/NavBar.php");
+require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 startDefaultSessionWith();
 ob_start();
@@ -35,10 +35,10 @@ ob_start();
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
-        $usertype  = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
         $ef = new EventFactory($conn);
-        $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
@@ -66,17 +66,38 @@ ob_start();
 
 
         // render upcoming lectures
-        echo $engine->render("listWith3ColumnsAndButton", ["row" => $lecture_data, "title"=>"Your Lectures",
-        "column1"=>"Course Code", "column2"=>"Place", "column3"=>"Manage Lecture"]);
+        echo $engine->render("listWith3ColumnsAndButton", ["row" => $lecture_data, "title" => "Your Lectures",
+            "column1" => "Course Code", "column2" => "Place", "column3" => "Manage Lecture"]);
 
         // if see event button is pressed, move to this page
         // go to the see event page if see button is pressed
-        if(isset($_POST["goEvent"])) {
+        if (isset($_POST["goEvent"])) {
             $_SESSION["lectureToDisplay"] = $_POST["goEvent"];
 
             header("Location: ../../lectures/manage");
         }
 
+        //create lecture
+        $wrongYear = '';
+        if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
+            if (isset($_POST['ctitle']) && isset($_POST['cplace']) && isset($_POST['cpart'])
+                && isset($_POST['cdate']) && isset($_POST['sem'])) {
+                if (intval($_POST['cdate']) >= intval(date('Y'))) {
+                    $title = $_POST['ctitle'];
+                    $place = $_POST['cplace'];
+                    $maxParts = intval($_POST['cpart']);
+                    $semester = $_POST['sem'];
+                    $allowJoin = isset($_POST['callow']);
+                    $year = intval($_POST['cdate']);
+                } else {
+                    $wrongYear = 'Year must be at least ' . intval(date('Y')) . '.';
+                }
+            }
+        }
+        echo $engine->render("createLecture", [
+            "title" => "Create Lecture",
+            'yearErr' => $wrongYear
+        ]);
     }
     ?>
 </div>
