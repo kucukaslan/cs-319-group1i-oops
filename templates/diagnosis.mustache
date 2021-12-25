@@ -4,11 +4,13 @@
         <table>
             <tr>
                 <th>Date</th>
+                <th>Type</th>
             </tr>
             {{#diagnosis}}
-            <tr>
-                <th>{{date}}</th>
-            </tr>
+                <tr>
+                    <th>{{date}}</th>
+                    <th>{{type}}</th>
+                </tr>
             {{/diagnosis}}
         </table>
     </div>
@@ -21,7 +23,7 @@
 
             <label>Add New Diagnosis Information with PDF:</label>
 
-            <br> </br>
+            <br>
 
             <div class="table">
 
@@ -29,18 +31,13 @@
                 <form method="post" enctype="multipart/form-data">
                     Choose Your File
                     <div class="file">
-                        <label class="file-label"> <input class="input" type="file" name="file"/> <input type="submit"
-                                                                                                         class="button is-primary"
-                                                                                                         value="Add Diagnosis Card"
-                                                                                                         name="diagnosis"/>
-                        </label>
+                        <label class="file-label"> <input class="input" type="file" name="file"/> </label>
                     </div>
+
                 </form>
+                <input type="submit" class="button is-primary" value="Add Diagnosis Card" name="diagnosis"/>
 
             </div>
-
-
-
 
 
         </form>

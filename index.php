@@ -82,7 +82,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     $vaccineInstance = $vf->makeVaccineByCvxCode(getDatabaseConnection(), 208);
                     $vacmanager = new VaccineManager(getDatabaseConnection(), $_SESSION['id']);
-                    $vacmanager->insertVaccination($vaccineInstance,new DateTime($date));
+                    $vacmanager->insertVaccination($vaccineInstance, new DateTime($date));
                 }
             }
 
@@ -99,7 +99,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     $date = $pieces1[0];
                     $type = $pieces1[1];
-		            $result = $pieces1[2];
+                    $result = $pieces1[2];
 
 
                     $date1 = str_replace(' ', '', $pieces1[0]);
@@ -108,13 +108,13 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     $type1 = str_replace(' ', '', $pieces1[1]);
                     $type1 = str_replace("\n", '', $type1);
 
-	                $currentId = $_SESSION['id'];
+                    $currentId = $_SESSION['id'];
 
 
                     $diagnosisInstance = new Diagnosis();
 
                     //$date2 = datetime::createFromFormat(DateTimeInterface::RFC3339,$date1);
-                    $date2 = DateTime::createFromFormat('Y-m-d',$date1);
+                    $date2 = DateTime::createFromFormat('Y-m-d', $date1);
 
                     $diagnosisInstance->setDiagnosisDate($date2);
                     $diagnosisInstance->setResult($result);
@@ -122,12 +122,10 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
                     echo $diagnosisInstance;
                     $diagnosisInstance->updateDiagnosisesOfUser($conn);
-                    
+
 
                 }
             }
-
-
 
 
         }
@@ -168,42 +166,58 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
 
                     $abc = [];
-                    $i = 0;
                     foreach ($myVaccines as $vaccine) {
                         $myVaccineType = $vaccine->getVaccineType();
                         $myVaccineDate = $vaccine->getVaccineDate();
-                        $abc[$i] = ['vaccineDate'=> $myVaccineDate->format('r'), 'vaccineType'=> $myVaccineType];
-                        $i = $i + 1;
+                        $abc[] = ['vaccineDate' => $myVaccineDate->format('d M Y'), 'vaccineType' => $myVaccineType];
                     }
 
                     echo $engine->render('vax',
                         ['vaccine' => $abc]);
-                  
+
                     ?>
                 </div>
             </div>
             <div class="tile is-child box">
-                <p>
-                    <?php
+                <?php
 
-                     
-                    $diagnosisTest = new Diagnosis();
-                    $diagnosisTest->setType("hadi bakalim");
-                    $diagnosisTest->setResult(3);
-                    $diagnosisTest->setDiagnosisId(24);
-                    $diagnosisTest->setUserId($_SESSION['id']);
-                    $DateAndTime1 = new DateTime('NOW');
-                    echo $DateAndTime1->format('Y-m-d H:i:s');
-                    $diagnosisTest->setDiagnosisDate($DateAndTime1);
-                    //$diagnosisTest->updateDiagnosisesOfUser($conn);
-                    $diagnosises = Diagnosis::getDiagnosisesOfUser($_SESSION['id'] , $conn);
+                /*
+                $diagnosisTest = new Diagnosis();
+                $diagnosisTest->setType("hadi bakalim");
+                $diagnosisTest->setResult(3);
+                $diagnosisTest->setDiagnosisId(24);
+                $diagnosisTest->setUserId($_SESSION['id']);
+                $DateAndTime1 = new DateTime('NOW');
+                $diagnosisTest->setDiagnosisDate($DateAndTime1);
+                */
+                //$diagnosisTest->updateDiagnosisesOfUser($conn);
+                $diagnosises = Diagnosis::getDiagnosisesOfUser($_SESSION['id'], $conn);
+                $dTable = [];
+                foreach ($diagnosises as $diagnosise) {
+                    $dTable[] = [
+                        'date' => $diagnosise->getDiagnosisDate()->format('d M Y'),
+                        'type' => $diagnosise->getType()
+                    ];
+                }
+                function diagnosisTypeasString(int $r): string
+                {
+                    $out = '';
+                    if ($r === 0) {
+                        $out = 'Positive';
+                    } elseif ($r === 1) {
+                        $out = 'Negative';
+                    } elseif ($r === 2) {
+                        $out = 'Unknown';
+                    } else {
+                        $out = 'Pending';
+                    }
+                    return $out;
+                }
 
-                    echo $engine->render("diagnosis",
-                        ["diagnosis" => [["date" => "date 1"],
-                            ["date" => "date 2"]]]);
+                echo $engine->render("diagnosis",
+                    ["diagnosis" => $dTable]);
 
-                    ?>
-                </p>
+                ?>
             </div>
         </div>
         <div class="tile is-parent">
@@ -212,22 +226,22 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     <?php
                     //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                     //$upcomingTest = ["date" => "2023"];
-                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'],$conn);
-                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'],$conn);
-    
+                    $pastTests = Test::getTestsOfUserPast($_SESSION['id'], $conn);
+                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'], $conn);
+
                     $pastArr = array();
                     $futureArr = array();
-                    foreach( $pastTests as $p) {
-                        $pastArr[] = array( "date" => $p->getTestDate()->format('r') , "result" =>$p->getResult());
+                    foreach ($pastTests as $p) {
+                        $pastArr[] = array("date" => $p->getTestDate()->format('r'), "result" => $p->getResult());
                     }
-                    foreach( $futureTests as $p) {
-                        $futureArr[] = array( "date" => $p->getTestDate()->format('r'));
+                    foreach ($futureTests as $p) {
+                        $futureArr[] = array("date" => $p->getTestDate()->format('r'));
                     }
-    
-                    echo $engine->render("PCRtest",[ 'upcomingTest'=> $futureArr,
+
+                    echo $engine->render("PCRtest", ['upcomingTest' => $futureArr,
                         'pastTest' => $pastArr
                     ]);
-                    
+
                     ?>
                 </p>
             </div>
