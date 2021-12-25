@@ -47,7 +47,17 @@ ob_start();
         ));
 
         $navbar = new NavBar($usertype, $pagename);
-        echo $navbar->draw();
+        echo $navbar->draw(); ?>
+
+        <?php if (isset($_SESSION['cerr'])): ?>
+
+            <div class="notification is-danger is-light">
+                <?= htmlspecialchars($_SESSION['cerr'], ENT_HTML5 | ENT_QUOTES); ?>
+            </div>
+
+        <?php endif; ?>
+        
+        <?php
 
         $imgSource = "../srcs/default_profile_pic.jpg";
 
@@ -68,9 +78,9 @@ ob_start();
 
         // add close contacts to contact list
         $i = 0;
-        foreach($contacts as $contact) {
+        foreach ($contacts as $contact) {
             $contact_list[] = ["imgsource" => $imgSource, "name" => $contact->getFirstName() . " " . $contact->getLastName(),
-            "id" => $contact->getId()];
+                "id" => $contact->getId()];
 
             $i++;
         }
@@ -81,16 +91,15 @@ ob_start();
 
         $event_list = [];
         foreach ($event_sports as $event) {
-            $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace() . " " . $event->getStartDate()->format("d") . "-" . $event->getStartDate()->format('M')
-                . " " . $event->getStartDate()->format('h') . ":" . $event->getStartDate()->format('i'). "-"
-                .$event->getEndDate()->format('h') . ":" . $event->getEndDate()->format('i'),
-                "eventId"=>$event->getEventID()];
+            $event_list[] = ["firstEl" => $event->getTitle(), "secondEl" => $event->getPlace() . " " . $event->getStartDate()->format("d") . "-" . $event->getStartDate()->format('M')
+                . " " . $event->getStartDate()->format('h') . ":" . $event->getStartDate()->format('i') . "-"
+                . $event->getEndDate()->format('h') . ":" . $event->getEndDate()->format('i'),
+                "eventId" => $event->getEventID()];
         }
 
         foreach ($event_lecture as $event) {
-            $event_list[] = ["firstEl"=>$event->getTitle(), "secondEl"=>$event->getPlace(), "eventId"=>$event->getEventID()];
+            $event_list[] = ["firstEl" => $event->getTitle(), "secondEl" => $event->getPlace(), "eventId" => $event->getEventID()];
         }
-
 
 
         // RENDERING HTMLs
@@ -100,7 +109,7 @@ ob_start();
         // render lectures
         echo $m->render('listWith3ColumnsAndButton',
             ['row' => $event_list
-            , "title"=>"Your Events", "column1"=>"Name", "column2"=>"Info", "column3"=>"Participants"]);
+                , "title" => "Your Events", "column1" => "Name", "column2" => "Info", "column3" => "Participants"]);
 
 
         // add close contact component
@@ -108,23 +117,25 @@ ob_start();
 
 
         // add to close contact
-        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
             if (is_numeric($_POST['closeContact'])) {
                 $_SESSION["closeContact"] = $_POST["closeContact"];
                 echo "inside post if " . $_POST["closeContact"];
                 unset($_POST);
-
+                unset($_SESSION['cerr']);
                 header("Refresh:0");
             } else {
-                echo "Not valid HES CODE";
+                $_SESSION['cerr'] = $_POST["closeContact"] . ' is not a valid id';
+                echo "Not valid ID CODE";
             }
-        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["closeContact"])){
+        } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["closeContact"])) {
             $userIdToAdd = $_SESSION["closeContact"];
             unset($_SESSION["closeContact"]);
-
             if ($user->addCloseContact($userIdToAdd, 1)) {
+                unset($_SESSION['cerr']);
                 echo "added USER WITH ID: " . $userIdToAdd;
             } else {
+                $_SESSION['cerr'] = $userIdToAdd . ' was not added';
                 echo "DID NOT MANAGE TO add " . $userIdToAdd;
             }
 
@@ -134,7 +145,7 @@ ob_start();
 
         // implementation of deleting user from the close contact list
         // check if a button is pressed for any user in the table
-        if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
             $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
             echo "inside post if remove" . $_POST["removeCloseContact"];
             unset($_POST);
@@ -145,8 +156,10 @@ ob_start();
             unset($_SESSION["removeCloseContact"]);
 
             if ($user->deleteCloseContact($userIdToDelete)) {
+                unset($_SESSION['cerr']);
                 echo "DELETED USER WITH ID: " . $userIdToDelete;
             } else {
+                $_SESSION['cerr'] = $userIdToDelete . ' was not deleted.';
                 echo "DID NOT MANAGE TO DELETE " . $userIdToDelete;
             }
 
@@ -155,7 +168,7 @@ ob_start();
 
 
         // go to the see event page if see button is pressed
-        if(isset($_POST["goEvent"])) {
+        if (isset($_POST["goEvent"])) {
             $_SESSION["eventToDisplay"] = $_POST["goEvent"];
             echo $_POST["goEvent"];
             header("Location: ../../closecontact/see");
@@ -163,6 +176,7 @@ ob_start();
 
     }
     ?>
+
     <!--
     <div class = "component">
         <h2>Add Close Contact by ID</h2>
