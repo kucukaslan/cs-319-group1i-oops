@@ -126,7 +126,7 @@ class Diagnosis
         $sql = "INSERT INTO ". Diagnosis::TABLE_NAME ."  (type, result, date, user_id) VALUES (:type, :result, :date, :user_id) ";
         $stmt = $conn->prepare($sql);
     $stmt->bindParam(":user_id", $_SESSION['id']);
-    echo $this->diagnosisDate->format('Y-m-d H:i:s');
+   // echo $this->diagnosisDate->format('Y-m-d H:i:s');
     $stringDate = $this->diagnosisDate->format('Y-m-d H:i:s');
 
     $stmt->bindParam(":date", $stringDate);

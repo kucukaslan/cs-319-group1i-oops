@@ -112,9 +112,16 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
 
                     $diagnosisInstance = new Diagnosis();
-                    $diagnosisInstance->setDiagnosisDate($date1);
+
+                    //$date2 = datetime::createFromFormat(DateTimeInterface::RFC3339,$date1);
+                    $date2 = DateTime::createFromFormat('Y-m-d',$date1);
+
+                    $diagnosisInstance->setDiagnosisDate($date2);
                     $diagnosisInstance->setResult($result);
                     $diagnosisInstance->setType($type1);
+
+                    echo $diagnosisInstance;
+                    $diagnosisInstance->updateDiagnosisesOfUser($conn);
                     
 
                 }
