@@ -78,19 +78,25 @@ ob_start();
         }
 
         //create lecture
-
+        $wrongYear = '';
         if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['ctitle']) && isset($_POST['cplace']) && isset($_POST['cpart'])
-                && isset($_POST['cdate'])) {
-                $title = $_POST['ctitle'];
-                $place = $_POST['cplace'];
-                $maxParts = intval($_POST['cpart']);
-                $allowJoin = isset($_POST['callow']);
-                $startDate = new DateTime($_POST['cdate']);
+                && isset($_POST['cdate']) && isset($_POST['sem'])) {
+                if (intval($_POST['cdate']) >= intval(date('Y'))) {
+                    $title = $_POST['ctitle'];
+                    $place = $_POST['cplace'];
+                    $maxParts = intval($_POST['cpart']);
+                    $semester = $_POST['sem'];
+                    $allowJoin = isset($_POST['callow']);
+                    $year = intval($_POST['cdate']);
+                } else {
+                    $wrongYear = 'Year must be at least ' . intval(date('Y')) . '.';
+                }
             }
         }
         echo $engine->render("createLecture", [
-            "title" => "Create Lecture"
+            "title" => "Create Lecture",
+            'yearErr' => $wrongYear
         ]);
     }
     ?>

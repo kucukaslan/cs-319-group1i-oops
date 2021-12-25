@@ -53,8 +53,31 @@
 
                         <div class="field">
                             <div class="control">
-                                <label for="cdate">Start Date<input type="date" name="cdate" class="input" id="cdate"
-                                                                    min="2018-01-01" max="2023-12-31" required> </label>
+                                {{^yearErr}}
+                                    <label for="cdate">Year<input type="number" name="cdate" class="input" id="cdate"
+                                                                  min="1000" max="9999" required
+                                                                  placeholder="Enter Course Year"> </label>
+                                {{/yearErr}}
+                                {{#yearErr}}
+                                    <label for="cdate">Year<input type="number" name="cdate" class="input is-danger"
+                                                                  id="cdate" min="1000" max="9999" required
+                                                                  placeholder="Enter Course Year"> </label>
+                                {{/yearErr}}
+                            </div>
+                            {{#yearErr}}
+                                <p class="help is-danger">{{yearErr}}</p>
+                            {{/yearErr}}
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label for="ut">Semester</label>
+                            </div>
+                            <div class="select">
+                                <select id="ut" name="sem">
+                                    <option value="FALL" selected>Fall Semester</option>
+                                    <option value="SPRING">Spring Semester</option>
+                                    <option value="SUMMER">Summer Semester</option>
+                                </select>
                             </div>
                         </div>
                         <div class="field">
@@ -63,6 +86,7 @@
                                                                                                Default</label>
                             </div>
                         </div>
+
 
                         <div class="field">
                             <input type="submit" class="button is-success" value="Create Course">
