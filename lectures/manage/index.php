@@ -84,7 +84,7 @@ EOF;
                 break;
             }*/
 
-            $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
+            $af = new AllowanceFacade($conn, User::TABLE_NAME, $participant->getId());
 
             if ($af->getIsAllowed()) {
                 $allowance = "Allowed";
