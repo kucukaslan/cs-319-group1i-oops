@@ -127,7 +127,7 @@ class UserFactory{
         }
     }
 
-    private function getRow(PDO $conn, string $user_type, int $user_id) : array
+    private function getRow(PDO $conn, string $user_type, int $user_id) : ?array
     {
         $query = "SELECT * FROM " . $user_type . " WHERE id = :id";
         $stmt = $conn->prepare($query);
