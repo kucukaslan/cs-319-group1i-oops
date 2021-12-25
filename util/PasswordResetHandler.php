@@ -1,16 +1,47 @@
 <?php
 require_once(__DIR__."/../config.php");
+require_once(rootDirectory() . '/vendor/autoload.php');
 require_once("UserFactory.php");
 require_once("CustomException.php");
 
-class PasswordResetHandler {
-    const TABLE_NAME = 'password_reset_token';
+use League\OAuth2\Client\Provider\Google;
 
+class PasswordResetHandler {
+
+    const TABLE_NAME = 'password_reset_token';
+    private string $domain;
     private PDO $conn;
-    public function __construct(PDO $conn) {
+    public function __construct(PDO $conn, string $domain = "https://forthyhealth.duckdns.org") {
         $this->conn = $conn;
+        $this->domain = $domain;
     }
 
+    public function sendPasswordResetEmail(User $user) : bool {
+        $token = $this->generateTokenForUser($user->getId());
+        
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->Port = 465;
+        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ThatIsagoalforitsownsake@gmail.com';
+        $mail->Password = 'StackPop';
+        $mail->setFrom('ThatIsagoalforitsownsake@gmail.com', 'ForThyHealth');
+        $mail->addAddress(/*$_SESSION['email']*/ $user->getEmail(), $_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+        $mail->Subject = 'Password Reset Request';
+        $mail->Body =  'Dear '.$user->getFirstName().' '.$user->getLastName().",\n";
+        $mail->Body .= "You have requested a password reset. Please click the link below to a browser to reset your password.\n";
+        $mail->Body .=  $this->domain.'/forgot/?pwr=' . $token . "\n";
+        $mail->Body .= "If you did not request a password reset, please ignore this email.\n";
+        $mail->Body .= "Thank you,\n\n";
+        $mail->Body .= "~ ForThyHealth\n";
+
+        return $mail->send();
+        
+
+
+    }
     public function generateTokenForUser(int $user_id) : string {
         $crypt_safe_rand_int = random_int(PHP_INT_MIN, PHP_INT_MAX);
         $hash_of_rand_int = hash("sha256", $crypt_safe_rand_int);
@@ -32,7 +63,7 @@ class PasswordResetHandler {
         return $stmt->rowCount()>0;
     }
 
-    public function updatePassword($token, $newPassword) : bool {
+    public function updatePassword(string $token, string|int $newPassword) : bool {
         try {
             // update password
             $sql = "select * from ".PasswordResetHandler::TABLE_NAME." where token = :token";

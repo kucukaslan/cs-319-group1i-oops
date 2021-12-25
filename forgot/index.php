@@ -3,6 +3,7 @@ require_once(__DIR__ . "/../config.php");
 require_once(rootDirectory() . '/vendor/autoload.php');
 require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/CustomException.php");
+require_once(rootDirectory() . "/util/PasswordResetHandler.php");
 
 use League\OAuth2\Client\Provider\Google;
 
@@ -39,44 +40,32 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $uf = new UserFactory();
 
-        $_SESSION['usertype'] = $usertype;
-        echo 111;
-
         $std = $uf->makeUserById(db: $conn, id: $userid);
-
-        echo 1231;
-
-
         $_SESSION['firstname'] = $std->getFirstName();
         $_SESSION['lastname'] = $std->getLastName();
         $_SESSION['id'] = $std->getId();
         $_SESSION['email'] = $std->getEmail();
+
+
         echo $m->render('forgot', [
             'title' => 'Forgot Password',
             'id' => 'University ID',
             'sent' => $_SESSION['email'],
         ]);
-        $mail = new PHPMailer\PHPMailer\PHPMailer();
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->Port = 465;
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-        $mail->SMTPAuth = true;
-        $mail->Username = 'ThatIsagoalforitsownsake@gmail.com';
-        $mail->Password = 'StackPop';
-        $mail->setFrom('ThatIsagoalforitsownsake@gmail.com', 'ForThyHealth');
-        $mail->addAddress(/*$_SESSION['email']*/ 'mustafayasiraltunhan@gmail.com', $_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
-        $mail->Subject = 'Password Reset';
-        $mail->Body = 'password resetted';
-        if (!$mail->send()) {
+
+        $prh = new PasswordResetHandler($conn);
+        
+        
+        if (!$prh->sendPasswordResetEmail($std)) {
             echo 'Mailer Error: ' . $mail->ErrorInfo;
         } else {
             echo 'Message sent!';
             //Section 2: IMAP
             //Uncomment these to save your message in the 'Sent Mail' folder.
-            if (\PHPMailer\PHPMailer\PHPMailer::save_mail($mail)) {
+            /*if (\PHPMailer\PHPMailer\PHPMailer::save_mail($mail)) {
                 echo "Message saved!";
             }
+            */
         }
 
     } catch (UserDoesNotExistsException $e) {
@@ -92,12 +81,43 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
             'pass' => 'Password'
         ]);
     }
-} else {
+} 
+else if(isset($conn) && $_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['pwr'])) {
+    $pwr = $_GET['pwr'];
+
+    $prh = new PasswordResetHandler($conn);
+
+    if($prh->verifyExistenceOfToken($pwr)) {
+        //
+        echo "Token is valid";
+        echo "take new password from user";
+        echo "update password";
+        //todo  TAKE NEW PASSWORD FROM USER
+        $newPassword = "123";
+        //todo CALL UPDATE PASSWORD METHOD
+        if( $prh->updatePassword($pwr, $newPassword)) {
+            echo "password is changed";
+        } else {
+            echo "password is not changed";
+        }
+
+    } else {
+        echo $m->render('forgot', [
+            'title' => 'Forgot Password',
+            'id' => 'University ID',
+            'pass' => 'Password',
+            'pwrErr' => 'Invalid token. Please try again.',
+        ]);
+    }
+}
+else {
     echo $m->render('forgot', [
         'title' => 'Forgot Password',
         'id' => 'University ID',
     ]);
 }
 ?>
+
+
 </body>
 </html>
