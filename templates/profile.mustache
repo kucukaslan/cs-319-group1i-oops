@@ -9,7 +9,12 @@
         <p>ID: {{id}}</p>
         <p>Name: {{name}}</p>
         <p>E-mail: {{email}}</p>
-        <p>Allowance Status: {{allowance}}</p>
+        {{^allowance}}
+        <p class="has-text-danger">Allowance Status: <b>Not Allowed</b></p>
+        {{/allowance}}
+        {{#allowance}}
+            <p class="has-text-success">Allowance Status: {{allowance}}</p>
+        {{/allowance}}
         <p>HES Code: {{hescode}}</p>
         <div class="control">
             <form class="box" id="hescodeForm" action="" method="post">

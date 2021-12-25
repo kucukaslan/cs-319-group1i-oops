@@ -1,26 +1,32 @@
 <div class="component">
     <p class="title">Past & Upcoming PCR Tests</p>
+    <h2> Past Tests </h2>
     <table class="table is-bordered is-striped is-narrow is-hoverable">
         <tr>
             <th>Date</th>
             <th>Result</th>
         </tr>
-        {{#upcomingTest}}
-            <tr>
-                <td>{{date}}</td>
-                <td>
-                    <form method="post">
-                        <input type="submit" class="button is-warning" value="Cancel" name="remove-{{date}}">
-                    </form>
-                </td>
-            </tr>
-        {{/upcomingTest}}
         {{#pastTest}}
             <tr>
                 <td>{{date}}</td>
                 <td>{{result}}</td>
             </tr>
         {{/pastTest}}
+    </table>
+    <h2> Upcoming Tests </h2>
+    <table class="table is-bordered is-striped is-narrow is-hoverable">
+        <tr>
+            <th>Date</th>
+            <th>Place</th>
+        </tr>
+        {{#upcomingTest}}
+            <tr>
+                <td>{{date}}</td>
+                <td>
+                {{place}}
+                </td>
+            </tr>
+        {{/upcomingTest}}
     </table>
 
 

@@ -49,22 +49,30 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['newName'])) {
             $newFName = $_POST['newName'];
+            unset($_POST);
+
             $std->setFirstname($newFName);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
             $std->updateToDatabase();
-            //echo $newFName
+            echo "new name: " . $newFName;
+            echo "user id" . $_SESSION['id'];
+            // header("Refresh:0");
         }
         if (isset($_POST['newsName'])) {
-
             $newSName = $_POST['newsName'];
+            unset($_POST);
+
             $std->setLastname($newSName);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            header("Refresh:0");
         }
         if (isset($_POST['newEmail'])) {
-
             $newEmail = $_POST['newEmail'];
+            unset($_POST);
+
             $std->setEmail($newEmail);
             $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            header("Refresh:0");
         }
         if (isset($_POST['newP']) && isset($_POST['verP'])) {
             $currentPassword = $_POST['verP'];
@@ -87,6 +95,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                 $wrongVerPassword = 'Current password is invalid';
                 getConsoleLogger()->log("profile","Password change failed");
             }
+            unset($_POST);
+            header("Refresh:0");
         }
     }
     echo $m->render('profilePage', [

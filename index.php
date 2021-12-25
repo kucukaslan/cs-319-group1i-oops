@@ -3,6 +3,7 @@
 require_once("config.php");
 require_once(rootDirectory() . "/util/class.pdf2text.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
+require_once(rootDirectory() . "/util/EventFactory.php");
 require_once(rootDirectory() . "/util/Vaccine.php");
 require_once(rootDirectory() . "/util/VaccineFactory.php");
 require_once(rootDirectory() . "/util/VaccineManager.php");
@@ -10,6 +11,7 @@ require_once(rootDirectory() . "/util/RiskStatusManager.php");
 require_once(rootDirectory() . "/util/Test.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/Diagnosis.php");
+require_once(rootDirectory() . "/util/AllowanceFacade.php");
 
 $conn = getDatabaseConnection();
 $pagename = '/';
@@ -48,16 +50,16 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
         $hesErr = '';
         $uf = new UserFactory();//$usertype);
-        $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+        $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
 
         //----
         if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['HESCode'])) {
                 $formattedHESCode = RiskStatusManager::formatHESCode($_POST['HESCode']);
                 if ($formattedHESCode != "") {
-                    // $hescode = $_POST['HESCode'];
-                    $std->updateHESCode($formattedHESCode);
-                    $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                    if (!$user->updateHESCode($formattedHESCode)) {
+                        $hesErr = "Failed to update HES Code";
+                    }
                 } else {
                     $hesErr = "Given value is not of the form of a HES code!";
                 }
@@ -147,13 +149,18 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
 
                     ));
+                    $af = new AllowanceFacade($conn, Student::TABLE_NAME, $user->getId());
+                    if ($af->getIsAllowed())
+                        $isAllowed = "Allowed";
+                    else
+                        $isAllowed = "";
                     // render and print profile component sessiondan al name,email falan.
                     echo $engine->render("profile", [
-                        "name" => $std->getFirstName(),
-                        "email" => $std->getEmail(),
-                        "id" => $std->getId(),
-                        'allowance' => "Allowed",
-                        'hescode' => $std->getHESCode(),
+                        "name" => $user->getFirstName(),
+                        "email" => $user->getEmail(),
+                        "id" => $user->getId(),
+                        'allowance' => $isAllowed,
+                        'hescode' => $user->getHESCode(),
                         'hesErr' => $hesErr
                     ]);
 
@@ -219,19 +226,24 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     <?php
                     //$pastTest = ["date" => "1.2.4.5", "result" => "negative"];
                     //$upcomingTest = ["date" => "2023"];
+                    $ef = new EventFactory($conn);
+
                     $pastTests = Test::getTestsOfUserPast($_SESSION['id'], $conn);
-                    $futureTests = Test::getTestsOfUserFuture($_SESSION['id'], $conn);
 
                     $pastArr = array();
                     $futureArr = array();
                     foreach ($pastTests as $p) {
-                        $pastArr[] = array("date" => $p->getTestDate()->format('r'), "result" => $p->getResult());
-                    }
-                    foreach ($futureTests as $p) {
-                        $futureArr[] = array("date" => $p->getTestDate()->format('r'));
+                        $pastArr[] = array("date" => $p->getTestDate()->format('Y M d h:i'), "result" => $p->getResult());
                     }
 
-                    echo $engine->render("PCRtest", ['upcomingTest' => $futureArr,
+                    $appointments = $user->getEventsIParticipate(TestAppointmentEvent::TABLE_NAME);
+                    $appointment_data = array();
+                    foreach ($appointments as $appointment) {
+                        $appointment_data[] = ["date"=>$appointment->getStartDate()->format("Y M d h:i"), "place"=>$appointment->getPlace()];
+                    }
+
+
+                    echo $engine->render("PCRtest", ['upcomingTest' => $appointment_data,
                         'pastTest' => $pastArr
                     ]);
 
