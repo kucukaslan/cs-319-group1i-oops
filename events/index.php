@@ -51,13 +51,11 @@ EOF;
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
     ));
 
+    // get all lectures where the user is participant and all sport events
     $lectures = $user->getEventsIParticipate(CourseEvent::TABLE_NAME);
     $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
 
-    /*print_r($lectures);
-    echo "<br>";
-    print_r($sports);
-*/
+    // format the lecture data
     $lecture_data = [];
     foreach ($lectures as $lecture) {
         $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
@@ -67,7 +65,9 @@ EOF;
     $sports_data_enrolled = [];
     $sports_data_not_enrolled = [];
 
-    // set the property of eventIParticipate
+    // set the property of eventIParticipate from the database
+    // this data will be used to determine if the user has participated the
+    // sports event
     $user->getEventsIParticipate();
 
     // format data
@@ -84,25 +84,18 @@ EOF;
         }
     }
 
-    print_r($sports_data_enrolled);
-    echo "not enrolled: <br>";
-    print_r($sports_data_not_enrolled);
-
-
-
-    // RENDER RALATED PARTS
+    // RENDER HTMLs
     echo $title;
     echo $m->render("listWith3ColumnsAndForm", ["row" => $lecture_data,
             "title" => "Enrolled Courses", "column1" => "Course Code", "column2" => "Place", "column3" => "Leave Course"]
     );
-
 
     echo $m->render('eventssports', [
         'enrolledevent' => $sports_data_enrolled,
         "notenrolledevent" => $sports_data_not_enrolled
     ]);
 
-    // enroll an event
+    // enroll an event if the enroll button is pressed
     if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
         $_SESSION["enroll"] = $_POST["enroll"];
         echo "inside post if remove" . $_POST["enroll"];
@@ -117,9 +110,13 @@ EOF;
 
         $eventToEnroll = $ef->getEvent($eventIdToEnroll);
 
-        $user->joinSportsActivity($eventIdToEnroll);
-        echo "ENROLLED ACTIVITY WITH ID " . $eventIdToEnroll;
-
+        if ($eventToEnroll->getCurrentNumberOfParticipants() < $eventToEnroll->getMaxNoOfParticipant()) {
+            if (!$user->joinSportsActivity($eventIdToEnroll)) {
+                //TODO: Error message
+            }
+        } else {
+            // TODO: Error message stating that event is full
+        }
 
         header("Refresh:0");
     }
@@ -137,7 +134,9 @@ EOF;
         unset($_SESSION["cancel"]);
         echo "canceling  " . $eventIdToCancel;
 
-        $user->leaveEvent($eventIdToCancel);
+        if (!$user->leaveEvent($eventIdToCancel)) {
+            // TODO: Error message
+        }
 
         header("Refresh:0");
     }
