@@ -22,6 +22,7 @@ ob_start();
 <body>
 <div class="container">
 
+
     <?php
     require_once rootDirectory() . '/vendor/autoload.php';
 
@@ -40,12 +41,16 @@ ob_start();
     </div>
 </div>
 EOF;
+
     $uf = new UserFactory();
     $ef = new EventFactory($conn);
     $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
-
+    $lErr = false;
     $navbar = new NavBar($usertype);
     echo $navbar->draw();
+    //$lErr = "dwadwad";
+    ?><?php
+
 
     $m = new Mustache_Engine(array(
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -58,8 +63,11 @@ EOF;
     // format the lecture data
     $lecture_data = [];
     foreach ($lectures as $lecture) {
-        $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
-        "hiddenValue"=>$lecture->getEventId()];
+        $lecture_data[] = [
+            "firstEl" => $lecture->getTitle(),
+            "secondEl" => $lecture->getPlace(),
+            "hiddenValue" => $lecture->getEventId()
+        ];
     }
 
     $sports_data_enrolled = [];
@@ -72,31 +80,21 @@ EOF;
 
     // format data
     foreach ($sports as $sport) {
-        $formattedData = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate()->format("d") . "-" . $sport->getStartDate()->format('M')
-            , "timeslot"=>$sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i'). "-" .
-            $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i')
-            , "eventId"=>$sport->getEventId(),
-            "value"=>"Leave"];
+        $formattedData = [
+            "place" => $sport->getPlace(),
+            "dayslot" => $sport->getStartDate()->format("d") . "-" . $sport->getStartDate()->format('M'),
+            "timeslot" => $sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i') . "-" .
+                $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i'),
+            "eventId" => $sport->getEventId(),
+            "value" => "Leave"];
         if ($user->doIParticipate($sport->getEventId())) {
             $sports_data_enrolled[] = $formattedData;
         } else {
             $sports_data_not_enrolled[] = $formattedData;
         }
     }
-
-    // RENDER HTMLs
-    echo $title;
-    echo $m->render("listWith3ColumnsAndForm", ["row" => $lecture_data,
-            "title" => "Enrolled Courses", "column1" => "Course Code", "column2" => "Place", "column3" => "Leave Course"]
-    );
-
-    echo $m->render('eventssports', [
-        'enrolledevent' => $sports_data_enrolled,
-        "notenrolledevent" => $sports_data_not_enrolled
-    ]);
-
     // enroll an event if the enroll button is pressed
-    if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
+    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
         $_SESSION["enroll"] = $_POST["enroll"];
         echo "inside post if remove" . $_POST["enroll"];
         unset($_POST);
@@ -111,18 +109,26 @@ EOF;
         $eventToEnroll = $ef->getEvent($eventIdToEnroll);
 
         if ($eventToEnroll->getCurrentNumberOfParticipants() < $eventToEnroll->getMaxNoOfParticipant()) {
+            unset($_SESSION['lerr']);
             if (!$user->joinSportsActivity($eventIdToEnroll)) {
+                unset($_SESSION['lerr']);
+            } else {
                 //TODO: Error message
+                $e = $ef->getEvent($eventIdToEnroll);
+                $_SESSION['lerr'] = 'Failed to enroll ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
+                    $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i');
             }
         } else {
             // TODO: Error message stating that event is full
+            $e = $ef->getEvent($eventIdToEnroll);
+            $_SESSION['lerr'] = 'Event ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
+                $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i') . ' is full';
         }
-
         header("Refresh:0");
     }
 
     // cancel sports event or leave the course
-    if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
+    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
         $_SESSION["cancel"] = $_POST["cancel"];
         echo "inside post if remove" . $_POST["cancel"];
         unset($_POST);
@@ -135,11 +141,31 @@ EOF;
         echo "canceling  " . $eventIdToCancel;
 
         if (!$user->leaveEvent($eventIdToCancel)) {
-            // TODO: Error message
+            $e = $ef->getEvent($eventIdToCancel);
+            $_SESSION['lerr'] = 'Failed to leave ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
+                $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i');
+        } else {
+            unset($_SESSION['lerr']);
         }
 
         header("Refresh:0");
     }
+    ?> <?php if (isset($_SESSION['lerr'])): ?>
+
+        <div class="notification is-danger is-light">
+            <?= htmlspecialchars($_SESSION['lerr'], ENT_HTML5 | ENT_QUOTES); ?>
+        </div>
+
+    <?php endif; ?> <?php
+    // RENDER HTMLs
+    echo $title;
+    echo $m->render("listWith3ColumnsAndForm", ["row" => $lecture_data, "title" =>
+        "Enrolled Courses", "column1" => "Course Code", "column2" => "Place", "column3" => "Leave Course"]);
+
+    echo $m->render('eventssports', ['enrolledevent' => $sports_data_enrolled, "notenrolledevent" =>
+        $sports_data_not_enrolled]);
+
+
     ?>
 </div>
 

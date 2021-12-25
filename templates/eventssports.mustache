@@ -3,6 +3,7 @@
         <div class="columns is-centered">
             <div class="column is-narrow">
                 <h2><b>Reserve & Cancel Sports Hall Reservation</b></h2>
+
                 <table class="table is-bordered is-striped is-narrow is-hoverable">
                     <tr>
                         <th>Place</th>
@@ -17,8 +18,19 @@
                             <td>{{timeslot}}</td>
                             <td>
                                 <form method="post" action="../events/index.php">
-                                <input type="hidden" name="cancel" value="{{eventId}}">
-                                <input type="submit" class="button is-warning" value="Leave">
+                                    <div class="control"><input type="hidden" name="cancel" value="{{eventId}}">
+                                        {{^lErr}}
+                                            <input type="submit" class="button is-warning" value="Leave">
+                                        {{/lErr}}
+
+                                        {{#lErr}}
+                                            <input type="submit" class="button is-danger" value="Leave">
+                                        {{/lErr}}
+
+                                    </div>
+                                    {{#lErr}}
+                                        <p class="help is-danger">{{lErr}}</p>
+                                    {{/lErr}}
                                 </form>
                             </td>
                         </tr>
@@ -30,8 +42,9 @@
                             <td>{{timeslot}}</td>
                             <td>
                                 <form method="post">
-                                <input type="hidden" name="enroll" value="{{eventId}}">
-                                <input type="submit" class="button is-success" value="Enroll">
+                                    <input type="hidden" name="enroll" value="{{eventId}}"> <input type="submit"
+                                                                                                   class="button is-success"
+                                                                                                   value="Enroll">
                                 </form>
                             </td>
                         </tr>
