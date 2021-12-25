@@ -20,7 +20,7 @@ ob_start();
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container has-text-centered">
 
     <?php
     require_once rootDirectory() . '/vendor/autoload.php';
@@ -60,8 +60,8 @@ EOF;
 */
     $lecture_data = [];
     foreach ($lectures as $lecture) {
-        $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
-        "hiddenValue"=>$lecture->getEventId()];
+        $lecture_data[] = ["firstEl" => $lecture->getTitle(), "secondEl" => $lecture->getPlace(),
+            "hiddenValue" => $lecture->getEventId()];
     }
 
     $sports_data_enrolled = [];
@@ -72,11 +72,11 @@ EOF;
 
     // format data
     foreach ($sports as $sport) {
-        $formattedData = ["place"=>$sport->getPlace(), "dayslot"=>$sport->getStartDate()->format("d") . "-" . $sport->getStartDate()->format('M')
-            , "timeslot"=>$sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i'). "-" .
-            $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i')
-            , "eventId"=>$sport->getEventId(),
-            "value"=>"Leave"];
+        $formattedData = ["place" => $sport->getPlace(), "dayslot" => $sport->getStartDate()->format("d") . "-" . $sport->getStartDate()->format('M')
+            , "timeslot" => $sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i') . "-" .
+                $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i')
+            , "eventId" => $sport->getEventId(),
+            "value" => "Leave"];
         if ($user->doIParticipate($sport->getEventId())) {
             $sports_data_enrolled[] = $formattedData;
         } else {
@@ -87,7 +87,6 @@ EOF;
     print_r($sports_data_enrolled);
     echo "not enrolled: <br>";
     print_r($sports_data_not_enrolled);
-
 
 
     // RENDER RALATED PARTS
@@ -103,7 +102,7 @@ EOF;
     ]);
 
     // enroll an event
-    if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
+    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
         $_SESSION["enroll"] = $_POST["enroll"];
         echo "inside post if remove" . $_POST["enroll"];
         unset($_POST);
@@ -125,7 +124,7 @@ EOF;
     }
 
     // cancel sports event or leave the course
-    if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
+    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
         $_SESSION["cancel"] = $_POST["cancel"];
         echo "inside post if remove" . $_POST["cancel"];
         unset($_POST);

@@ -6,6 +6,7 @@ require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/Vaccine.php");
 require_once(rootDirectory() . "/util/VaccineFactory.php");
 require_once(rootDirectory() . "/util/VaccineManager.php");
+require_once(rootDirectory() . "/util/RiskStatusManager.php");
 require_once(rootDirectory() . "/util/Test.php");
 require_once(rootDirectory() . "/util/NavBar.php");
 require_once(rootDirectory() . "/util/Diagnosis.php");
@@ -39,24 +40,27 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     echo $navbar->draw();
     ?>
 </header>
-<div class="container">
-    <p id="info">
-        <?php
+<div class="container has-text-centered">
+    <?php
 
 
         $id = $_SESSION['id'];
 
-
+        $hesErr = '';
         $uf = new UserFactory();//$usertype);
         $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
 
         //----
         if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['HESCode'])) {
-
-                $hescode = $_POST['HESCode'];
-                $std->updateHESCode($hescode);
-                $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                $formattedHESCode = RiskStatusManager::formatHESCode($_POST['HESCode']);
+                if ($formattedHESCode != "") {
+                    // $hescode = $_POST['HESCode'];
+                    $std->updateHESCode($formattedHESCode);
+                    $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                } else {
+                    $hesErr = "Given value is not of the form of a HES code!";
+                }
             }
 
             if (isset($_POST['vaccinecard'])) {
@@ -148,8 +152,9 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                         "name" => $std->getFirstName(),
                         "email" => $std->getEmail(),
                         "id" => $std->getId(),
-                        "allowance" => "Allowed",
-                        'hescode' => $std->getHESCode()
+                        'allowance' => "Allowed",
+                        'hescode' => $std->getHESCode(),
+                        'hesErr' => $hesErr
                     ]);
 
                     ?>
@@ -235,5 +240,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             </div>
         </div>
     </div>
+    <?= $navbar->footer() ?>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <table class="table is-bordered is-striped is-narrow is-hoverable">
         <tr>
             <th>Vaccination Date</th>
-            <th>Vaccination Manufacturer</th>
+            <th>Vaccination Name</th>
         </tr>
         {{#vaccine}}
             <tr>
@@ -19,7 +19,24 @@
 
     <div class="table">
 
+        <form method="post" enctype="multipart/form-data">
+            <div class="table">
 
+
+                <form method="post" enctype="multipart/form-data">
+                    Choose Your File
+                    <div class="file">
+                        <label class="file-label"> <input class="input" type="file" name="file"/> </label>
+                    </div>
+
+                </form>
+                <input type="submit" class="button is-primary" value="Add Vaccine Card" name="vaccinecard"/>
+
+            </div>
+
+
+        </form>
+        <!--
         <form method="post" enctype="multipart/form-data">
             Choose Your File
             <div class="file">
@@ -30,6 +47,7 @@
                 </label>
             </div>
         </form>
+        -->
 
     </div>
 

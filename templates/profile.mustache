@@ -1,6 +1,8 @@
 <div class="component is-info">
     <p class="title">Profile</p>
-    <img src="/srcs/default_profile_pic.jpg" alt="Avatar" class="image is-128x128">
+    <figure class="image is-128x128 is-inline-block">
+        <img src="/srcs/default_profile_pic.jpg" class="is-rounded" alt="Avatar">
+    </figure>
 
 
     <div class="content">
@@ -13,12 +15,21 @@
             <form class="box" id="hescodeForm" action="" method="post">
                 <div class="field">
                     <div class="control">
-                        <input type="submit" class="button is-info" value="Change HES Code">
-                    </div>
+                        <input type="submit" class="button is-info" value="Change HES Code"> <label for="HESCode">
+                        {{^hesErr}}
+                            <input type="text" name="HESCode" class="input" id="HESCode" required minlength="1"
+                                   placeholder="Enter new HES code">
+                        {{/hesErr}}
+                        {{#hesErr}}
+                            <input type="text" name="HESCode" class="input is-danger" id="HESCode" required
+                                   minlength="1" placeholder="Enter new HES code">
+                        {{/hesErr}}
+                    </label>
 
-                    <label for="HESCode"></label>
-                    <input type="text" name="HESCode" class="input" id="HESCode" required minlength="1"
-                           placeholder="Enter HES code">
+                    </div>
+                    {{#hesErr}}
+                        <p class="help is-danger">{{hesErr}}</p>
+                    {{/hesErr}}
                 </div>
             </form>
         </div>
