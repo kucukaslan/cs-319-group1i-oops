@@ -6,7 +6,7 @@ const SESSION_REGENERATE_ID_DURATION = 300; // in seconds
 function getDatabaseConnection(): PDO
 {
     try {
-        $conn = new PDO("mysql:host=" . servername . ";dbname=" . dbname, username, password);
+        $conn = new PDO("mysql:host=" . servername . ";dbname=" . dbname . ";charset=utf8", username, password);
         // set the PDO error mode to exception
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         //echo "Connected successfully";
@@ -15,8 +15,8 @@ function getDatabaseConnection(): PDO
 
     } catch (PDOException $e) {
 
-        getConsoleLogger() -> log("DB conn:", servername . " " . username);
-        getConsoleLogger() -> log("DB conn:", "Connection failed: " . $e->getMessage());
+        getConsoleLogger()->log("DB conn:", servername . " " . username);
+        getConsoleLogger()->log("DB conn:", "Connection failed: " . $e->getMessage());
         // todo we might want to redirect to a proper error page from here
 
         echo <<< 'HTML'
