@@ -156,9 +156,16 @@ abstract class User implements EventParticipant {
 
     protected abstract function insertToSpecializedTable(): bool;
 
+    /**
+     * Updates the name, lastname and email of a user in the database.
+     * using the id of the user.
+     * Beware that if you arbitrarily change these properties then the 
+     * code will do what it supposed to do --even though you don't intend to do!
+     * @throws PDOException if the query fails 
+     */
     public function updateToDatabase()
     {
-        $query = "UPDATE " . $this->getTableName() . " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";
+        $query = "UPDATE " .User::TABLE_NAME. " SET name = :name, lastname = :lastname, email = :email WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->firstname);
         $stmt->bindParam(':lastname', $this->lastname);
@@ -167,10 +174,14 @@ abstract class User implements EventParticipant {
         $stmt->execute();
     }
 
+    /**
+     * Updates the hes code of a user in the database.
+     * using the id of the user.
+     */
     public function updateHESCode(string $HESCode): bool
     {
         try {
-            $query = "UPDATE " . $this->getTableName() . " SET hescode = :hescode WHERE id = :id";
+            $query = "UPDATE " . User::TABLE_NAME . " SET hescode = :hescode WHERE id = :id";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':hescode', $HESCode);
             $stmt->bindParam(':id', $this->id);
@@ -183,7 +194,7 @@ abstract class User implements EventParticipant {
     public function deleteHESCode(): bool
     {
         try {
-            $query = "UPDATE " . $this->getTableName() . " SET hescode = NULL WHERE id = :id";
+            $query = "UPDATE " . User::TABLE_NAME . " SET hescode = NULL WHERE id = :id";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':id', $this->id);
             $stmt->execute();
