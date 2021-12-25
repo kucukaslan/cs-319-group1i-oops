@@ -28,3 +28,9 @@ class EventDoesNotExistsException extends PDOException {
             parent::__construct($message, $code, $previous);
     }
 }
+
+class TokenValidationTimePassedException extends RunTimeException {
+    public function __construct(string $message = "The token is no longer valid!", int $code = 0, ?Throwable $previous = null) {
+        parent::__construct($message, $code, $previous);
+    }
+}
