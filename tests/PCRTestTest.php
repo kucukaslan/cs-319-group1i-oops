@@ -20,7 +20,7 @@ final class PCRTestTest extends TestCase
     /**
     *   @depends testDatabaseConnection
     */
-    /* muhammet burayı copilot yazdı haberin olsun.
+    /* muhammet burayı yazdı haberin olsun.
     public function testCreateStudent(PDO $conn) {
         $ef = new EventFactory();
         $e1 = $ef->makeEventByLogin($conn,Student::TABLE_NAME, 1, 123);
