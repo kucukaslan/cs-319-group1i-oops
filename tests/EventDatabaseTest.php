@@ -99,6 +99,26 @@ final class EventDatabaseTest extends TestCase
 
     /**
      * @depends testDatabaseConnection
+     */
+    public function testCreateEvent(PDO $conn){
+        $ef = new EventFactory($conn);
+
+        $ce = $ef->getEvent(1);
+
+        $this->assertInstanceOf(CourseEvent::class, $ce);
+        $this->assertTrue($ce->insertToDatabase());
+
+        $se = $ef->getEvent(2);
+        $this->assertInstanceOf(SportsEvent::class, $se);
+        $this->assertTrue($se->insertToDatabase());
+        
+        $tae = $ef->getEvent(5);
+        $this->assertInstanceOf(TestAppointmentEvent::class, $tae);
+        $this->assertTrue($tae->insertToDatabase());        
+    }
+    
+    /**
+     * @depends testDatabaseConnection
     
     public function testGetUsers(PDO $conn)
     {

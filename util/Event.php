@@ -260,4 +260,28 @@ class Event
     {
         $this->maxNoOfParticipant = $maxNoOfParticipant;
     }
+
+
+    /**
+     * Inserts the event into the database
+     * @throws PDOException if the event could not be inserted
+     */
+    /* It also employs the template method patterd
+    */
+    public function insertToDatabase(): bool {
+        if( isset($this->conn) ){
+            $sql = 'INSERT INTO '.Event::TABLE_NAME.' (event_name, can_people_join, place, max_no_of_participant) VALUES (:title, :can_people_join, :place, :max_no_of_participant)';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['title' => $this->getTitle(), 'can_people_join' => $this->getCanPeopleJoin(), 'place' => $this->getPlace(), 'max_no_of_participant' => $this->getMaxNoOfParticipant()]);
+            $this->setEventID( $this->conn->lastInsertId() );
+            echo "Event inserted with id: ".$this->getEventID(). " or ".  $this->conn->lastInsertId();
+            var_dump($this);
+            return $this->insertToSpecializedTable();
+        }
+        return false;
+    }
+
+    public function insertToSpecializedTable() : bool{
+        return true;
+    }
 }

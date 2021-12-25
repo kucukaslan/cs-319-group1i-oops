@@ -33,9 +33,25 @@ class TestAppointmentEvent extends Event {
 
 
     // todo : muh database ekle, yukarıya table name ekle.
-    public function insertToDatabase() : bool
+    public function insertToSpecializedTable(): bool
     {
-        return false;
+        try {
+            $sql = "INSERT INTO " . TestAppointmentEvent::TABLE_PREFIX.TestAppointmentEvent::TABLE_NAME . " (event_id, end_date, start_date) VALUES (:event_id, :end_date, :start_date)";
+            $stmt = $this->conn->prepare($sql);
+            $event_id = $this->getEventID();
+            $end = $this->getEndDate()->format(DateTimeInterface::RFC3339);
+            $start = $this->getStartDate()->format(DateTimeInterface::RFC3339);
+            $stmt->bindParam(":event_id", $event_id);
+            $stmt->bindParam(":end_date", $end);
+            $stmt->bindParam(":start_date", $start);
+            $stmt->execute();
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            //echo $e->getMessage();
+            return false;
+        }
     }
 
 

@@ -22,3 +22,9 @@ class UserIdAlreadyExistsException extends PDOException {
             parent::__construct($message, $code, $previous);
     }
 }
+
+class EventDoesNotExistsException extends PDOException {
+    public function __construct(string $message = "The event does not exists", int $code = 0, ?Throwable $previous = null) {
+            parent::__construct($message, $code, $previous);
+    }
+}
