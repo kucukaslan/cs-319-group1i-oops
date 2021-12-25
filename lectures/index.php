@@ -87,6 +87,7 @@ ob_start();
                 $maxParts = intval($_POST['cpart']);
                 $allowJoin = isset($_POST['callow']);
                 $startDate = new DateTime($_POST['cdate']);
+                //todo add to db
             }
         }
         echo $engine->render("createLecture", [
