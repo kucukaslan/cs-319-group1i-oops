@@ -43,20 +43,21 @@ startDefaultSessionWith();
         $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
         $lectureId = $_SESSION["lectureToDisplay"];
-        echo "Lecture id: " . $lectureId;
+        //echo "Lecture id: " . $lectureId;
 
 
         // create event object whose participants will be displayed
         $thisLecture = $ef->getEvent($lectureId);
 
-        print_r($thisLecture);
+        //print_r($thisLecture);
         $participants = $user->getParticipants($lectureId);
 
         // print_r($participants);
-        echo "No of participants is " . sizeof($participants);
+        //echo "No of participants is " . sizeof($participants);
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
+
 
         $courseCode = $thisLecture->getTitle();
         $courseCodeAndDate_HTML = <<<EOF
@@ -95,13 +96,13 @@ EOF;
             $participants_data[] = ["firstEl"=>$participant->getFirstName() . " " . $participant->getLastName(), "secondEl"=>$participant->getId(),
             "thirdEl"=> $allowance];
 
-        }
+
+         }
 
          // this user causes an error ????
         // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
-
-        echo $engine->render("listWith3Columns", ["row"=>$participants_data,
+        echo $engine->render("demonstrateStudentsInCourse", ["row"=>$participants_data,
         "column1"=>"Name", "column2"=>"Id", "column3"=>"Allowance", "title"=>"Participants of the Event"]);
 
         /*$d1 = new DateTime("2009-12-22");
