@@ -84,7 +84,7 @@ EOF;
                 $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i'),
             "eventId" => $sport->getEventId(),
             "value" => "Leave"];
-        if (/* todo $sport->getCanPeopleJoin() && */ $sport->getCurrentNumberOfParticipants() < $sport->getMaxNoOfParticipant()) {
+        if ($sport->getCanPeopleJoin() && $sport->getCurrentNumberOfParticipants() < $sport->getMaxNoOfParticipant()) {
             if ($user->doIParticipate($sport->getEventId())) {
                 $sports_data_enrolled[] = $formattedData;
             } else {
@@ -141,14 +141,20 @@ EOF;
 
         if (!$user->leaveEvent($eventIdToCancel)) {
             $e = $ef->getEvent($eventIdToCancel);
-            $_SESSION['lerr'] = 'Failed to leave ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
-                $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i');
+            if ($e instanceof CourseEvent) {
+                $_SESSION['lerr'] = 'Failed to leave ' . $e->getTitle();
+            }
+            if ($e instanceof SportsEvent) {
+                $_SESSION['lerr'] = 'Failed to leave ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
+                    $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i');
+            }
         } else {
             unset($_SESSION['lerr']);
         }
-
         header("Refresh:0");
+
     }
+
     ?> <?php if (isset($_SESSION['lerr'])): ?>
 
         <div class="notification is-danger is-light">
