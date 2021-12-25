@@ -3,6 +3,8 @@ include_once("../config.php");
 require_once(rootDirectory() . "/util/UserFactory.php");
 require_once(rootDirectory() . "/util/EventFactory.php");
 require_once(rootDirectory() . "/util/NavBar.php");
+require_once(rootDirectory() . "/util/AllowanceFacade.php");
+
 startDefaultSessionWith();
 $pagename = "/events";
 ob_start();
@@ -26,7 +28,7 @@ ob_start();
     require_once rootDirectory() . '/vendor/autoload.php';
 
     $conn = getDatabaseConnection();
-    echo "id is" . $_SESSION["id"];
+   // echo "id is" . $_SESSION["id"];
 
     if (!isset($_SESSION['id']) || !isset($conn)) {
         header("location: ../login");
@@ -46,6 +48,20 @@ EOF;
     $lErr = false;
     $navbar = new NavBar($usertype);
     echo $navbar->draw();
+
+
+
+    $aFacade = new AllowanceFacade($conn,$_SESSION['usertype'], $_SESSION['id']);
+
+    $allowanceSituation = $aFacade->getIsAllowed();
+    $allowanceSituationasString = "";
+
+    if ( $allowanceSituation === false )
+    {
+        $allowanceSituationasString = "You are not Allowed in Campus ! ";
+    }
+
+
 
     $m = new Mustache_Engine(array(
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -95,7 +111,7 @@ EOF;
     // enroll an event if the enroll button is pressed
     if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["enroll"])) {
         $_SESSION["enroll"] = $_POST["enroll"];
-        echo "inside post if remove" . $_POST["enroll"];
+       // echo "inside post if remove" . $_POST["enroll"];
         unset($_POST);
 
         header("Refresh:0");
@@ -103,13 +119,16 @@ EOF;
     } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["enroll"])) {
         $eventIdToEnroll = $_SESSION["enroll"];
         unset($_SESSION["enroll"]);
-        echo "ENROLLING " . $eventIdToEnroll;
+     //   echo "ENROLLING " . $eventIdToEnroll;
 
         $eventToEnroll = $ef->getEvent($eventIdToEnroll);
+        echo $eventToEnroll->getCurrentNumberOfParticipants();
+        echo $eventToEnroll->getMaxNoOfParticipant();
 
         if ($eventToEnroll->getCurrentNumberOfParticipants() < $eventToEnroll->getMaxNoOfParticipant()) {
+
             unset($_SESSION['lerr']);
-            if (!$user->joinSportsActivity($eventIdToEnroll)) {
+            if ($user->joinSportsActivity($eventIdToEnroll)) {
                 unset($_SESSION['lerr']);
             } else {
                 //TODO: Error message
@@ -129,7 +148,7 @@ EOF;
     // cancel sports event or leave the course
     if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["cancel"])) {
         $_SESSION["cancel"] = $_POST["cancel"];
-        echo "inside post if remove" . $_POST["cancel"];
+       // echo "inside post if remove" . $_POST["cancel"];
         unset($_POST);
 
         header("Refresh:0");
@@ -137,7 +156,7 @@ EOF;
     } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["cancel"])) {
         $eventIdToCancel = $_SESSION["cancel"];
         unset($_SESSION["cancel"]);
-        echo "canceling  " . $eventIdToCancel;
+       // echo "canceling  " . $eventIdToCancel;
 
         if (!$user->leaveEvent($eventIdToCancel)) {
             $e = $ef->getEvent($eventIdToCancel);
@@ -163,12 +182,12 @@ EOF;
 
     <?php endif; ?> <?php
     // RENDER HTMLs
-    echo $title;
+   echo $title;
     echo $m->render("listWith3ColumnsAndForm", ["row" => $lecture_data, "title" =>
         "Enrolled Courses", "column1" => "Course Code", "column2" => "Place", "column3" => "Leave Course"]);
 
     echo $m->render('eventssports', ['enrolledevent' => $sports_data_enrolled, "notenrolledevent" =>
-        $sports_data_not_enrolled]);
+        $sports_data_not_enrolled, 'notAllowed' => $allowanceSituationasString]);
 
 
     ?>

@@ -43,9 +43,18 @@
                             <td>{{timeslot}}</td>
                             <td>
                                 <form method="post">
-                                    <input type="hidden" name="enroll" value="{{eventId}}"> <input type="submit"
-                                                                                                   class="button is-success"
-                                                                                                   value="Enroll">
+                                    <input type="hidden" name="enroll" value="{{eventId}}">
+
+                                    {{^notAllowed}}
+                                    <input type="submit"   class="button is-success" value="Enroll">
+                                    {{/notAllowed}}
+
+                                    {{#notAllowed}}
+                                    <input type="submit"  disabled class="button is-danger" value="Enroll">
+                                    <p class= "help is-danger"> {{notAllowed}}</p>
+                                    {{/notAllowed}}
+
+
                                 </form>
                             </td>
                         </tr>
