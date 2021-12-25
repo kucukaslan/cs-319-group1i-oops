@@ -28,7 +28,7 @@ class PasswordResetHandler {
         $mail->Username = 'ThatIsagoalforitsownsake@gmail.com';
         $mail->Password = 'StackPop';
         $mail->setFrom('ThatIsagoalforitsownsake@gmail.com', 'ForThyHealth');
-        $mail->addAddress(/*$_SESSION['email']*/ $user->getEmail(), $_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+        $mail->addAddress(/*$_SESSION['email']*/ $user->getEmail(), $user->getFirstName() . ' ' .$user->getLastName());
         $mail->Subject = 'Password Reset Request';
         $mail->Body =  'Dear '.$user->getFirstName().' '.$user->getLastName().",\n";
         $mail->Body .= "You have requested a password reset. Please click the link below to a browser to reset your password.\n";
@@ -70,7 +70,8 @@ class PasswordResetHandler {
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":token", $token);
             $stmt->execute();
-            if($stmt->rowCount()>0) { 
+            if($stmt->rowCount()>0) {  
+
                 $result = $stmt->fetch();
                 $date = new DateTime($result ['generation_date']);
                 if($date->diff(new DateTime("now"))->format('%R%a') <= 7) {
@@ -78,16 +79,23 @@ class PasswordResetHandler {
                     $uf = new UserFactory();
                     $user = $uf->makeUserById($this->conn, id:$user_id);
                     $user->updatePassword($newPassword);
+                    
+                    // delete the token
+                    $sql= " delete from ".PasswordResetHandler::TABLE_NAME." where token = :token";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bindParam(":token", $token);
+                    $stmt->execute();
                     return true;
                 }
                 else{
+                    
+                    // delete the token
+                    $sql= " delete from ".PasswordResetHandler::TABLE_NAME." where token = :token";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bindParam(":token", $token);
+                    $stmt->execute();
                     throw new TokenValidationTimePassedException();
                 }
-                // delete the token
-                $sql= " delete from ".PasswordResetHandler::TABLE_NAME." where token = :token";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":token", $token);
-                $stmt->execute();
             }
         } catch(Exception $e) {
             echo $e;

@@ -41,16 +41,12 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         $uf = new UserFactory();
 
         $std = $uf->makeUserById(db: $conn, id: $userid);
-        $_SESSION['firstname'] = $std->getFirstName();
-        $_SESSION['lastname'] = $std->getLastName();
-        $_SESSION['id'] = $std->getId();
-        $_SESSION['email'] = $std->getEmail();
 
 
         echo $m->render('forgot', [
             'title' => 'Forgot Password',
             'id' => 'University ID',
-            'sent' => $_SESSION['email'],
+            'sent' => $std->getEmail(),
         ]);
 
         $prh = new PasswordResetHandler($conn);
