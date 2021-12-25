@@ -68,10 +68,7 @@
 
         echo $engine->render("listWith2Column", ["row" => $participants_data,
             "title"=>"Sports Event Details", "column1"=>"Name", "column2"=>"Allowance Status"]);
-
-
     }
-
     ?>
 
 </div>

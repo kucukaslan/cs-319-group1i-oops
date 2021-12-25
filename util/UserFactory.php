@@ -24,7 +24,7 @@ class UserFactory{
         return $this->user;
     }
 
-    // ! does not inserts the user into the database 
+    // ! does not insert the user into the database
     public function makeUserByRegister(PDO $db, string $usertype, int $id, string|int $password, string $firstname, string $lastname,string $email) : User
     {
         $this->makeUserByInformation($db, $usertype, $id, $firstname, $lastname, $email);
@@ -45,7 +45,6 @@ class UserFactory{
         return $this->user;
     }
 
-    // id session arrayde var.
     public function makeUserForHesCode(PDO $db, string $usertype, int $id) : User{
         $this->makeUser($usertype);
 
@@ -63,9 +62,6 @@ class UserFactory{
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
         $this->user->setPassword($password);
-
-        // the moment when you used Argon2i in database but publicly shared the passwords in plaintext!
-        // echo "id : " . $id . "  $password ";
 
         $pwVerified = $this->user->verifyPassword();
         if (!$pwVerified) {

@@ -35,8 +35,7 @@
             )
             ]]
     );
-   
-   
+
     ?>
     <div class="centerwrapper">
         <div class="centerdiv">
@@ -54,7 +53,6 @@
             <br>
         </div>
     </div>
-
 
 </div>
 

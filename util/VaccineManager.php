@@ -64,11 +64,8 @@ class VaccineManager
             $stmt = $this->conn->prepare($sql);
             $vid = $vaccine->getVaccinationId();
             $stmt->bindParam(":vaccination_id", $vid);
-            // todo delete
-            // echo $vid;
-            // var_dump($stmt);
             $stmt->execute();
-            // var_dump($stmt);
+
         } catch (PDOException $e) {
             throw $e;
             return false;

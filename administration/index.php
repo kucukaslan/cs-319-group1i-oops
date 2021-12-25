@@ -56,6 +56,10 @@ ob_start();
 
         $lecture_key = '';
         $sports_key = "";
+
+        // if the session array contains a key,
+        // this means that we need to sort the events
+        // of this type.
         if (isset($_SESSION["lectureToDisplay"])) {
             $lecture_key = $_SESSION["lectureToDisplay"];
             unset($_SESSION["lectureToDisplay"]);
@@ -73,16 +77,17 @@ ob_start();
             $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
         }
 
-        // format data
+        // format lecture data
         $lecture_data = [];
         foreach ($lectures as $lecture) {
             $lecture_data[] = ["firstEl"=>$lecture->getTitle(), "secondEl"=>$lecture->getPlace(),
                 "eventId"=>$lecture->getEventId()];
         }
 
-        $sports_data = [];
 
-        // format data
+
+        // format sports event data
+        $sports_data = [];
         foreach ($sports as $sport) {
             $sports_data[] = ["firstEl"=>$sport->getTitle(), "secondEl"=>$sport->getPlace(), "thirdEl"=>$sport->getStartDate()->format("d") . "-" .
                 $sport->getStartDate()->format('M')
@@ -104,30 +109,34 @@ ob_start();
         echo $engine->render("list6ColButton", ["row" => $sports_data, "column1"=>"Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot",
             "column5"=>"Quota", "column6"=>"See Participants", "title"=>"Sports Events"]);
 
+        // determine actions of button presses
         if(isset($_POST["goEvent"])) {
             $_SESSION["eventToDisplay"] = $_POST["goEvent"];
+            unset($_POST);
 
-            echo "go " . $_POST["goEvent"];
             header("Location: ../../administration/see");
         }
         if(isset($_POST["seeEvent"])) {
             $_SESSION["eventToDisplay"] = $_POST["seeEvent"];
+            unset($_POST);
 
-            echo "go " . $_POST["seeEvent"];
             header("Location: ../../administration/see");
         }
 
 
+        // if a search button pressed, store the id of
+        // event to be searched in the session array
+        // then refresh the page to see the effect.
         if(isset($_POST["Lecture"])) {
             $_SESSION["lectureToDisplay"] = $_POST["Lecture"];
-            echo "go " . $_POST["Lecture"];
+
             unset($_POST);
             header("Refresh:0");
         }
 
         if(isset($_POST["Sports"])) {
             $_SESSION["sportsToDisplay"] = $_POST["Sports"];
-            echo "go " . $_SESSION["sportsToDisplay"];
+
             unset($_POST);
             header("Refresh:0");
         }

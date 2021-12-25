@@ -30,14 +30,12 @@ class AllowanceFacade {
         $this->user = $uf->makeUserById($conn, $userType, $userId);
 
         $this->tests = Test::getTestsOfUserPast($this->userId,$conn);
-        // print_r($this->tests);
 
         $this->rsm = new RiskStatusManager($conn, $userType, $userId);
         $this->vm = new VaccineManager($conn, $userId);
     }
 
     public function getIsAllowed(): ?bool {
-        // echo "in is allowed ";
         $this->isAllowed = $this->checkAllowance();
         return $this->isAllowed;
     }
@@ -52,9 +50,7 @@ class AllowanceFacade {
      * tests that are given in 3 days
      */
     public function checkAllowance(): ?bool {
-        // echo "in check allowance ";
-        if ($this->rsm->getHESCodeStatus() == false) {
-            // echo $this->userId . " false since HES CODE <br>" ;
+       if ($this->rsm->getHESCodeStatus() == false) {
             return false;
         }
         $requiredNoOfVaccines = AllowanceFacade::MIN_NO_OF_VACCINES;
@@ -97,27 +93,24 @@ class AllowanceFacade {
             && $requiredNoOfVaccines != 0) {
                 $requiredNoOfVaccines = 1;
             }
-
         }
-        // echo "no of req $requiredNoOfVaccines ";
+
         // if the user does not have enough # of vaccines
         // look for past tests
         if (sizeof($this->vm->getUserVaccines()) < $requiredNoOfVaccines) {
             // check if he has a negative test result in specified # of days
             foreach ($this->tests as $test) {
                 $time_difference_in_days = intval(date_diff($test->getTestDate(), new DateTime("now"))->format('%R%a'));
-                // echo $test->getTestDate()->diff(new DateTime("now"))->format('%R%a') . " =";
                 if ($time_difference_in_days <= AllowanceFacade::MAX_NO_OF_DAYS_FOR_TEST && $time_difference_in_days >= 0
                     && $test->getResult() == "NEGATIVE") {
-                    // echo $this->userId . " true since has a negative test<br>" ;
-                    return true;
+                   return true;
                 }
             }
-          //  echo $this->userId ."false since no negative test given <br>";
+            // not vaccinated and no negative test in 3 days
             return false;
         }
 
-      //  echo $this->userId . "true since vaccinated <br>";
+        // user is vaccinated and has a positive HES
         return true;
     }
 

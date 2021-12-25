@@ -72,8 +72,6 @@
             }
         }
 
-
-
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
         echo "<div class=\"centerwrapper\">
@@ -89,8 +87,6 @@
             "title"=>"Past Sports Events",
             "column1" => "Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot", "column5"=>"Quota", "column6"=>"See Participants"]);
 
-
-
         // if see button is pressed go to the reservation/see page
         if(isset($_POST["seeEvent"])) {
             $_SESSION["seeEvent"] = $_POST["seeEvent"];
@@ -98,7 +94,6 @@
             header("Location: ../../reservations/see");
         }
     }
-
     ?>
 
 

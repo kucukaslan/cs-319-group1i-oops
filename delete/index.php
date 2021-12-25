@@ -41,7 +41,6 @@
                 ['href' => '../logout.php', 'title' => 'Logout', 'id' => 'logout']]]
         );
 
-
     }
 
     ?>
@@ -52,7 +51,6 @@
             <br>
         </div>
     </div>
-
 
 </div>
 

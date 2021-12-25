@@ -27,7 +27,6 @@ ob_start();
     $conn = getDatabaseConnection();
 
     if (!isset($_SESSION['id'])) {
-        // echo "dasdsad";
         echo "<div class='centerwrapper'> <div class = 'centerdiv'>"
             . "You haven't logged in";
         echo "<form method='get' action=\"..\"><div class=\"form-group\">
@@ -61,13 +60,11 @@ ob_start();
 
         $imgSource = "../srcs/default_profile_pic.jpg";
 
-
         $contact_list = [];
 
+         // fetch data from the database
         $event_lecture = $user->getEventsIParticipate(CourseEvent::TABLE_NAME);
         $event_sports = $user->getEventsIParticipate(SportsEvent::TABLE_NAME);
-
-        // mock data
 
         // contacts is array of user objects
         $contacts = $user->getCloseContacts();
@@ -97,7 +94,6 @@ ob_start();
             $lecture_data[] = ["firstEl" => $event->getTitle(), "secondEl" => $event->getPlace(), "eventId" => $event->getEventID()];
         }
 
-
         // RENDERING HTMLs
         // render close contacts
         echo $m->render("contactlist", ["person" => $contact_list]);
@@ -111,10 +107,8 @@ ob_start();
             "title"=>"Your Sports Events",
             "column1" => "Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot", "column5"=>"Quota", "column6"=>"See Participants"]);
 
-
         // add close contact component
         echo $m->render("addclosecontact");
-
 
         // add to close contact
         if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
@@ -142,7 +136,6 @@ ob_start();
             header("Refresh:0");
         }
 
-
         // implementation of deleting user from the close contact list
         // check if a button is pressed for any user in the table
         if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
@@ -165,7 +158,6 @@ ob_start();
 
             header("Refresh:0");
         }
-
 
         // go to the see event page if see button is pressed
         if (isset($_POST["goEvent"]) || isset($_POST["seeEvent"]) ) {
