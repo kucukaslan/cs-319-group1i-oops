@@ -150,8 +150,9 @@ final class UserDatabaseTest extends TestCase
      */
     public function testStudentEventOperation(PDO $conn, Student $student)
     {
-        $events = $student->getEventsIParticipate();
+        $events = $student->getEventsIParticipate(search_key:"AND");
         foreach ($events as $event) {
+            //var_export($event);
             $this->assertInstanceOf(Event::class, $event);
         }
         $controlledevents = $student->getEventsControlledByMe();

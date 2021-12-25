@@ -11,7 +11,7 @@ class EventFactory {
         $this->conn = $databaseConnection;
     }
 
-    public function getEvents(string  $event_type) : array | null {
+    public function getEvents(string  $event_type, string $search_key = null) : array | null {
         if($event_type == SportsEvent::TABLE_NAME)
             $sql = "SELECT * FROM ". SportsEvent::TABLE_NAME;
         else if ($event_type == CourseEvent::TABLE_NAME)
@@ -20,6 +20,8 @@ class EventFactory {
             $sql = "SELECT * FROM ". TestAppointmentEvent::TABLE_NAME;
         else
             return null;
+        if ($search_key != null)
+            $sql .= " WHERE event_name LIKE '%".$search_key."%'";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();//[$event_type]);
