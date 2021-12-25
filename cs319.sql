@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 25, 2021 at 10:11 AM
+-- Generation Time: Dec 26, 2021 at 12:35 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -46,8 +46,7 @@ CREATE TABLE `academic_staff` (
 --
 -- Table structure for table `contact`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
--- Last update: Dec 25, 2021 at 11:58 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `contact`;
@@ -111,7 +110,7 @@ CREATE TABLE `course` (
 --
 -- Table structure for table `covid_test`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `covid_test`;
@@ -145,7 +144,7 @@ INSERT INTO `covid_test` (`test_id`, `test_date`, `result`, `user_id`, `document
 --
 -- Table structure for table `diagnosis`
 --
--- Creation: Dec 25, 2021 at 11:49 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `diagnosis`;
@@ -177,7 +176,7 @@ INSERT INTO `diagnosis` (`diagnosis_id`, `type`, `result`, `date`, `user_id`) VA
 --
 -- Table structure for table `event`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `event`;
@@ -202,7 +201,7 @@ INSERT INTO `event` (`event_id`, `event_name`, `place`, `max_no_of_participant`,
 (2, 'Fitness', 'Dormitory Sports Hall', 40, 1),
 (3, 'CS319', 'B204', 60, 1),
 (4, 'Fitness', 'Dormitory Sports Hall', 60, 1),
-(5, 'PCR Test', 'Bilkent University', 2, 1),
+(5, 'PCR Test', 'Bilkent University', 500, 1),
 (6, 'Diagnovir Test', 'Bilkent University', 4, 1),
 (7, 'Algebraic Number Theory', 'SB-Z04', 99999, 1),
 (8, 'Algebraic Number Theory', 'SB-Z04', 99999, 1),
@@ -310,7 +309,7 @@ INSERT INTO `event` (`event_id`, `event_name`, `place`, `max_no_of_participant`,
 --
 -- Table structure for table `event_control`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `event_control`;
@@ -400,14 +399,14 @@ INSERT INTO `event_control` (`event_id`, `user_id`) VALUES
 --
 -- Table structure for table `event_course`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 26, 2021 at 12:29 AM
 --
 
 DROP TABLE IF EXISTS `event_course`;
 CREATE TABLE `event_course` (
   `event_id` int(11) NOT NULL,
-  `year` year(4) NOT NULL,
-  `semester` enum('FALL','SPRING','SUMMER') COLLATE utf8mb4_turkish_ci NOT NULL
+  `year` year(4) NOT NULL DEFAULT 2021,
+  `semester` enum('FALL','SPRING','SUMMER') COLLATE utf8mb4_turkish_ci NOT NULL DEFAULT 'FALL'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
@@ -479,8 +478,7 @@ INSERT INTO `event_course` (`event_id`, `year`, `semester`) VALUES
 --
 -- Table structure for table `event_participation`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
--- Last update: Dec 25, 2021 at 11:57 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `event_participation`;
@@ -538,6 +536,7 @@ INSERT INTO `event_participation` (`event_id`, `user_id`) VALUES
 (4, 22102973),
 (4, 22103285),
 (4, 22103480),
+(5, 1),
 (5, 3),
 (5, 5),
 (5, 22101153),
@@ -1342,7 +1341,7 @@ INSERT INTO `event_participation` (`event_id`, `user_id`) VALUES
 --
 -- Table structure for table `event_sport`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `event_sport`;
@@ -1415,7 +1414,7 @@ INSERT INTO `event_sport` (`event_id`, `start_date`, `end_date`) VALUES
 --
 -- Table structure for table `event_test_appointment`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `event_test_appointment`;
@@ -1444,7 +1443,7 @@ INSERT INTO `event_test_appointment` (`event_id`, `start_date`, `end_date`) VALU
 --
 -- Table structure for table `feedback`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `feedback`;
@@ -1459,6 +1458,34 @@ CREATE TABLE `feedback` (
 --
 -- RELATIONSHIPS FOR TABLE `feedback`:
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_reset_token`
+--
+-- Creation: Dec 25, 2021 at 10:19 PM
+-- Last update: Dec 26, 2021 at 01:52 AM
+--
+
+DROP TABLE IF EXISTS `password_reset_token`;
+CREATE TABLE `password_reset_token` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL,
+  `generation_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `password_reset_token`:
+--
+
+--
+-- Dumping data for table `password_reset_token`
+--
+
+INSERT INTO `password_reset_token` (`id`, `user_id`, `token`, `generation_date`) VALUES
+(37, 1, 'fcaee1faca19fda1ddfd81085146bb0658a552704fda5417eb9edc3fe21b78c4', '2021-12-26 01:52:29');
 
 -- --------------------------------------------------------
 
@@ -1557,8 +1584,8 @@ CREATE TABLE `university_administration` (
 --
 -- Table structure for table `user`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
--- Last update: Dec 25, 2021 at 11:50 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
+-- Last update: Dec 26, 2021 at 01:55 AM
 --
 
 DROP TABLE IF EXISTS `user`;
@@ -1583,7 +1610,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_hash`, `hescode`, `hescode_status`, `profile_picture`) VALUES
-(1, 1, 'Muhammed', 'lol', 'a@a', '$argon2i$v=19$m=65536,t=4,p=1$TkRYTWVYL1hDdjYzbnZQbQ$256Qfk4scvMG5Rn7hpexMxrKr/3WX0UCtynohjL6Pok', 'Hahaha', 1, NULL),
+(1, 1, 'Muhammed Can', 'Küçükaslan', 'muhammedcankucukaslan@gmail.com', '$argon2i$v=19$m=65536,t=4,p=1$ZEhWcWZBTDFCQWJqUDYveg$XUE+jeVrAURW002U/lTvUWs4tym+5944DwlIWeTOEts', 'HESCODEHES', 1, NULL),
 (2, 2, 'Mustafa', 'K', 'a@b', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', 'random', 1, NULL),
 (3, 3, 'Mustafa', 'K', 'a@c', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '122', 1, NULL),
 (5, 5, 'Manmoon', 'Fisher', 'a@e', '$2a$10$j7fjSm.dNIIo7ovzBEIU7udL.IHKWl2X2ydCVm/cJHhyE50np9kw2', '1234567890', 1, NULL),
@@ -1895,7 +1922,7 @@ INSERT INTO `user` (`index_id`, `id`, `name`, `lastname`, `email`, `password_has
 --
 -- Table structure for table `user_academic_staff`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `user_academic_staff`;
@@ -1945,7 +1972,7 @@ INSERT INTO `user_academic_staff` (`id`, `registration_date`) VALUES
 --
 -- Table structure for table `user_sports_center_staff`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `user_sports_center_staff`;
@@ -1993,7 +2020,7 @@ INSERT INTO `user_sports_center_staff` (`id`) VALUES
 --
 -- Table structure for table `user_student`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `user_student`;
@@ -2224,7 +2251,7 @@ INSERT INTO `user_student` (`id`, `registration_date`) VALUES
 --
 -- Table structure for table `user_university_administration`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `user_university_administration`;
@@ -2272,7 +2299,7 @@ INSERT INTO `user_university_administration` (`id`) VALUES
 --
 -- Table structure for table `vaccine`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `vaccine`;
@@ -2300,7 +2327,7 @@ INSERT INTO `vaccine` (`vaccine_id`, `vaccine_type`, `vaccine_name`, `manufactur
 --
 -- Table structure for table `vaccine_administration`
 --
--- Creation: Dec 25, 2021 at 11:48 AM
+-- Creation: Dec 25, 2021 at 10:02 PM
 --
 
 DROP TABLE IF EXISTS `vaccine_administration`;
@@ -2473,6 +2500,14 @@ ALTER TABLE `feedback`
   ADD PRIMARY KEY (`feedback_id`);
 
 --
+-- Indexes for table `password_reset_token`
+--
+ALTER TABLE `password_reset_token`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`),
+  ADD UNIQUE KEY `token` (`token`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -2549,6 +2584,12 @@ ALTER TABLE `event`
 --
 ALTER TABLE `feedback`
   MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `password_reset_token`
+--
+ALTER TABLE `password_reset_token`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `user`
