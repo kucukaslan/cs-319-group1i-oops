@@ -20,8 +20,7 @@ ob_start();
     </style>
 </head>
 <body>
-<div class="container">
-
+<div class="container has-text-centered">
 
     <?php
     require_once rootDirectory() . '/vendor/autoload.php';
@@ -41,26 +40,24 @@ ob_start();
     </div>
 </div>
 EOF;
-
     $uf = new UserFactory();
     $ef = new EventFactory($conn);
     $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
     $lErr = false;
     $navbar = new NavBar($usertype);
     echo $navbar->draw();
-    //$lErr = "dwadwad";
-    ?><?php
-
 
     $m = new Mustache_Engine(array(
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
     ));
 
-    // get all lectures where the user is participant and all sport events
     $lectures = $user->getEventsIParticipate(CourseEvent::TABLE_NAME);
     $sports = $ef->getEvents(SportsEvent::TABLE_NAME);
 
-    // format the lecture data
+    /*print_r($lectures);
+    echo "<br>";
+    print_r($sports);
+*/
     $lecture_data = [];
     foreach ($lectures as $lecture) {
         $lecture_data[] = [

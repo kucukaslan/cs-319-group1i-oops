@@ -84,7 +84,7 @@ class NavBar
     {
         return <<< 'HTML'
 
-<footer class="footer">
+<footer class="footer is-primary">
   <div class="content has-text-centered">
     <p>
       <a href="/credits">Credits</a><br>
