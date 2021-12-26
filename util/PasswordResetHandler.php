@@ -31,7 +31,7 @@ class PasswordResetHandler
         $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
         $mail->SMTPAuth = true;
         $mail->Username = 'ThatIsagoalforitsownsake@gmail.com';
-        $mail->Password = 'StackPop';
+        $mail->Password = 'Stackpop';
         $mail->setFrom('ThatIsagoalforitsownsake@gmail.com', 'ForThyHealth');
         $mail->addAddress($user->getEmail(), $user->getFirstName() . ' ' . $user->getLastName());
         $mail->Subject = 'Password Reset Request';
