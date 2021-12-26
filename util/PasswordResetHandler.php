@@ -21,7 +21,6 @@ class PasswordResetHandler
 
     public function sendPasswordResetEmail(User $user): bool
     {
-
         $token = $this->generateTokenForUser($user->getId());
 
 
@@ -38,7 +37,7 @@ class PasswordResetHandler
         $mail->Subject = 'Password Reset Request';
         $mail->Body = 'Dear ' . $user->getFirstName() . ' ' . $user->getLastName() . ",\n";
         $mail->Body .= "You have requested a password reset. Please click the link below to a browser to reset your password.\n";
-        $mail->Body .= "https://forthyhealth.duckdns.org" . '/reset/?pwr=' . urlencode($token) . "\n";
+        $mail->Body .= $this->domain . '/reset/?pwr=' . urlencode($token) . "\n";
         $mail->Body .= "If you did not request a password reset, please ignore this email.\n";
         $mail->Body .= "Thank you,\n\n";
         $mail->Body .= "~ ForThyHealth\n";
