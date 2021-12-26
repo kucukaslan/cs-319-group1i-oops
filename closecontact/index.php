@@ -35,8 +35,6 @@ ob_start();
         echo "</div> </div>";
         exit();
     } else {
-        echo $_SESSION["id"];
-
         $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         $uf = new UserFactory();
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
@@ -46,17 +44,7 @@ ob_start();
         ));
 
         $navbar = new NavBar($usertype, $pagename);
-        echo $navbar->draw(); ?>
-
-        <?php if (isset($_SESSION['cerr'])): ?>
-
-            <div class="notification is-danger is-light">
-                <?= htmlspecialchars($_SESSION['cerr'], ENT_HTML5 | ENT_QUOTES); ?>
-            </div>
-
-        <?php endif; ?>
-        
-        <?php
+        echo $navbar->draw();
 
         $imgSource = "../srcs/default_profile_pic.jpg";
 
@@ -68,7 +56,6 @@ ob_start();
 
         // contacts is array of user objects
         $contacts = $user->getCloseContacts();
-
 
         // add close contacts to contact list
         foreach ($contacts as $contact) {
@@ -110,28 +97,18 @@ ob_start();
         // add close contact component
         echo $m->render("addclosecontact");
 
-        // add to close contact
+        // add to close contac
         if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["closeContact"])) {
-            if (is_numeric($_POST['closeContact'])) {
-                $_SESSION["closeContact"] = $_POST["closeContact"];
-                echo "inside post if " . $_POST["closeContact"];
-                unset($_POST);
-                unset($_SESSION['cerr']);
-                header("Refresh:0");
-            } else {
-                $_SESSION['cerr'] = $_POST["closeContact"] . ' is not a valid id';
-                echo "Not valid ID CODE";
-            }
+
+            $_SESSION["closeContact"] = $_POST["closeContact"];
+            unset($_POST);
+
+            header("Refresh:0");
+
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["closeContact"])) {
             $userIdToAdd = $_SESSION["closeContact"];
             unset($_SESSION["closeContact"]);
-            if ($user->addCloseContact($userIdToAdd, 1)) {
-                unset($_SESSION['cerr']);
-                echo "added USER WITH ID: " . $userIdToAdd;
-            } else {
-                $_SESSION['cerr'] = $userIdToAdd . ' was not added';
-                echo "DID NOT MANAGE TO add " . $userIdToAdd;
-            }
+            $user->addCloseContact($userIdToAdd);
 
             header("Refresh:0");
         }
@@ -140,7 +117,6 @@ ob_start();
         // check if a button is pressed for any user in the table
         if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["removeCloseContact"])) {
             $_SESSION["removeCloseContact"] = $_POST["removeCloseContact"];
-            echo "inside post if remove" . $_POST["removeCloseContact"];
             unset($_POST);
 
             header("Refresh:0");
@@ -150,12 +126,7 @@ ob_start();
 
             if ($user->deleteCloseContact($userIdToDelete)) {
                 unset($_SESSION['cerr']);
-                echo "DELETED USER WITH ID: " . $userIdToDelete;
-            } else {
-                $_SESSION['cerr'] = $userIdToDelete . ' was not deleted.';
-                echo "DID NOT MANAGE TO DELETE " . $userIdToDelete;
             }
-
             header("Refresh:0");
         }
 
@@ -168,7 +139,6 @@ ob_start();
 
             header("Location: ../../closecontact/see");
         }
-
     }
     ?>
 

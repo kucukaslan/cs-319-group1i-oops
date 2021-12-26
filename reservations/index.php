@@ -90,7 +90,6 @@
         // if see button is pressed go to the reservation/see page
         if(isset($_POST["seeEvent"])) {
             $_SESSION["seeEvent"] = $_POST["seeEvent"];
-            // echo $_POST["seeEvent"];
             header("Location: ../../reservations/see");
         }
     }

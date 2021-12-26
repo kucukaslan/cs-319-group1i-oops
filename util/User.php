@@ -272,7 +272,7 @@ abstract class User implements EventParticipant {
      * @param int $id is user if to add the database
      * @return bool if addition is successful.
      */
-    public function addCloseContact(int $contacted_user_id, int $event_id): bool
+    public function addCloseContact(int $contacted_user_id, int $event_id = 1): bool
     {
         // TODO: write given id to the database
         try {

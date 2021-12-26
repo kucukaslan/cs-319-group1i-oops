@@ -96,7 +96,6 @@ ob_start();
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["add"])) {
 
             $_SESSION["add"] = $_POST["add"];
-            echo "inside post if " . $_POST["add"];
             unset($_POST);
 
             header("Refresh:0");
@@ -104,8 +103,6 @@ ob_start();
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["add"])){
             $userIdToAdd = $_SESSION["add"];
             unset($_SESSION["add"]);
-
-            echo "added USER WITH ID: " . $userIdToAdd;
 
             $user->addCloseContact($userIdToAdd, 1);
 
@@ -116,7 +113,7 @@ ob_start();
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["remove"])) {
 
             $_SESSION["remove"] = $_POST["remove"];
-            echo "inside post if " . $_POST["remove"];
+
             unset($_POST);
 
             header("Refresh:0");
@@ -124,8 +121,6 @@ ob_start();
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["remove"])){
             $userIdToRemove = $_SESSION["remove"];
             unset($_SESSION["remove"]);
-
-            echo "removed USER WITH ID: " . $userIdToRemove;
 
             $user->deleteCloseContact($userIdToRemove);
 
