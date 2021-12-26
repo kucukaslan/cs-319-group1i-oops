@@ -83,7 +83,22 @@
                                 <label for="newP"> <input type="password" name="newP" class="input" id="newP" required
                                                           placeholder="Enter New Password"></label>
                             </div>
-
+                            {{^WCPass}}
+                                <div>
+                                    <label for="conP"> <input type="password" name="conP" class="input" id="conP"
+                                                              required placeholder="Confirm New Password"></label>
+                                </div>
+                            {{/WCPass}}
+                            {{#WCPass}}
+                                <div>
+                                    <label for="conP"> <input type="password" name="conP" class="input is-danger"
+                                                              id="conP" required
+                                                              placeholder="Confirm New Password"></label>
+                                </div>
+                            {{/WCPass}}
+                            {{#WCPass}}
+                                <p class="help is-danger">{{WCPass}}</p>
+                            {{/WCPass}}
                         </div>
                     </form>
                 </div>
