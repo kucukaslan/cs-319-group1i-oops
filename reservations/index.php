@@ -45,7 +45,6 @@
         $user = $uf->makeUserById($conn,$usertype, $_SESSION["id"]);
 
         $eventsOfUser = $user->getEventsControlledByMe();
-        print_r($eventsOfUser);
 
         // we need to select sports events from all events where user is controller
         $sportsData_past = array();

@@ -48,7 +48,6 @@
             <h2>See Event Page</h2>
     </div>";
 
-        echo "event is is " . $_SESSION["seeEvent"] . "<br>";
         $thisEvent = $ef->getEvent($_SESSION["seeEvent"]);
 
         $participants = $user->getParticipants($thisEvent->getEventID());

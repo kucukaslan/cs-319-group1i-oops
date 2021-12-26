@@ -6,17 +6,20 @@
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable">
                     <tr>
+                        <th> Name </th>
                         <th>Place</th>
                         <th>Day Slot</th>
                         <th>Time Slot</th>
+                        <th> Quota </th>
                         <th>Reserve/Cancel</th>
                     </tr>
                     {{#enrolledevent}}
                         <tr>
+                            <td>{{title}}</td>
                             <td>{{place}}</td>
                             <td>{{dayslot}}</td>
                             <td>{{timeslot}}</td>
-
+                            <td>{{quota}}</td>
                             <td>
                                 <form method="post" action="../events/index.php">
                                     <div class="control"><input type="hidden" name="cancel" value="{{eventId}}">
@@ -38,9 +41,11 @@
                     {{/enrolledevent}}
                     {{#notenrolledevent}}
                         <tr>
+                            <td>{{title}}</td>
                             <td>{{place}}</td>
                             <td>{{dayslot}}</td>
                             <td>{{timeslot}}</td>
+                            <td>{{quota}}</td>
                             <td>
                                 <form method="post">
                                     <input type="hidden" name="enroll" value="{{eventId}}">
