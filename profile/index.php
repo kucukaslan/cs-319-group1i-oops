@@ -39,7 +39,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 <div class="container">
     <?php
     $uf = new UserFactory();
-    $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+    $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
 
     $m = new Mustache_Engine(array(
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -51,9 +51,9 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $newFName = $_POST['newName'];
             unset($_POST);
 
-            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            $std->setFirstname($newFName);
-            $std->updateToDatabase();
+            $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $user->setFirstname($newFName);
+            $user->updateToDatabase();
             
             header("Refresh:0");
         }
@@ -61,9 +61,9 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $newSName = $_POST['newsName'];
             unset($_POST);
 
-            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            $std->setLastname($newSName);
-            $std->updateToDatabase();
+            $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $user->setLastname($newSName);
+            $user->updateToDatabase();
 
             header("Refresh:0");
         }
@@ -71,19 +71,19 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $newEmail = $_POST['newEmail'];
             unset($_POST);
 
-            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            $std->setEmail($newEmail);
-            $std->updateToDatabase();
+            $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $user->setEmail($newEmail);
+            $user->updateToDatabase();
            header("Refresh:0");
         }
         if (isset($_POST['newP']) && isset($_POST['verP'])) {
             $currentPassword = $_POST['verP'];
-            $std = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            $std->setPassword($currentPassword);
+            $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+            $user->setPassword($currentPassword);
              try {
-                if ( $std->verifyPassword()) {
+                if ( $user->verifyPassword()) {
                     $newPassword = $_POST['newP'];
-                    $std->updatePassword($newPassword);
+                    $user->updatePassword($newPassword);
                     getConsoleLogger()->log("profile","Password changed");// np: $newPassword, cp: $currentPassword");
                 } else {
                     $wrongVerPassword = 'Current password is invalid';
@@ -102,9 +102,9 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         }
     }
     echo $m->render('profilePage', [
-        "name" => $std->getFirstName(),
-        "email" => $std->getEmail(),
-        "id" => $std->getId(),
+        "name" => $user->getFirstName() . " " . $user->getLastName(),
+        "email" => $user->getEmail(),
+        "id" => $user->getId(),
         'WVPass' => $wrongVerPassword  
     ]);
     ?>

@@ -134,18 +134,16 @@ class Diagnosis
     {
        
         //INSERT INTO `table_name`(column_1,column_2,...) VALUES (value_1,value_2,...);
-
         $sql = "INSERT INTO ". Diagnosis::TABLE_NAME ."  (type, result, date, user_id) VALUES (:type, :result, :date, :user_id) ";
         $stmt = $conn->prepare($sql);
-    $stmt->bindParam(":user_id", $_SESSION['id']);
-   // echo $this->diagnosisDate->format('Y-m-d H:i:s');
-    $stringDate = $this->diagnosisDate->format('Y-m-d H:i:s');
+        $stmt->bindParam(":user_id", $_SESSION['id']);
+        $stringDate = $this->diagnosisDate->format('Y-m-d H:i:s');
 
-    $stmt->bindParam(":date", $stringDate);
-    $stmt->bindParam(":result", $this->result);
-    $stmt->bindParam(":type", $this->type);
+        $stmt->bindParam(":date", $stringDate);
+        $stmt->bindParam(":result", $this->result);
+        $stmt->bindParam(":type", $this->type);
 
-    $stmt->execute();
+        $stmt->execute();
     }
     
 

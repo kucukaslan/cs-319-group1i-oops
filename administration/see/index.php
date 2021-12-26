@@ -31,6 +31,8 @@
                     </div> </form>";
         echo "</div> </div>";
         exit();
+    } else if ($_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
     } else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -46,19 +48,15 @@
             <h2>See Event Page</h2>
     </div>";
 
-        if (!isset($_SESSION["eventToDisplay"])) {
-            echo "Not set";
-        }
-        echo "event is " . $_SESSION["eventToDisplay"] . "<br>";
         $thisEvent = $ef->getEvent($_SESSION["eventToDisplay"]);
 
-
-
-
+        // fetch participants from the database
         $participants = $user->getParticipants($thisEvent->getEventID());
 
         $participants_data = array();
         foreach ($participants as $participant) {
+            // determine the allowance status of the participants
+            // by creating an allowance facade instance for this user
             $af = new AllowanceFacade($conn, Student::TABLE_NAME, $participant->getId());
 
             if ($af->getIsAllowed()) {
@@ -72,7 +70,6 @@
 
         echo $engine->render("listWith2Column", ["row" => $participants_data,
             "title"=>"Details of ". $thisEvent->getTitle(), "column1"=>"Name", "column2"=>"Allowance Status"]);
-
 
     }
 

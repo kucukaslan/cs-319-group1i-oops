@@ -3,8 +3,7 @@ require_once ("EventParticipant.php");
 require_once("Event.php");
 require_once("EventFactory.php");
 require_once("CustomException.php");
-// Sometimes we just don't care the type of the user,
-// so why not allow an instance of User? 
+
 abstract class User implements EventParticipant {
     // CONSTANTS
     const TABLE_NAME = "user";
@@ -37,10 +36,6 @@ abstract class User implements EventParticipant {
         $this->closeContacts = null;
         $this->eventsIParticipate = null;
     }
-
-
-    // someone: spesifik bir user için database'de olan tüm vaccineleri getiren bir metot yaz muh.
-    // Muhammed: VaccineManager yapıyor onu. 2021.12.17
 
     public function getFirstName(): string
     {
@@ -104,9 +99,6 @@ abstract class User implements EventParticipant {
             return false;
         }
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        // var_dump($row);
-        // echo '<br>';
-
 
         if (password_verify($this->getPassword(), $row['password_hash'])) {
             $this->firstname = $row['name'];
@@ -121,9 +113,6 @@ abstract class User implements EventParticipant {
         }
     }
 
-    /*
-        This might be an example of template method pattern.
-    */
     /**
      * Insert to database and call the method 
      * insertToSpecializedTable() to insert to specialized table
@@ -283,7 +272,7 @@ abstract class User implements EventParticipant {
      * @param int $id is user if to add the database
      * @return bool if addition is successful.
      */
-    public function addCloseContact(int $contacted_user_id, int $event_id): bool
+    public function addCloseContact(int $contacted_user_id, int $event_id = 1): bool
     {
         // TODO: write given id to the database
         try {

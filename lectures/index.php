@@ -33,10 +33,9 @@ ob_start();
         echo "</div> </div>";
         exit();
     }    
-    else if ($_Session['usertype'] != AcademicStaff::TABLE_NAME && $_Session['usertype'] != UniversityAdministration::TABLE_NAME) {
+    else if ($_SESSION['usertype'] != AcademicStaff::TABLE_NAME && $_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
         header("Location: ../index.php");
-    } 
-    else {
+    }  else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
         ));
@@ -48,15 +47,7 @@ ob_start();
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
 
-        $counter = 0;
-        /*$buttonNames = [];
-        for ($i = 0; $i < 2; $i++) { // $user->get no of participants of the event $i++) {
-            // set button names
-            $buttonNames[] = "button" . ($i + 1);
-        }*/
-
         $lectures = $user->getEventsControlledByMe();
-        //print_r($lectures);
 
         // create data to display
         $lecture_data = [];
@@ -68,7 +59,6 @@ ob_start();
                     "eventId" => $event->getEventID()];
             }
         }
-
 
         // render upcoming lectures
         echo $engine->render("listWith3ColumnsAndButton", ["row" => $lecture_data, "title"=>"Your Lectures",

@@ -36,10 +36,9 @@ ob_start();
         echo "</div> </div>";
         exit();
     } 
-    else if ($_Session['usertype'] != AcademicStaff::TABLE_NAME && $_Session['usertype'] != UniversityAdministration::TABLE_NAME) {
+    else if ($_SESSION['usertype'] != AcademicStaff::TABLE_NAME && $_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
         header("Location: ../index.php");
-    }
-    else {
+    }  else {
         // definitions
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -49,17 +48,12 @@ ob_start();
         $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
         $lectureId = $_SESSION["lectureToDisplay"];
-        //echo "Lecture id: " . $lectureId;
 
 
         // create event object whose participants will be displayed
         $thisLecture = $ef->getEvent($lectureId);
 
-        //print_r($thisLecture);
         $participants = $user->getParticipants($lectureId);
-
-        // print_r($participants);
-        //echo "No of participants is " . sizeof($participants);
 
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
@@ -83,12 +77,7 @@ EOF;
         $ef = new EventFactory($conn);
         $e = $ef->getEvent($lectureId);
         $instructors = $e->getControllers();
-        // print_r($participants);
         foreach ($instructors as $instructor) {
-            /*if ($participant->getId() == 22104260) {
-                echo " cont ";
-                break;
-            }*/
 
             $af = new AllowanceFacade($conn, User::TABLE_NAME, $instructor->getId());
 
@@ -102,26 +91,14 @@ EOF;
             $coins_data[] = ["firstEl" => $instructor->getFirstName() . " " . $instructor->getLastName(), "secondEl" => $instructor->getId(),
                 "thirdEl" => $allowance];
 
-
         }
-
-
-        // this user causes an error ????
-        // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
         echo $engine->render("demonstrateInstructorsInCourse", ["row" => $coins_data,
             "column1" => "Name", "column2" => "Id", "column3" => "Allowance", "title" => "Coinstructors of the Event"]);
         // create participants data to display
         $participants_data = [];
 
-        // print_r($participants);
-
         foreach ($participants as $participant) {
-            /*if ($participant->getId() == 22104260) {
-                echo " cont ";
-                break;
-            }*/
-
             $af = new AllowanceFacade($conn, User::TABLE_NAME, $participant->getId());
 
             if ($af->getIsAllowed()) {
@@ -133,42 +110,12 @@ EOF;
             $participants_data[] = ["firstEl" => $participant->getFirstName() . " " . $participant->getLastName(), "secondEl" => $participant->getId(),
                 "thirdEl" => $allowance];
 
-
         }
-
-        // this user causes an error ????
-        // $af = new AllowanceFacade($conn, Student::TABLE_NAME, 22104260);
 
         echo $engine->render("demonstrateStudentsInCourse", ["row" => $participants_data,
             "column1" => "Name", "column2" => "Id", "column3" => "Allowance", "title" => "Participants of the Event"]);
 
-        /*$d1 = new DateTime("2009-12-22");
-        $d2 = new DateTime('now');
-        echo intval($d2->diff($d1)->format('%R%a'));*/
-
-        /*$addCoordinatorButton = <<<EOF
-<section class="hero is-success">
-    <div class="hero-body">
-        <div class="columns is-centered">
-            <div class="columns">
-                <div class="column is-narrow">
-                    <form class="box" id="loginForm" action="" method="post">
-                        <div class="field">
-                            <div class="control">
-                                <input type="submit" class="button is-info" name="" value="Add Coordinator">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-EOF;
-       echo $addCoordinatorButton;*/
-
     }
-
     ?>
 
 </div>

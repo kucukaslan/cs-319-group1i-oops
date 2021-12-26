@@ -49,7 +49,6 @@ class TestAppointmentEvent extends Event {
         }
         catch(PDOException $e)
         {
-            //echo $e->getMessage();
             return false;
         }
     }

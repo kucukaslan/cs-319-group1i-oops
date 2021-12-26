@@ -31,6 +31,8 @@
                     </div> </form>";
         echo "</div> </div>";
         exit();
+    } else if ($_SESSION['usertype'] != SportsCenterStaff::TABLE_NAME && $_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
     } else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -66,10 +68,7 @@
 
         echo $engine->render("listWith2Column", ["row" => $participants_data,
             "title"=>"Sports Event Details", "column1"=>"Name", "column2"=>"Allowance Status"]);
-
-
     }
-
     ?>
 
 </div>

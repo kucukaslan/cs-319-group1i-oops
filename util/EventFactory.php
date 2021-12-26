@@ -31,9 +31,6 @@ class EventFactory {
         {
             $id =$row["event_id"];
             $event =  $this->makeEventFromDBRow($event_type, $row);
-
-            // todo table name 'event_participant' is hardcoded, to be fixed! 
-            
             try {
                 $sql = 'Select count(*) as count from '.Event::PARTICIPATION_TABLE_NAME.' where event_id = :event_id';
                 $stmt = $this->conn->prepare($sql);
@@ -51,7 +48,7 @@ class EventFactory {
             $events[$id] = $event;
         }
 
-        //var_dump($events);
+
         return $events;
     }
 

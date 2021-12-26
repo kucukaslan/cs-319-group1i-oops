@@ -53,11 +53,8 @@ class CourseEvent extends Event {
      */
     public function insertToSpecializedTable(): bool
     {
-       // var_dump($this);
-
         try {
             $sql = "INSERT INTO " . CourseEvent::TABLE_PREFIX.CourseEvent::TABLE_NAME . " (event_id, year, semester) VALUES (:event_id, :year, :semester)";
-            //echo $sql.PHP_EOL;
             $event_id= $this->getEventID();
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":event_id", $event_id);

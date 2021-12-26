@@ -44,23 +44,16 @@ ob_start();
         $ef = new EventFactory($conn);
         $user = $uf->makeUserById($conn, $usertype, $_SESSION["id"]);
 
-        echo "event Id is " . $_SESSION["eventToDisplay"] . "<br>";
         $eventToDisplay = $ef->getEvent($_SESSION["eventToDisplay"]);
 
-        // echo $eventToDisplay->getStartDate();
-
-        print_r($eventToDisplay);
-        // echo get_class($eventToDisplay);
-
-        // echo gettype($eventToDisplay);
-        // echo "<br>";
+        // fetch the data from the database
         $participantsOfTheEvent = $user->getParticipants($eventToDisplay->getEventID());
-        // print_r($participantsOfTheEvent);
+
 
         $contact_data = [];
         $non_contact_data = [];
 
-
+        // format the data
         $user->getCloseContacts();
         foreach ($participantsOfTheEvent as $participant) {
             if ($participant->getId() != $user->getId()) {
@@ -73,10 +66,6 @@ ob_start();
         }
 
 
-        // print_r($non_contact_data);
-        // echo "<br>";
-        // print_r($non_added_data);
-
         echo '<header>';
         $navbar = new NavBar($usertype, $pagename);
         echo $navbar->draw();
@@ -88,6 +77,7 @@ ob_start();
         ));
 
         $date = "";
+
         // if the event is a sports event, add date
         if (get_class($eventToDisplay) == "SportsEvent")
             $date = $eventToDisplay->getStartDate()->format("d") . "-" . $eventToDisplay->getStartDate()->format('M')
@@ -106,7 +96,6 @@ ob_start();
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["add"])) {
 
             $_SESSION["add"] = $_POST["add"];
-            echo "inside post if " . $_POST["add"];
             unset($_POST);
 
             header("Refresh:0");
@@ -115,9 +104,6 @@ ob_start();
             $userIdToAdd = $_SESSION["add"];
             unset($_SESSION["add"]);
 
-            echo "added USER WITH ID: " . $userIdToAdd;
-
-            // TODO: add some boundary conditions
             $user->addCloseContact($userIdToAdd, 1);
 
             header("Refresh:0");
@@ -127,18 +113,15 @@ ob_start();
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["remove"])) {
 
             $_SESSION["remove"] = $_POST["remove"];
-            echo "inside post if " . $_POST["remove"];
+
             unset($_POST);
-            // echo "<script> document.location.reload() </script>";
+
             header("Refresh:0");
 
         } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["remove"])){
             $userIdToRemove = $_SESSION["remove"];
             unset($_SESSION["remove"]);
 
-            echo "removed USER WITH ID: " . $userIdToRemove;
-
-            // TODO: add some boundary conditions
             $user->deleteCloseContact($userIdToRemove);
 
             header("Refresh:0");

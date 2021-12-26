@@ -12,7 +12,8 @@ class UserFactory
 
     //methods
 
-    public function makeUserByRegister(PDO $db, string $usertype, int $id, string|int $password, string $firstname, string $lastname, string $email): User
+    // ! does not insert the user into the database
+    public function makeUserByRegister(PDO $db, string $usertype, int $id, string|int $password, string $firstname, string $lastname,string $email) : User
     {
         $this->makeUserByInformation($db, $usertype, $id, $firstname, $lastname, $email);
         $this->user->setPassword($password);
@@ -33,8 +34,7 @@ class UserFactory
         return $this->user;
     }
 
-    // make user from information
-
+    // make user object
     public function makeUser(string $usertype): User
     {
         if (strcmp($usertype, Student::TABLE_NAME) == 0)
@@ -70,9 +70,6 @@ class UserFactory
         $this->user->setDatabaseConnection($db);
         $this->user->setId($id);
         $this->user->setPassword($password);
-
-        // the moment when you used Argon2i in database but publicly shared the passwords in plaintext!
-        // echo "id : " . $id . "  $password ";
 
         $pwVerified = $this->user->verifyPassword();
         if (!$pwVerified) {

@@ -2,7 +2,6 @@
 require_once("Vaccine.php");
 class VaccineFactory
 {
-
     // this function makes a vaccine object from the database using the id
     public function makeVaccineById(PDO $conn, int $id): ?Vaccine
     {
@@ -26,7 +25,7 @@ class VaccineFactory
         }
     }
 
-        // this function makes a vaccine object from the database
+    // this function makes a vaccine object from the database
     public function makeVaccineByCvxCode(PDO $conn, int $cvx_code): ?Vaccine
     {
         $sql = "SELECT * FROM ".Vaccine::TABLE_NAME." WHERE cvx_code = :cvx_code";

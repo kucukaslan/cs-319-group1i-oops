@@ -88,7 +88,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["cancel"])) {
         $eventIdToCancel = $_SESSION["cancel"];
         unset($_SESSION["cancel"]);
-        // echo "canceling  " . $eventIdToCancel;
 
         if (!$user->leaveEvent($eventIdToCancel)) {
             $e = $ef->getEvent($eventIdToCancel);
@@ -109,7 +108,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     // appoint a test
     if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST["reserve"])) {
         $_SESSION["reserve"] = $_POST["reserve"];
-        // echo "inside post if remove" . $_POST["enroll"];
+
         unset($_POST);
 
         header("Refresh:0");
@@ -117,11 +116,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
     } else if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_SESSION["reserve"])) {
         $eventIdToEnroll = $_SESSION["reserve"];
         unset($_SESSION["reserve"]);
-        //   echo "ENROLLING " . $eventIdToEnroll;
 
         $eventToEnroll = $ef->getEvent($eventIdToEnroll);
-        echo $eventToEnroll->getCurrentNumberOfParticipants() . "sadas<br>";
-        echo $eventToEnroll->getMaxNoOfParticipant();
 
         if ($eventToEnroll->getCurrentNumberOfParticipants() < $eventToEnroll->getMaxNoOfParticipant()) {
 
@@ -129,13 +125,11 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             if ($user->joinEvent($eventIdToEnroll)) {
                 unset($_SESSION['lerr']);
             } else {
-                //TODO: Error message
                 $e = $ef->getEvent($eventIdToEnroll);
                 $_SESSION['lerr'] = 'Failed to enroll ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
                     $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i');
             }
         } else {
-            // TODO: Error message stating that event is full
             $e = $ef->getEvent($eventIdToEnroll);
             $_SESSION['lerr'] = 'Event ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
                 $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i') . ' is full';

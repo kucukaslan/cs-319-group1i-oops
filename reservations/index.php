@@ -33,6 +33,8 @@
                     </div> </form>";
         echo "</div> </div>";
         exit();
+    } else if ($_SESSION['usertype'] != SportsCenterStaff::TABLE_NAME && $_SESSION['usertype'] != UniversityAdministration::TABLE_NAME) {
+        header("Location: ../index.php");
     } else {
         $engine = new Mustache_Engine(array(
             'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
@@ -70,8 +72,6 @@
             }
         }
 
-
-
         $navbar = new NavBar($usertype);
         echo $navbar->draw();
         echo "<div class=\"centerwrapper\">
@@ -87,16 +87,12 @@
             "title"=>"Past Sports Events",
             "column1" => "Name","column2"=>"Place", "column3"=>"Day Slot", "column4"=>"Time Slot", "column5"=>"Quota", "column6"=>"See Participants"]);
 
-
-
         // if see button is pressed go to the reservation/see page
         if(isset($_POST["seeEvent"])) {
             $_SESSION["seeEvent"] = $_POST["seeEvent"];
-            // echo $_POST["seeEvent"];
             header("Location: ../../reservations/see");
         }
     }
-
     ?>
 
 
