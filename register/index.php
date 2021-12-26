@@ -27,60 +27,68 @@ startDefaultSessionWith();
 $conn = getDatabaseConnection();
 
 if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
-    // userid and password sent from the form
-    $userid = $_POST['userid'];
-    $password = $_POST['password'];
-    $usermail = $_POST['BilkentEmail'];
-    $username = $_POST['UserName'];
-    $usersurname = $_POST['UserSurname'];
+    if (0 == strcmp($_POST['conP'], $_POST['password'])) {
+        // userid and password sent from the form
+        $userid = $_POST['userid'];
+        $password = $_POST['password'];
+        $usermail = $_POST['BilkentEmail'];
+        $username = $_POST['UserName'];
+        $usersurname = $_POST['UserSurname'];
 
-    $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
+        $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
 
-    try {
-        $uf = new UserFactory();
-        $std = $uf->makeUserByRegister($conn, $usertype, $userid, $password, $username, $usersurname, $usermail);
-        $_SESSION['firstname'] = $std->getFirstName();
-        $_SESSION['lastname'] = $std->getLastName();
-        $_SESSION['id'] = $std->getId();
-        $_SESSION['email'] = $std->getEmail();
+        try {
+            $uf = new UserFactory();
+            $std = $uf->makeUserByRegister($conn, $usertype, $userid, $password, $username, $usersurname, $usermail);
+            $_SESSION['firstname'] = $std->getFirstName();
+            $_SESSION['lastname'] = $std->getLastName();
+            $_SESSION['id'] = $std->getId();
+            $_SESSION['email'] = $std->getEmail();
 
-        $std->insertToDatabase();
-        header("location: .."); //redirect to main page
+            $std->insertToDatabase();
+            header("location: .."); //redirect to main page
 
-    } 
-    catch (EmailAlreadyExistsException $e) {
-        getConsoleLogger()->log("Debug", $e->getMessage());
+        } catch (EmailAlreadyExistsException $e) {
+            getConsoleLogger()->log("Debug", $e->getMessage());
+            echo $m->render('registration', [
+                'id' => 'University ID',
+                'pass' => 'Password',
+                'name' => 'Your Name',
+                'surname' => 'Your Surname',
+                'mail' => 'Bilkent Email',
+                'emailErr' => 'Email address is already being used! Have you forgotten your credentials?'
+            ]);
+        } catch (UserIdAlreadyExistsException $e) { // id is taken
+            getConsoleLogger()->log("Debug", $e->getMessage());
+            echo $m->render('registration', [
+                'id' => 'University ID',
+                'pass' => 'Password',
+                'name' => 'Your Name',
+                'surname' => 'Your Surname',
+                'mail' => 'Bilkent Email',
+                'idErr' => 'ID already is already being used! Have you forgotten your credentials?'
+            ]);
+        } catch (Exception $e) {
+            getConsoleLogger()->log("Debug", $e->getMessage());
+            echo $m->render('registration', [
+                'id' => 'University ID',
+                'pass' => 'Password',
+                'name' => 'Your Name',
+                'surname' => 'Your Surname',
+                'mail' => 'Bilkent Email'
+            ]);
+        }
+    } else {
         echo $m->render('registration', [
             'id' => 'University ID',
             'pass' => 'Password',
             'name' => 'Your Name',
             'surname' => 'Your Surname',
             'mail' => 'Bilkent Email',
-            'emailErr' => 'Email address is already being used! Have you forgotten your credentials?'
+            'CPE' => 'Passwords do not match.'
         ]);
     }
-    catch (UserIdAlreadyExistsException $e) { // id is taken
-        getConsoleLogger()->log("Debug", $e->getMessage());
-        echo $m->render('registration', [
-            'id' => 'University ID',
-            'pass' => 'Password',
-            'name' => 'Your Name',
-            'surname' => 'Your Surname',
-            'mail' => 'Bilkent Email',
-            'idErr' => 'ID already is already being used! Have you forgotten your credentials?'
-        ]);
-    } 
-    catch(Exception $e) {
-        getConsoleLogger()->log("Debug", $e->getMessage());
-        echo $m->render('registration', [
-            'id' => 'University ID',
-            'pass' => 'Password',
-            'name' => 'Your Name',
-            'surname' => 'Your Surname',
-            'mail' => 'Bilkent Email'
-        ]);
-    }
-    
+
 } else {
     echo $m->render('registration', [
         'id' => 'University ID',

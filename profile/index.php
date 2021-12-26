@@ -45,7 +45,6 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         'loader' => new Mustache_Loader_FilesystemLoader(rootDirectory() . '/templates'),
     ));
 
-    $wrongVerPassword = '';
     if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['newName'])) {
             $newFName = $_POST['newName'];
@@ -54,7 +53,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
             $user->setFirstname($newFName);
             $user->updateToDatabase();
-            
+
             header("Refresh:0");
         }
         if (isset($_POST['newsName'])) {
@@ -74,28 +73,34 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
             $user->setEmail($newEmail);
             $user->updateToDatabase();
-           header("Refresh:0");
+            header("Refresh:0");
         }
-        if (isset($_POST['newP']) && isset($_POST['verP'])) {
-            $currentPassword = $_POST['verP'];
-            $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            $user->setPassword($currentPassword);
-             try {
-                if ( $user->verifyPassword()) {
-                    $newPassword = $_POST['newP'];
-                    $user->updatePassword($newPassword);
-                    getConsoleLogger()->log("profile","Password changed");// np: $newPassword, cp: $currentPassword");
-                } else {
-                    $wrongVerPassword = 'Current password is invalid';
+        if (isset($_POST['conP']) && isset($_POST['newP']) && isset($_POST['verP'])) {
+            if (0 == strcmp($_POST['conP'], $_POST['newP'])) {
+                $_SESSION['CPE'] = '';
+                $currentPassword = $_POST['verP'];
+                $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                $user->setPassword($currentPassword);
+                try {
+                    if ($user->verifyPassword()) {
+                        $newPassword = $_POST['newP'];
+                        $user->updatePassword($newPassword);
+                        $_SESSION['NPE'] = '';
+                        getConsoleLogger()->log("profile", "Password changed");// np: $newPassword, cp: $currentPassword");
+                    } else {
+                        $_SESSION['NPE'] = 'Current password is invalid';
+                    }
+                } catch (PasswordIsWrongException $e) {
+                    $_SESSION['NPE'] = 'Current password is incorrect';
+                    getConsoleLogger()->log("profile", "Password change failed");
+                } catch (Exception $e) {
+                    $_SESSION['NPE'] = 'Current password is invalid';
+                    getConsoleLogger()->log("profile", "Password change failed");
                 }
-            }
-            catch (PasswordIsWrongException $e) {
-                $wrongVerPassword = 'Current password is incorrect';
-                getConsoleLogger()->log("profile","Password change failed");
-            }
-            catch (Exception $e) {
-                $wrongVerPassword = 'Current password is invalid';
-                getConsoleLogger()->log("profile","Password change failed");
+            } else {
+                $_SESSION['NPE'] = '';
+                $_SESSION['CPE'] = 'Passwords do not match';
+                getConsoleLogger()->log("profile", "Passwords are different");
             }
             unset($_POST);
             header("Refresh:0");
@@ -105,7 +110,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         "name" => $user->getFirstName() . " " . $user->getLastName(),
         "email" => $user->getEmail(),
         "id" => $user->getId(),
-        'WVPass' => $wrongVerPassword  
+        'WVPass' => $_SESSION['NPE'] ?? "",
+        'WCPass' => $_SESSION['CPE'] ?? "",
     ]);
     ?>
 </div>

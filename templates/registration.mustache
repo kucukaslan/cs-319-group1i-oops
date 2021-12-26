@@ -28,6 +28,27 @@
                             </div>
                         </div>
 
+                        {{^CPE}}
+                            <div class="field">
+                                <div class="control">
+                                    <label for="conP">Confirm Password<input type="password" name="conP" class="input"
+                                                                             id="conP" required> </label>
+                                </div>
+                            </div>
+                        {{/CPE}}
+                        {{#CPE}}
+                            <div class="field">
+                                <div class="control">
+                                    <label for="conP">Confirm Password<input type="password" name="conP"
+                                                                             class="input is-danger" id="conP" required>
+                                    </label>
+                                </div>
+                            </div>
+                        {{/CPE}}
+                        {{#CPE}}
+                            <p class="help is-danger">{{CPE}}</p>
+                        {{/CPE}}
+
                         <div class="field">
                             <div class="control">
                                 <label for="BilkentEmail">{{mail}}
