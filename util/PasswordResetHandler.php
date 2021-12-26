@@ -26,14 +26,15 @@ class PasswordResetHandler
 
         $mail = new PHPMailer\PHPMailer\PHPMailer();
         $mail->isSMTP();
+        //$mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 465;
         $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
         $mail->SMTPAuth = true;
         $mail->Username = 'ThatIsagoalforitsownsake@gmail.com';
-        $mail->Password = 'StackPop';
+        $mail->Password = 'Stackpop';
         $mail->setFrom('ThatIsagoalforitsownsake@gmail.com', 'ForThyHealth');
-        $mail->addAddress($user->getEmail(), $user->getFirstName() . ' ' . $user->getLastName());
+        $mail->addAddress(/*$user->getEmail()*/ 'thatisagoalforitsownsake@gmail.com', $user->getFirstName() . ' ' . $user->getLastName());
         $mail->Subject = 'Password Reset Request';
         $mail->Body = 'Dear ' . $user->getFirstName() . ' ' . $user->getLastName() . ",\n";
         $mail->Body .= "You have requested a password reset. Please click the link below to a browser to reset your password.\n";
@@ -42,16 +43,11 @@ class PasswordResetHandler
         $mail->Body .= "Thank you,\n\n";
         $mail->Body .= "~ ForThyHealth\n";
         if (!$mail->send()) {
-            echo 'Mailer Error: ' . $mail->ErrorInfo;
+            //echo 'Mailer Error: ' . $mail->ErrorInfo;
             return false;
         } else {
-            echo 'Message sent!';
+            //echo 'Message sent!';
             return true;
-            //Section 2: IMAP
-            //Uncomment these to save your message in the 'Sent Mail' folder.
-            #if (save_mail($mail)) {
-            #    echo "Message saved!";
-            #}
         }
         /*
         return $mail->send();
