@@ -23,23 +23,6 @@
 
                         <div class="field">
                             <div class="control">
-                                <label for="password">{{pass}}
-                                    {{^passErr}}
-                                        <input type="password" name="password" class="input" id="password" required>
-                                    {{/passErr}}
-                                    {{#passErr}}
-                                        <input type="password" name="password" class="input is-danger" id="password"
-                                               required>
-                                    {{/passErr}}
-                                </label>
-                            </div>
-                            {{#passErr}}
-                                <p class="help is-danger">{{passErr}}</p>
-                            {{/passErr}}
-                        </div>
-
-                        <div class="field">
-                            <div class="control">
                                 <label for="ut">User Type</label>
                             </div>
                             <div class="select">
@@ -51,14 +34,23 @@
                                 </select>
                             </div>
                         </div>
+                        {{^sent}}
+                            <div class="field">
+                                <input type="submit" class="button is-success" value="Send password reset email">
+                            </div>
+                        {{/sent}}
+                        {{#sent}}
+                            <article class="message is-small is-warning">
+                                <div class="message-header">
+                                    <p>Password Reset Email Sent!</p>
+                                </div>
+                                <div class="message-body">
+                                    A password reset email has been sent to {{sent}} please click the link the from <br>
+                                    ThatIsagoalforitsownsake@gmail.com.
+                                </div>
+                            </article>
+                        {{/sent}}
 
-                        <div class="field">
-                            <input type="submit" class="button is-success" value="Login">
-                        </div>
-                        <div class="block"></div>
-                        <a href="../register"> Don't Have an Account ?</a>
-                        <div class="block"></div>
-                        <a href="../forgot"> Forgot password?</a>
                     </form>
 
                 </div>
