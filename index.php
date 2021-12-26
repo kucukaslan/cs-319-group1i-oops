@@ -157,10 +157,17 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     else
                         $isAllowed = "";
                     // render and print profile component sessiondan al name,email falan.
+                    $status = "Risky";
+                    $formattedHESCode = RiskStatusManager::formatHESCode($user->getHESCode());
+                    $rsm = new RiskStatusManager($conn, User::TABLE_NAME, $user->getId());
+                    if ($rsm->checkHESCode($formattedHESCode) == 1) {
+                        $status = "Riskless";
+                    }
                     echo $engine->render("profile", [
                         "name" => $user->getFirstName() . " " . $user->getLastName(),
                         "email" => $user->getEmail(),
                         "id" => $user->getId(),
+                        "status"=>$status,
                         'allowance' => $isAllowed,
                         'hescode' => $user->getHESCode(),
                         'hesErr' => $hesErr
