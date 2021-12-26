@@ -41,7 +41,7 @@ class PasswordResetHandler
         $mail->Body .= "If you did not request a password reset, please ignore this email.\n";
         $mail->Body .= "Thank you,\n\n";
         $mail->Body .= "~ ForThyHealth\n";
-        if (!$mail->send()) {
+        /*if (!$mail->send()) {
             echo 'Mailer Error: ' . $mail->ErrorInfo;
             return false;
         } else {
@@ -53,18 +53,15 @@ class PasswordResetHandler
             #    echo "Message saved!";
             #}
         }
-        /*
-        return $mail->send();
         */
-
-
+        return $mail->send();
     }
 
     public function generateTokenForUser(int $user_id): string
     {
         $crypt_safe_rand_int = random_int(PHP_INT_MIN, PHP_INT_MAX);
         $hash_of_rand_int = hash("sha256", $crypt_safe_rand_int);
-        echo 111;
+        //echo 111;
 
         $sql = "INSERT INTO " . PasswordResetHandler::TABLE_NAME . " (user_id, token) VALUES (:user_id, :token) on duplicate key update token = :token, generation_date=now()";
         $stmt = $this->conn->prepare($sql);
@@ -119,7 +116,7 @@ class PasswordResetHandler
                 }
             }
         } catch (Exception $e) {
-            echo $e;
+            //echo $e;
             return false;
         }
         return false;
