@@ -110,8 +110,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
         "name" => $user->getFirstName() . " " . $user->getLastName(),
         "email" => $user->getEmail(),
         "id" => $user->getId(),
-        'WVPass' => $_SESSION['NPE'],
-        'WCPass' => $_SESSION['CPE'],
+        'WVPass' => $_SESSION['NPE'] ?? "",
+        'WCPass' => $_SESSION['CPE'] ?? "",
     ]);
     ?>
 </div>
