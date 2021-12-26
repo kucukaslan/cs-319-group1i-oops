@@ -50,7 +50,7 @@ class AllowanceFacade {
      * tests that are given in 3 days
      */
     public function checkAllowance(): ?bool {
-       if ($this->rsm->getHESCodeStatus() == false) {
+       if ($this->rsm->getHESCodeStatus() === false) {
             return false;
         }
         $requiredNoOfVaccines = AllowanceFacade::MIN_NO_OF_VACCINES;
