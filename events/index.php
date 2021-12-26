@@ -87,11 +87,11 @@ EOF;
     // format data
     foreach ($sports as $sport) {
         $formattedData = [
-            "place" => $sport->getPlace(),
+            "title"=>$sport->getTitle(),"place" => $sport->getPlace(),
             "dayslot" => $sport->getStartDate()->format("d") . "-" . $sport->getStartDate()->format('M'),
             "timeslot" => $sport->getStartDate()->format('h') . ":" . $sport->getStartDate()->format('i') . "-" .
                 $sport->getEndDate()->format('h') . ":" . $sport->getEndDate()->format('i'),
-            "eventId" => $sport->getEventId(),
+            "eventId" => $sport->getEventId(), "quota"=>$sport->getCurrentNumberOfParticipants() . "/" . $sport->getMaxNoOfParticipant(),
             "value" => "Leave"];
         if ($sport->getCanPeopleJoin() && $sport->getCurrentNumberOfParticipants() < $sport->getMaxNoOfParticipant()) {
             if ($user->doIParticipate($sport->getEventId())) {
@@ -122,13 +122,12 @@ EOF;
             if ($user->joinSportsActivity($eventIdToEnroll)) {
                 unset($_SESSION['lerr']);
             } else {
-                //TODO: Error message
+
                 $e = $ef->getEvent($eventIdToEnroll);
                 $_SESSION['lerr'] = 'Failed to enroll ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
                     $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i');
             }
         } else {
-            // TODO: Error message stating that event is full
             $e = $ef->getEvent($eventIdToEnroll);
             $_SESSION['lerr'] = 'Event ' . $e->getTitle() . ' ' . $e->getPlace() . ' ' .
                 $e->getStartDate()->format('d M h:i') . ' ' . $e->getEndDate()->format('h:i') . ' is full';

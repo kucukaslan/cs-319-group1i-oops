@@ -44,9 +44,9 @@ class NavBar
             $nav = $EENGINE->render('navbar', [
                 'title' => 'Main Page',
                 'links' => [
-                    ['href' => '/administration', 'title' => 'Administration'],
+                    // ['href' => '/administration', 'title' => 'Administration'],
                     ['href' => '/lectures', 'title' => 'Lectures'],
-                    ['href' => '/reservations', 'title' => 'Reservations'],
+                    // ['href' => '/reservations', 'title' => 'Reservations'],
                     ['href' => '/events', 'title' => 'Events'],
                     ['href' => '/closecontact', 'title' => 'Close Contact'],
                     ['href' => '/profile', 'title' => 'Profile']
@@ -56,8 +56,8 @@ class NavBar
             $nav = $EENGINE->render('navbar', [
                 'title' => 'Main Page',
                 'links' => [
-                    ['href' => '/administration', 'title' => 'Administration'],
-                    ['href' => '/lectures', 'title' => 'Lectures'],
+                    // ['href' => '/administration', 'title' => 'Administration'],
+                    // ['href' => '/lectures', 'title' => 'Lectures'],
                     ['href' => '/reservations', 'title' => 'Reservations'],
                     ['href' => '/events', 'title' => 'Events'],
                     ['href' => '/closecontact', 'title' => 'Close Contact'],
