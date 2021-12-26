@@ -55,7 +55,8 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['pwr'])) 
                                         <p>Password Reset!</p>
                                     </div>
                                     <div class="message-body">
-                                        Your password has been changed to <i><?= $newPassword ?></i>.
+                                        Your password has been changed to <i><?= $newPassword ?></i>.<br> <a
+                                                href="../login">Login Page</a>
                                     </div>
                                 </article>
                             <?php else: ?>
@@ -64,7 +65,7 @@ if (isset($conn) && $_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['pwr'])) 
                                         <p>Password Not Reset!</p>
                                     </div>
                                     <div class="message-body">
-                                        There was an error.
+                                        There was an error.<br> <a href="../login">Login Page</a>
                                     </div>
                                 </article>
                             <?php endif; ?>
