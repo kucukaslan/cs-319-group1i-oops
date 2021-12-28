@@ -67,13 +67,19 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
             header("Refresh:0");
         }
         if (isset($_POST['newEmail'])) {
+            $oldEmail;
             $newEmail = $_POST['newEmail'];
             unset($_POST);
-
-            $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
-            $user->setEmail($newEmail);
-            $user->updateToDatabase();
-            header("Refresh:0");
+            try{
+                $user = $uf->makeUserById($conn, $usertype, $_SESSION['id']);
+                $oldEmail = $user->getEmail();
+                $user->setEmail($newEmail);
+                $user->updateToDatabase();
+                header("Refresh:0");
+            } catch(PDOException $e) {
+                $user->setEmail($oldEmail);
+                getConsoleLogger()->getInstance()->log("Profile", "Failed to insert");
+            }
         }
         if (isset($_POST['conP']) && isset($_POST['newP']) && isset($_POST['verP'])) {
             if (0 == strcmp($_POST['conP'], $_POST['newP'])) {
