@@ -24,11 +24,13 @@ The website will have a part for Covid Case Statistics. Covid related statistics
 - User notification system  
 Users will send an e-form to the university administration about possible problems he/she encounters such as missing disinfectant in buildings, missing hygiene products in toilets.
 
+## User Manual and Build Instructions
+
+User Manual and Build Instructions are accessible in the home directory of main branch:
+* [User Manual](userManual.pdf)
+* [Build Instructions](buildInstructions.pdf)
 
 ## External Links
-[Databases-git](https://github.com/GirayAkyol/oops-db) Message GA for invites. 
-Raw link: https://github.com/GirayAkyol/oops-db
-
 [Readme](https://docs.google.com/document/d/1pjwPjcS7CiJdgJYCijLxZsxY8q0PkJ2fUUM65V_OLsE/edit?usp=sharing)  
 Raw link: https://docs.google.com/document/d/1pjwPjcS7CiJdgJYCijLxZsxY8q0PkJ2fUUM65V_OLsE/edit?usp=sharing
 
