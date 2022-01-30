@@ -159,8 +159,8 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                     // render and print profile component sessiondan al name,email falan.
                     $status = "Risky";
                     $formattedHESCode = RiskStatusManager::formatHESCode($user->getHESCode());
-                    $rsm = new RiskStatusManager($conn, User::TABLE_NAME, $user->getId());
-                    if ($rsm->checkHESCode($formattedHESCode) == 1) {
+                    $rsm = new RiskStatusManager($conn, $usertype, $user->getId());
+                    if ($rsm->getHESCodeStatus($formattedHESCode) == 1) {
                         $status = "Riskless";
                     }
                     echo $engine->render("profile", [
@@ -218,8 +218,7 @@ $usertype = $_SESSION['usertype'] ?? Student::TABLE_NAME;
                 foreach ($diagnosises as $diagnosise) {
                     $dTable[] = [
                         'date' => $diagnosise->getDiagnosisDate()->format('d M Y'),
-                        'type' => $diagnosise->getType(),
-                        'result' => $diagnosise->getResultAsString()
+                        'type' => $diagnosise->getType()
                     ];
                 }
 
